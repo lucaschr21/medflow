@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:${POSTGRES_VERSION:-18}
+    container_name: ${POSTGRES_CONTAINER_NAME:-medflow-postgres}
+    restart: unless-stopped
+    ports:
+      - '${DB_PORT:-5432}:5432'
+    environment:
+      TZ: ${TZ:-America/Belem}
+      POSTGRES_USER: ${DB_USERNAME:-medflow}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-medflow}
+      POSTGRES_DB: ${DB_NAME:-medflow}
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USERNAME:-medflow} -d ${DB_NAME:-medflow}']
+      interval: 5s
+      timeout: 3s
+      retries: 10

@@ -1,3 +1,5 @@
 spring:
   application:
     name: medflow
+  config:
+    import: optional:file:.env[.properties]
