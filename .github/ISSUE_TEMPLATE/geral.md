@@ -1,13 +1,13 @@
 ---
-name: Tarefa
-about: Template padrão para qualquer atividade do projeto
+name: Geral
+about: Template padrão para qualquer atividade
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
-## 📌 Definição
+## Definição
+
 Descreva claramente o que deve ser feito.
 
 > Exemplo:
@@ -16,6 +16,7 @@ Descreva claramente o que deve ser feito.
 > Corrigir erro Z
 
 ## Critérios de aceite
+
 - [ ] Critério 1
 - [ ] Critério 2
 - [ ] Critério 3
