@@ -5,8 +5,16 @@ root = true
 charset = utf-8
 indent_style = space
 indent_size = 2
+end_of_line = lf
+max_line_length = 100
 insert_final_newline = true
 trim_trailing_whitespace = true
+
+[*.cmd]
+end_of_line = crlf
+
+[Makefile]
+indent_style = tab
 
 [*.ts]
 quote_type = single
