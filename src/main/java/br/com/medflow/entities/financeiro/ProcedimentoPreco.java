@@ -1,5 +1,9 @@
 package br.com.medflow.entities.financeiro;
 
+import static br.com.medflow.entities.base.DomainValidation.required;
+import static br.com.medflow.entities.base.DomainValidation.requiredNonNegative;
+import static br.com.medflow.entities.base.DomainValidation.requiredText;
+
 import br.com.medflow.entities.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +16,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
-import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -57,34 +60,31 @@ public class ProcedimentoPreco extends BaseEntity {
 
   public void definirCodigoProcedimento(String codigoProcedimento) {
     this.codigoProcedimento =
-        Objects.requireNonNull(codigoProcedimento, "Código do procedimento é obrigatório");
+        requiredText(codigoProcedimento, "Código do procedimento é obrigatório");
   }
 
   public void definirDescricao(String descricao) {
-    this.descricao = Objects.requireNonNull(descricao, "Descrição é obrigatória");
+    this.descricao = requiredText(descricao, "Descrição é obrigatória");
   }
 
   public void definirValorTotal(BigDecimal valorTotal) {
-    this.valorTotal = validarNaoNegativo(valorTotal, "Valor total é obrigatório");
+    this.valorTotal =
+        requiredNonNegative(valorTotal, "Valor total é obrigatório", "Valor não pode ser negativo");
   }
 
   public void definirValorUtente(BigDecimal valorUtente) {
-    this.valorUtente = validarNaoNegativo(valorUtente, "Valor do utente é obrigatório");
+    this.valorUtente =
+        requiredNonNegative(
+            valorUtente, "Valor do utente é obrigatório", "Valor não pode ser negativo");
   }
 
   public void definirValorSeguradora(BigDecimal valorSeguradora) {
-    this.valorSeguradora = validarNaoNegativo(valorSeguradora, "Valor da seguradora é obrigatório");
+    this.valorSeguradora =
+        requiredNonNegative(
+            valorSeguradora, "Valor da seguradora é obrigatório", "Valor não pode ser negativo");
   }
 
   void setConvenio(Convenio convenio) {
-    this.convenio = Objects.requireNonNull(convenio, "Convênio é obrigatório");
-  }
-
-  private static BigDecimal validarNaoNegativo(BigDecimal valor, String mensagemObrigatoria) {
-    BigDecimal valorObrigatorio = Objects.requireNonNull(valor, mensagemObrigatoria);
-    if (valorObrigatorio.compareTo(BigDecimal.ZERO) < 0) {
-      throw new IllegalArgumentException("Valor não pode ser negativo");
-    }
-    return valorObrigatorio;
+    this.convenio = required(convenio, "Convênio é obrigatório");
   }
 }

@@ -1,5 +1,12 @@
 package br.com.medflow.entities.pessoas;
 
+import static br.com.medflow.entities.base.DomainValidation.optionalText;
+import static br.com.medflow.entities.base.DomainValidation.required;
+
+import java.time.LocalDate;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import br.com.medflow.entities.atendimento.Consulta;
 import br.com.medflow.entities.atendimento.ProcessoClinico;
 import br.com.medflow.entities.base.BaseEntity;
@@ -18,10 +25,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -70,23 +73,23 @@ public class Paciente extends BaseEntity {
   }
 
   public void definirUtilizador(Utilizador utilizador) {
-    this.utilizador = Objects.requireNonNull(utilizador, "Utilizador é obrigatório");
+    this.utilizador = required(utilizador, "Utilizador é obrigatório");
   }
 
   public void definirNif(String nif) {
-    this.nif = nif;
+    this.nif = optionalText(nif);
   }
 
   public void definirEndereco(Endereco endereco) {
-    this.endereco = Objects.requireNonNull(endereco, "Endereço é obrigatório");
+    this.endereco = required(endereco, "Endereço é obrigatório");
   }
 
   public void definirNumeroBeneficiario(String numeroBeneficiario) {
-    this.numeroBeneficiario = numeroBeneficiario;
+    this.numeroBeneficiario = optionalText(numeroBeneficiario);
   }
 
   public void definirOrganizacao(Organizacao organizacao) {
-    this.organizacao = Objects.requireNonNull(organizacao, "Organização é obrigatória");
+    this.organizacao = required(organizacao, "Organização é obrigatória");
   }
 
   public void definirProcessoClinico(ProcessoClinico processoClinico) {

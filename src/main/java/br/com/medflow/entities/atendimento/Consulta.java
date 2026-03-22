@@ -1,5 +1,16 @@
 package br.com.medflow.entities.atendimento;
 
+import static br.com.medflow.entities.base.DomainValidation.optionalText;
+import static br.com.medflow.entities.base.DomainValidation.required;
+import static br.com.medflow.entities.base.DomainValidation.requiredText;
+
+import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.estrutura.Consultorio;
 import br.com.medflow.entities.estrutura.ConsultorioMedico;
@@ -25,14 +36,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Getter
 @NoArgsConstructor
@@ -140,12 +145,11 @@ public class Consulta extends BaseEntity {
   private Pagamento pagamento;
 
   public void definirDataHoraMarcacao(LocalDateTime dataHoraMarcacao) {
-    this.dataHoraMarcacao =
-        Objects.requireNonNull(dataHoraMarcacao, "Data e hora da marcação são obrigatórios");
+    this.dataHoraMarcacao = required(dataHoraMarcacao, "Data e hora da marcação são obrigatórios");
   }
 
   public void definirEstado(EstadoConsulta estado) {
-    this.estado = Objects.requireNonNull(estado, "Estado da consulta é obrigatório");
+    this.estado = required(estado, "Estado da consulta é obrigatório");
     if (this.estado != EstadoConsulta.CANCELADA) {
       this.motivoCancelamento = null;
       this.canceladoEm = null;
@@ -154,45 +158,43 @@ public class Consulta extends BaseEntity {
   }
 
   public void definirTipoConsulta(String tipoConsulta) {
-    this.tipoConsulta = tipoConsulta;
+    this.tipoConsulta = optionalText(tipoConsulta);
   }
 
   public void definirPaciente(Paciente paciente) {
-    this.paciente = Objects.requireNonNull(paciente, "Paciente é obrigatório");
+    this.paciente = required(paciente, "Paciente é obrigatório");
   }
 
   public void definirMedico(Medico medico) {
-    Medico valor = Objects.requireNonNull(medico, "Médico é obrigatório");
+    Medico valor = required(medico, "Médico é obrigatório");
     validarCoerenciaMedicoConsultorio(valor, this.consultorio);
     this.medico = valor;
   }
 
   public void definirConsultorio(Consultorio consultorio) {
-    Consultorio valor = Objects.requireNonNull(consultorio, "Consultório é obrigatório");
+    Consultorio valor = required(consultorio, "Consultório é obrigatório");
     validarCoerenciaMedicoConsultorio(this.medico, valor);
     this.consultorio = valor;
   }
 
   public void definirConvenio(Convenio convenio) {
-    this.convenio = Objects.requireNonNull(convenio, "Convênio é obrigatório");
+    this.convenio = required(convenio, "Convênio é obrigatório");
   }
 
   public void adicionarDocumentoMedico(DocumentoMedico documentoMedico) {
-    DocumentoMedico documento =
-        Objects.requireNonNull(documentoMedico, "Documento médico é obrigatório");
+    DocumentoMedico documento = required(documentoMedico, "Documento médico é obrigatório");
     documento.setConsulta(this);
     this.documentosMedicos.add(documento);
   }
 
   public void removerDocumentoMedico(DocumentoMedico documentoMedico) {
-    DocumentoMedico documento =
-        Objects.requireNonNull(documentoMedico, "Documento médico é obrigatório");
+    DocumentoMedico documento = required(documentoMedico, "Documento médico é obrigatório");
     this.documentosMedicos.remove(documento);
   }
 
   public void definirRegistroAtendimento(RegistroAtendimento registroAtendimento) {
     this.registroAtendimento =
-        Objects.requireNonNull(registroAtendimento, "Registro de atendimento é obrigatório");
+        required(registroAtendimento, "Registro de atendimento é obrigatório");
     this.registroAtendimento.setConsulta(this);
   }
 
@@ -201,7 +203,7 @@ public class Consulta extends BaseEntity {
   }
 
   public void definirPagamento(Pagamento pagamento) {
-    this.pagamento = Objects.requireNonNull(pagamento, "Pagamento é obrigatório");
+    this.pagamento = required(pagamento, "Pagamento é obrigatório");
     this.pagamento.setConsulta(this);
   }
 
@@ -210,16 +212,11 @@ public class Consulta extends BaseEntity {
   }
 
   public void cancelar(String motivo, Utilizador canceladoPor) {
-    String motivoObrigatorio =
-        Objects.requireNonNull(motivo, "Motivo de cancelamento é obrigatório").strip();
-    if (motivoObrigatorio.isEmpty()) {
-      throw new IllegalArgumentException("Motivo de cancelamento é obrigatório");
-    }
+    String motivoObrigatorio = requiredText(motivo, "Motivo de cancelamento é obrigatório");
     this.estado = EstadoConsulta.CANCELADA;
     this.motivoCancelamento = motivoObrigatorio;
     this.canceladoPor =
-        Objects.requireNonNull(
-            canceladoPor, "Utilizador responsável pelo cancelamento é obrigatório");
+        required(canceladoPor, "Utilizador responsável pelo cancelamento é obrigatório");
     this.canceladoEm = LocalDateTime.now();
   }
 

@@ -1,5 +1,8 @@
 package br.com.medflow.entities.estrutura;
 
+import static br.com.medflow.entities.base.DomainValidation.requireNotBefore;
+import static br.com.medflow.entities.base.DomainValidation.required;
+
 import br.com.medflow.entities.agenda.Agenda;
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.pessoas.Medico;
@@ -15,7 +18,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -54,30 +56,27 @@ public class ConsultorioMedico extends BaseEntity {
   private LocalDate dataFim;
 
   public ConsultorioMedico(Consultorio consultorio, Medico medico) {
-    this.consultorio = Objects.requireNonNull(consultorio, "Consultório é obrigatório");
-    this.medico = Objects.requireNonNull(medico, "Médico é obrigatório");
+    this.consultorio = required(consultorio, "Consultório é obrigatório");
+    this.medico = required(medico, "Médico é obrigatório");
     this.dataInicio = LocalDate.now();
   }
 
   public void definirDataInicio(LocalDate dataInicio) {
-    this.dataInicio =
-        Objects.requireNonNull(dataInicio, "Data de início da vigência é obrigatória");
-    if (this.dataFim != null && this.dataFim.isBefore(this.dataInicio)) {
-      throw new IllegalArgumentException(
-          "Data fim da vigência não pode ser anterior à data de início");
-    }
+    this.dataInicio = required(dataInicio, "Data de início da vigência é obrigatória");
+    requireNotBefore(
+        this.dataFim,
+        this.dataInicio,
+        "Data fim da vigência não pode ser anterior à data de início");
   }
 
   public void definirDataFim(LocalDate dataFim) {
-    if (dataFim != null && this.dataInicio != null && dataFim.isBefore(this.dataInicio)) {
-      throw new IllegalArgumentException(
-          "Data fim da vigência não pode ser anterior à data de início");
-    }
+    requireNotBefore(
+        dataFim, this.dataInicio, "Data fim da vigência não pode ser anterior à data de início");
     this.dataFim = dataFim;
   }
 
   public boolean estaVinculoAtivoEm(LocalDate data) {
-    LocalDate referencia = Objects.requireNonNull(data, "Data de referência é obrigatória");
+    LocalDate referencia = required(data, "Data de referência é obrigatória");
     boolean iniciou = !referencia.isBefore(this.dataInicio);
     boolean naoTerminou = this.dataFim == null || !referencia.isAfter(this.dataFim);
     return iniciou && naoTerminou;

@@ -1,5 +1,10 @@
 package br.com.medflow.entities.comum;
 
+import static br.com.medflow.entities.base.DomainValidation.optionalText;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
@@ -7,8 +12,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Getter
 @NoArgsConstructor
@@ -45,19 +48,19 @@ public class Endereco {
   private String complemento;
 
   public void definirLogradouro(String logradouro) {
-    this.logradouro = logradouro;
+    this.logradouro = optionalText(logradouro);
   }
 
   public void definirNumero(String numero) {
-    this.numero = numero;
+    this.numero = optionalText(numero);
   }
 
   public void definirBairro(String bairro) {
-    this.bairro = bairro;
+    this.bairro = optionalText(bairro);
   }
 
   public void definirCidade(String cidade) {
-    this.cidade = cidade;
+    this.cidade = optionalText(cidade);
   }
 
   public void definirUf(UF uf) {
@@ -65,10 +68,10 @@ public class Endereco {
   }
 
   public void definirCep(String cep) {
-    this.cep = cep;
+    this.cep = optionalText(cep);
   }
 
   public void definirComplemento(String complemento) {
-    this.complemento = complemento;
+    this.complemento = optionalText(complemento);
   }
 }

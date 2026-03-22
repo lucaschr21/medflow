@@ -12,6 +12,8 @@ public interface AdministradorRepository extends JpaRepository<Administrador, UU
 
   boolean existsByUtilizadorId(UUID utilizadorId);
 
+  boolean existsByUtilizadorIdAndOrganizacaoId(UUID utilizadorId, UUID organizacaoId);
+
   List<Administrador> findByOrganizacaoId(UUID organizacaoId);
 
   List<Administrador> findByUnidadeId(UUID unidadeId);

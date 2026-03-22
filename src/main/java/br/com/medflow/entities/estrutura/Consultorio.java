@@ -1,5 +1,9 @@
 package br.com.medflow.entities.estrutura;
 
+import static br.com.medflow.entities.base.DomainValidation.optionalText;
+import static br.com.medflow.entities.base.DomainValidation.required;
+import static br.com.medflow.entities.base.DomainValidation.requiredText;
+
 import br.com.medflow.entities.atendimento.Consulta;
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.pessoas.Medico;
@@ -62,24 +66,23 @@ public class Consultorio extends BaseEntity {
   private Set<Consulta> consultas = new LinkedHashSet<>();
 
   public void definirNomeConsultorio(String nomeConsultorio) {
-    this.nomeConsultorio =
-        Objects.requireNonNull(nomeConsultorio, "Nome do consultório é obrigatório");
+    this.nomeConsultorio = requiredText(nomeConsultorio, "Nome do consultório é obrigatório");
   }
 
   public void definirNumeroSala(String numeroSala) {
-    this.numeroSala = numeroSala;
+    this.numeroSala = optionalText(numeroSala);
   }
 
   public void definirTelefoneContato(String telefoneContato) {
-    this.telefoneContato = telefoneContato;
+    this.telefoneContato = optionalText(telefoneContato);
   }
 
   void setUnidade(Unidade unidade) {
-    this.unidade = Objects.requireNonNull(unidade, "Unidade é obrigatória");
+    this.unidade = required(unidade, "Unidade é obrigatória");
   }
 
   public void adicionarMedico(Medico medico) {
-    Medico profissional = Objects.requireNonNull(medico, "Médico é obrigatório");
+    Medico profissional = required(medico, "Médico é obrigatório");
     boolean existeVinculo =
         this.vinculacoesMedicos.stream()
             .anyMatch(vinculo -> Objects.equals(vinculo.getMedico(), profissional));
@@ -92,7 +95,7 @@ public class Consultorio extends BaseEntity {
   }
 
   public void removerMedico(Medico medico) {
-    Medico profissional = Objects.requireNonNull(medico, "Médico é obrigatório");
+    Medico profissional = required(medico, "Médico é obrigatório");
     this.vinculacoesMedicos.removeIf(
         vinculo -> {
           boolean mesmoMedico = Objects.equals(vinculo.getMedico(), profissional);
@@ -104,7 +107,7 @@ public class Consultorio extends BaseEntity {
   }
 
   public boolean possuiMedico(Medico medico) {
-    Medico profissional = Objects.requireNonNull(medico, "Médico é obrigatório");
+    Medico profissional = required(medico, "Médico é obrigatório");
     return this.vinculacoesMedicos.stream()
         .anyMatch(vinculo -> Objects.equals(vinculo.getMedico(), profissional));
   }

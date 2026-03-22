@@ -1,6 +1,11 @@
 package br.com.medflow.entities.atendimento;
 
+import static br.com.medflow.entities.base.DomainValidation.required;
+import static br.com.medflow.entities.base.DomainValidation.requiredNormalizedText;
+import static br.com.medflow.entities.base.DomainValidation.requiredText;
+
 import br.com.medflow.entities.base.BaseEntity;
+import br.com.medflow.entities.estrutura.Organizacao;
 import br.com.medflow.entities.pessoas.Paciente;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -11,6 +16,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -22,7 +28,6 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -62,27 +67,33 @@ public class ProcessoClinico extends BaseEntity {
   @OneToOne(mappedBy = "processoClinico", fetch = FetchType.LAZY)
   private Paciente paciente;
 
+  @NotNull(message = "Organização é obrigatória")
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "organizacao_id", nullable = false)
+  private Organizacao organizacao;
+
   @OneToMany(mappedBy = "processoClinico", cascade = CascadeType.ALL, orphanRemoval = true)
   private Set<@Valid RegistroAtendimento> registros = new LinkedHashSet<>();
 
   public void definirDataCriacao(LocalDate dataCriacao) {
-    this.dataCriacao = Objects.requireNonNull(dataCriacao, "Data de criação é obrigatória");
+    this.dataCriacao = required(dataCriacao, "Data de criação é obrigatória");
   }
 
   public void definirTipoSangue(TipoSanguineo tipoSangue) {
     this.tipoSangue = tipoSangue;
   }
 
+  public void definirOrganizacao(Organizacao organizacao) {
+    this.organizacao = required(organizacao, "Organização é obrigatória");
+  }
+
   public void adicionarAlergia(String alergia) {
-    String valor = Objects.requireNonNull(alergia, "Alergia é obrigatória").strip();
-    if (valor.isEmpty()) {
-      throw new IllegalArgumentException("Alergia não pode ser vazia");
-    }
+    String valor = requiredText(alergia, "Alergia é obrigatória", "Alergia não pode ser vazia");
     this.alergias.add(valor);
   }
 
   public void removerAlergia(String alergia) {
-    String valor = Objects.requireNonNull(alergia, "Alergia é obrigatória").strip();
+    String valor = requiredNormalizedText(alergia, "Alergia é obrigatória");
     if (valor.isEmpty()) {
       return;
     }
@@ -90,15 +101,14 @@ public class ProcessoClinico extends BaseEntity {
   }
 
   public void adicionarRegistro(RegistroAtendimento registro) {
-    RegistroAtendimento novoRegistro =
-        Objects.requireNonNull(registro, "Registro de atendimento é obrigatório");
+    RegistroAtendimento novoRegistro = required(registro, "Registro de atendimento é obrigatório");
     novoRegistro.setProcessoClinico(this);
     this.registros.add(novoRegistro);
   }
 
   public void removerRegistro(RegistroAtendimento registro) {
     RegistroAtendimento registroExistente =
-        Objects.requireNonNull(registro, "Registro de atendimento é obrigatório");
+        required(registro, "Registro de atendimento é obrigatório");
     this.registros.remove(registroExistente);
   }
 }

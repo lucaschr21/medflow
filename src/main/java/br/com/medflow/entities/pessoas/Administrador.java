@@ -1,5 +1,8 @@
 package br.com.medflow.entities.pessoas;
 
+import static br.com.medflow.entities.base.DomainValidation.optionalText;
+import static br.com.medflow.entities.base.DomainValidation.required;
+
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.estrutura.Organizacao;
 import br.com.medflow.entities.estrutura.Unidade;
@@ -12,7 +15,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -41,15 +43,15 @@ public class Administrador extends BaseEntity {
   private Unidade unidade;
 
   public void definirCargo(String cargo) {
-    this.cargo = cargo;
+    this.cargo = optionalText(cargo);
   }
 
   public void definirUtilizador(Utilizador utilizador) {
-    this.utilizador = Objects.requireNonNull(utilizador, "Utilizador é obrigatório");
+    this.utilizador = required(utilizador, "Utilizador é obrigatório");
   }
 
   public void definirOrganizacao(Organizacao organizacao) {
-    this.organizacao = Objects.requireNonNull(organizacao, "Organização é obrigatória");
+    this.organizacao = required(organizacao, "Organização é obrigatória");
   }
 
   public void definirUnidade(Unidade unidade) {

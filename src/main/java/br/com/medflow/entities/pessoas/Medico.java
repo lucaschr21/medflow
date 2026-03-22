@@ -1,5 +1,9 @@
 package br.com.medflow.entities.pessoas;
 
+import static br.com.medflow.entities.base.DomainValidation.optionalText;
+import static br.com.medflow.entities.base.DomainValidation.required;
+import static br.com.medflow.entities.base.DomainValidation.requiredText;
+
 import br.com.medflow.entities.atendimento.Consulta;
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.estrutura.Consultorio;
@@ -15,7 +19,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -48,24 +51,24 @@ public class Medico extends BaseEntity {
   private Set<ConsultorioMedico> vinculacoesConsultorios = new LinkedHashSet<>();
 
   public void definirEspecialidade(String especialidade) {
-    this.especialidade = especialidade;
+    this.especialidade = optionalText(especialidade);
   }
 
   public void definirUtilizador(Utilizador utilizador) {
-    this.utilizador = Objects.requireNonNull(utilizador, "Utilizador é obrigatório");
+    this.utilizador = required(utilizador, "Utilizador é obrigatório");
   }
 
   public void definirNumeroOrdem(String numeroOrdem) {
-    this.numeroOrdem = Objects.requireNonNull(numeroOrdem, "Número da ordem é obrigatório");
+    this.numeroOrdem = requiredText(numeroOrdem, "Número da ordem é obrigatório");
   }
 
   public void adicionarConsultorio(Consultorio consultorio) {
-    Objects.requireNonNull(consultorio, "Consultório é obrigatório");
+    required(consultorio, "Consultório é obrigatório");
     consultorio.adicionarMedico(this);
   }
 
   public void removerConsultorio(Consultorio consultorio) {
-    Objects.requireNonNull(consultorio, "Consultório é obrigatório");
+    required(consultorio, "Consultório é obrigatório");
     consultorio.removerMedico(this);
   }
 

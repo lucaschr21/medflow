@@ -1,5 +1,15 @@
 package br.com.medflow.entities.financeiro;
 
+import static br.com.medflow.entities.base.DomainValidation.optionalText;
+import static br.com.medflow.entities.base.DomainValidation.required;
+import static br.com.medflow.entities.base.DomainValidation.requiredPositive;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import br.com.medflow.entities.atendimento.Consulta;
 import br.com.medflow.entities.base.BaseEntity;
 import jakarta.persistence.Column;
@@ -13,13 +23,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Getter
 @NoArgsConstructor
@@ -52,24 +57,19 @@ public class Pagamento extends BaseEntity {
   private Consulta consulta;
 
   public void definirValor(BigDecimal valor) {
-    BigDecimal valorObrigatorio = Objects.requireNonNull(valor, "Valor é obrigatório");
-    if (valorObrigatorio.compareTo(BigDecimal.ZERO) <= 0) {
-      throw new IllegalArgumentException("Valor deve ser maior que zero");
-    }
-    this.valor = valorObrigatorio;
+    this.valor = requiredPositive(valor, "Valor é obrigatório", "Valor deve ser maior que zero");
   }
 
   public void definirDataVencimento(LocalDate dataVencimento) {
-    this.dataVencimento =
-        Objects.requireNonNull(dataVencimento, "Data de vencimento é obrigatória");
+    this.dataVencimento = required(dataVencimento, "Data de vencimento é obrigatória");
   }
 
   public void definirMetodoPagamento(String metodoPagamento) {
-    this.metodoPagamento = metodoPagamento;
+    this.metodoPagamento = optionalText(metodoPagamento);
   }
 
   public void setConsulta(Consulta consulta) {
-    this.consulta = Objects.requireNonNull(consulta, "Consulta é obrigatória");
+    this.consulta = required(consulta, "Consulta é obrigatória");
   }
 
   public void marcarComoProcessado() {

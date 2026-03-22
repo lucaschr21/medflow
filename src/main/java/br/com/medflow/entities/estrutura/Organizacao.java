@@ -1,5 +1,8 @@
 package br.com.medflow.entities.estrutura;
 
+import static br.com.medflow.entities.base.DomainValidation.required;
+import static br.com.medflow.entities.base.DomainValidation.requiredText;
+
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.financeiro.Convenio;
 import br.com.medflow.entities.pessoas.Administrador;
@@ -19,7 +22,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -70,11 +72,11 @@ public class Organizacao extends BaseEntity {
   private Set<Administrador> administradores = new LinkedHashSet<>();
 
   public void definirNomeFantasia(String nomeFantasia) {
-    this.nomeFantasia = Objects.requireNonNull(nomeFantasia, "Nome fantasia é obrigatório");
+    this.nomeFantasia = requiredText(nomeFantasia, "Nome fantasia é obrigatório");
   }
 
   public void definirCnpj(String cnpj) {
-    this.cnpj = Objects.requireNonNull(cnpj, "CNPJ é obrigatório");
+    this.cnpj = requiredText(cnpj, "CNPJ é obrigatório");
   }
 
   public void definirLogotipoImagem(byte[] logotipoImagem) {
@@ -89,37 +91,36 @@ public class Organizacao extends BaseEntity {
   public void atualizarConfiguracoesGlobais(Map<String, Object> configuracoesGlobais) {
     this.configuracoesGlobais.clear();
     this.configuracoesGlobais.putAll(
-        Objects.requireNonNull(configuracoesGlobais, "Configurações globais são obrigatórias"));
+        required(configuracoesGlobais, "Configurações globais são obrigatórias"));
   }
 
   public void adicionarUnidade(Unidade unidade) {
-    Unidade item = Objects.requireNonNull(unidade, "Unidade é obrigatória");
+    Unidade item = required(unidade, "Unidade é obrigatória");
     item.setOrganizacao(this);
     this.unidades.add(item);
   }
 
   public void removerUnidade(Unidade unidade) {
-    this.unidades.remove(Objects.requireNonNull(unidade, "Unidade é obrigatória"));
+    this.unidades.remove(required(unidade, "Unidade é obrigatória"));
   }
 
   public void adicionarConvenio(Convenio convenio) {
-    Convenio item = Objects.requireNonNull(convenio, "Convênio é obrigatório");
+    Convenio item = required(convenio, "Convênio é obrigatório");
     item.definirOrganizacao(this);
     this.convenios.add(item);
   }
 
   public void removerConvenio(Convenio convenio) {
-    this.convenios.remove(Objects.requireNonNull(convenio, "Convênio é obrigatório"));
+    this.convenios.remove(required(convenio, "Convênio é obrigatório"));
   }
 
   public void adicionarAdministrador(Administrador administrador) {
-    Administrador item = Objects.requireNonNull(administrador, "Administrador é obrigatório");
+    Administrador item = required(administrador, "Administrador é obrigatório");
     item.definirOrganizacao(this);
     this.administradores.add(item);
   }
 
   public void removerAdministrador(Administrador administrador) {
-    this.administradores.remove(
-        Objects.requireNonNull(administrador, "Administrador é obrigatório"));
+    this.administradores.remove(required(administrador, "Administrador é obrigatório"));
   }
 }

@@ -1,5 +1,8 @@
 package br.com.medflow.entities.pessoas;
 
+import static br.com.medflow.entities.base.DomainValidation.optionalText;
+import static br.com.medflow.entities.base.DomainValidation.requiredText;
+
 import br.com.medflow.entities.base.BaseEntity;
 import jakarta.persistence.CheckConstraint;
 import jakarta.persistence.Column;
@@ -9,7 +12,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.util.Locale;
-import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,32 +42,19 @@ public class Utilizador extends BaseEntity {
   private String telefone;
 
   public void definirNome(String nome) {
-    String valor = Objects.requireNonNull(nome, "Nome é obrigatório").trim();
-    if (valor.isEmpty()) {
-      throw new IllegalArgumentException("Nome é obrigatório");
-    }
-    this.nome = valor;
+    this.nome = requiredText(nome, "Nome é obrigatório");
   }
 
   public void definirEmail(String email) {
-    String valor = Objects.requireNonNull(email, "Email é obrigatório").trim();
+    String valor = requiredText(email, "Email é obrigatório");
     this.email = valor.toLowerCase(Locale.ROOT);
   }
 
   public void definirPasswordHash(String passwordHash) {
-    String valor = Objects.requireNonNull(passwordHash, "Hash da senha é obrigatório").trim();
-    if (valor.isEmpty()) {
-      throw new IllegalArgumentException("Hash da senha é obrigatório");
-    }
-    this.passwordHash = valor;
+    this.passwordHash = requiredText(passwordHash, "Hash da senha é obrigatório");
   }
 
   public void definirTelefone(String telefone) {
-    if (telefone == null) {
-      this.telefone = null;
-      return;
-    }
-    String valor = telefone.trim();
-    this.telefone = valor.isEmpty() ? null : valor;
+    this.telefone = optionalText(telefone);
   }
 }

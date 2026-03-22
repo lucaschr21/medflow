@@ -1,5 +1,7 @@
 package br.com.medflow.entities.atendimento;
 
+import static br.com.medflow.entities.base.DomainValidation.required;
+
 import br.com.medflow.entities.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,7 +12,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -47,7 +48,7 @@ public class RegistroAtendimento extends BaseEntity {
   private Consulta consulta;
 
   public void definirDataRegistro(LocalDateTime dataRegistro) {
-    this.dataRegistro = Objects.requireNonNull(dataRegistro, "Data de registro é obrigatória");
+    this.dataRegistro = required(dataRegistro, "Data de registro é obrigatória");
   }
 
   public void atualizarConteudoClinico(
@@ -59,11 +60,10 @@ public class RegistroAtendimento extends BaseEntity {
   }
 
   void setProcessoClinico(ProcessoClinico processoClinico) {
-    this.processoClinico =
-        Objects.requireNonNull(processoClinico, "Processo clínico é obrigatório");
+    this.processoClinico = required(processoClinico, "Processo clínico é obrigatório");
   }
 
   void setConsulta(Consulta consulta) {
-    this.consulta = Objects.requireNonNull(consulta, "Consulta é obrigatória");
+    this.consulta = required(consulta, "Consulta é obrigatória");
   }
 }

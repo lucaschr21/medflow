@@ -1,5 +1,13 @@
 package br.com.medflow.entities.atendimento;
 
+import static br.com.medflow.entities.base.DomainValidation.optionalText;
+import static br.com.medflow.entities.base.DomainValidation.required;
+
+import java.time.LocalDate;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import br.com.medflow.entities.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,12 +18,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Getter
 @NoArgsConstructor
@@ -42,18 +46,18 @@ public class DocumentoMedico extends BaseEntity {
   private Consulta consulta;
 
   public void definirTipo(TipoDocumento tipo) {
-    this.tipo = Objects.requireNonNull(tipo, "Tipo de documento é obrigatório");
+    this.tipo = required(tipo, "Tipo de documento é obrigatório");
   }
 
   public void definirDataEmissao(LocalDate dataEmissao) {
-    this.dataEmissao = Objects.requireNonNull(dataEmissao, "Data de emissão é obrigatória");
+    this.dataEmissao = required(dataEmissao, "Data de emissão é obrigatória");
   }
 
   public void definirAssinaturaDigital(String assinaturaDigital) {
-    this.assinaturaDigital = assinaturaDigital;
+    this.assinaturaDigital = optionalText(assinaturaDigital);
   }
 
   void setConsulta(Consulta consulta) {
-    this.consulta = Objects.requireNonNull(consulta, "Consulta é obrigatória");
+    this.consulta = required(consulta, "Consulta é obrigatória");
   }
 }

@@ -1,5 +1,15 @@
 package br.com.medflow.entities.financeiro;
 
+import static br.com.medflow.entities.base.DomainValidation.optionalText;
+import static br.com.medflow.entities.base.DomainValidation.required;
+import static br.com.medflow.entities.base.DomainValidation.requiredText;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import br.com.medflow.entities.atendimento.Consulta;
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.estrutura.Organizacao;
@@ -17,13 +27,8 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Getter
 @NoArgsConstructor
@@ -66,19 +71,19 @@ public class Convenio extends BaseEntity {
   private Set<Consulta> consultas = new LinkedHashSet<>();
 
   public void definirNomeFantasia(String nomeFantasia) {
-    this.nomeFantasia = Objects.requireNonNull(nomeFantasia, "Nome fantasia é obrigatório");
+    this.nomeFantasia = requiredText(nomeFantasia, "Nome fantasia é obrigatório");
   }
 
   public void definirTipo(TipoConvenio tipo) {
-    this.tipo = Objects.requireNonNull(tipo, "Tipo de convênio é obrigatório");
+    this.tipo = required(tipo, "Tipo de convênio é obrigatório");
   }
 
   public void definirRegistroEntidadeReguladora(String registroEntidadeReguladora) {
-    this.registroEntidadeReguladora = registroEntidadeReguladora;
+    this.registroEntidadeReguladora = optionalText(registroEntidadeReguladora);
   }
 
   public void definirOrganizacao(Organizacao organizacao) {
-    this.organizacao = Objects.requireNonNull(organizacao, "Organização é obrigatória");
+    this.organizacao = required(organizacao, "Organização é obrigatória");
   }
 
   public void ativar() {
@@ -90,14 +95,12 @@ public class Convenio extends BaseEntity {
   }
 
   public void adicionarProcedimentoPreco(ProcedimentoPreco procedimentoPreco) {
-    ProcedimentoPreco item =
-        Objects.requireNonNull(procedimentoPreco, "Procedimento é obrigatório");
+    ProcedimentoPreco item = required(procedimentoPreco, "Procedimento é obrigatório");
     item.setConvenio(this);
     this.procedimentosPrecos.add(item);
   }
 
   public void removerProcedimentoPreco(ProcedimentoPreco procedimentoPreco) {
-    this.procedimentosPrecos.remove(
-        Objects.requireNonNull(procedimentoPreco, "Procedimento é obrigatório"));
+    this.procedimentosPrecos.remove(required(procedimentoPreco, "Procedimento é obrigatório"));
   }
 }

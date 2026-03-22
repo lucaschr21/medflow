@@ -1,5 +1,7 @@
 package br.com.medflow.entities.agenda;
 
+import static br.com.medflow.entities.base.DomainValidation.required;
+
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.estrutura.ConsultorioMedico;
 import jakarta.persistence.AttributeOverride;
@@ -21,7 +23,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -71,16 +72,15 @@ public class Agenda extends BaseEntity {
 
   public void definirVinculacaoConsultorioMedico(ConsultorioMedico vinculacaoConsultorioMedico) {
     this.vinculacaoConsultorioMedico =
-        Objects.requireNonNull(
-            vinculacaoConsultorioMedico, "Vínculo consultório-médico é obrigatório");
+        required(vinculacaoConsultorioMedico, "Vínculo consultório-médico é obrigatório");
   }
 
   public void adicionarDiaTrabalho(DayOfWeek dia) {
-    this.horarioTrabalho.add(Objects.requireNonNull(dia, "Dia de trabalho é obrigatório"));
+    this.horarioTrabalho.add(required(dia, "Dia de trabalho é obrigatório"));
   }
 
   public void removerDiaTrabalho(DayOfWeek dia) {
-    this.horarioTrabalho.remove(Objects.requireNonNull(dia, "Dia de trabalho é obrigatório"));
+    this.horarioTrabalho.remove(required(dia, "Dia de trabalho é obrigatório"));
   }
 
   public void adicionarBloqueio(LocalDateTime inicio, LocalDateTime fim) {
