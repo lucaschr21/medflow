@@ -1,6 +1,5 @@
 package br.com.medflow.entities.pessoas;
 
-import br.com.medflow.entities.agenda.Agenda;
 import br.com.medflow.entities.atendimento.Consulta;
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.estrutura.Consultorio;
@@ -42,9 +41,6 @@ public class Medico extends BaseEntity {
   @Column(name = "numero_ordem", nullable = false, unique = true, length = 40)
   private String numeroOrdem;
 
-  @OneToOne(mappedBy = "medico", fetch = FetchType.LAZY)
-  private Agenda agenda;
-
   @OneToMany(mappedBy = "medico", fetch = FetchType.LAZY)
   private Set<Consulta> consultas = new LinkedHashSet<>();
 
@@ -71,10 +67,6 @@ public class Medico extends BaseEntity {
   public void removerConsultorio(Consultorio consultorio) {
     Objects.requireNonNull(consultorio, "Consultório é obrigatório");
     consultorio.removerMedico(this);
-  }
-
-  public void definirAgenda(Agenda agenda) {
-    this.agenda = Objects.requireNonNull(agenda, "Agenda é obrigatória");
   }
 
   public Set<Consultorio> getConsultorios() {

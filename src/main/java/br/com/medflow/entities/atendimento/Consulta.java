@@ -1,13 +1,5 @@
 package br.com.medflow.entities.atendimento;
 
-import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
-
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.estrutura.Consultorio;
 import br.com.medflow.entities.estrutura.ConsultorioMedico;
@@ -15,6 +7,7 @@ import br.com.medflow.entities.financeiro.Convenio;
 import br.com.medflow.entities.financeiro.Pagamento;
 import br.com.medflow.entities.pessoas.Medico;
 import br.com.medflow.entities.pessoas.Paciente;
+import br.com.medflow.entities.pessoas.Utilizador;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,8 +25,14 @@ import jakarta.persistence.Table;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Getter
 @NoArgsConstructor
@@ -72,6 +71,17 @@ public class Consulta extends BaseEntity {
   @Size(max = 80, message = "Tipo de consulta deve ter no máximo 80 caracteres")
   @Column(name = "tipo_consulta", length = 80)
   private String tipoConsulta;
+
+  @Size(max = 500, message = "Motivo de cancelamento deve ter no máximo 500 caracteres")
+  @Column(name = "motivo_cancelamento", length = 500)
+  private String motivoCancelamento;
+
+  @Column(name = "cancelado_em")
+  private LocalDateTime canceladoEm;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "cancelado_por_utilizador_id")
+  private Utilizador canceladoPor;
 
   @NotNull(message = "Paciente é obrigatório")
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -136,6 +146,11 @@ public class Consulta extends BaseEntity {
 
   public void definirEstado(EstadoConsulta estado) {
     this.estado = Objects.requireNonNull(estado, "Estado da consulta é obrigatório");
+    if (this.estado != EstadoConsulta.CANCELADA) {
+      this.motivoCancelamento = null;
+      this.canceladoEm = null;
+      this.canceladoPor = null;
+    }
   }
 
   public void definirTipoConsulta(String tipoConsulta) {
@@ -192,6 +207,20 @@ public class Consulta extends BaseEntity {
 
   public void removerPagamento() {
     this.pagamento = null;
+  }
+
+  public void cancelar(String motivo, Utilizador canceladoPor) {
+    String motivoObrigatorio =
+        Objects.requireNonNull(motivo, "Motivo de cancelamento é obrigatório").strip();
+    if (motivoObrigatorio.isEmpty()) {
+      throw new IllegalArgumentException("Motivo de cancelamento é obrigatório");
+    }
+    this.estado = EstadoConsulta.CANCELADA;
+    this.motivoCancelamento = motivoObrigatorio;
+    this.canceladoPor =
+        Objects.requireNonNull(
+            canceladoPor, "Utilizador responsável pelo cancelamento é obrigatório");
+    this.canceladoEm = LocalDateTime.now();
   }
 
   private static void validarCoerenciaMedicoConsultorio(Medico medico, Consultorio consultorio) {

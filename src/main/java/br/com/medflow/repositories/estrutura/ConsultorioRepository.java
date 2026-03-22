@@ -1,11 +1,9 @@
 package br.com.medflow.repositories.estrutura;
 
+import br.com.medflow.entities.estrutura.Consultorio;
 import java.util.List;
 import java.util.UUID;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import br.com.medflow.entities.estrutura.Consultorio;
 
 public interface ConsultorioRepository extends JpaRepository<Consultorio, UUID> {
 

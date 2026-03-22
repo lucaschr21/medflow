@@ -1,11 +1,5 @@
 package br.com.medflow.entities.base;
 
-import java.time.Instant;
-import java.util.Objects;
-import java.util.UUID;
-
-import org.hibernate.Hibernate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +8,11 @@ import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Version;
+import java.time.Instant;
+import java.util.Objects;
+import java.util.UUID;
 import lombok.Getter;
+import org.hibernate.Hibernate;
 
 @Getter
 @MappedSuperclass

@@ -1,16 +1,7 @@
 package br.com.medflow.entities.agenda;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
-
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
 import br.com.medflow.entities.base.BaseEntity;
-import br.com.medflow.entities.pessoas.Medico;
+import br.com.medflow.entities.estrutura.ConsultorioMedico;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.CollectionTable;
@@ -27,8 +18,15 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Getter
 @NoArgsConstructor
@@ -66,13 +64,15 @@ public class Agenda extends BaseEntity {
   })
   private Set<@Valid BloqueioAgenda> bloqueios = new LinkedHashSet<>();
 
-  @NotNull(message = "Médico é obrigatório")
+  @NotNull(message = "Vínculo consultório-médico é obrigatório")
   @OneToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "medico_id", nullable = false, unique = true)
-  private Medico medico;
+  @JoinColumn(name = "consultorio_medico_id", nullable = false, unique = true)
+  private ConsultorioMedico vinculacaoConsultorioMedico;
 
-  public void definirMedico(Medico medico) {
-    this.medico = Objects.requireNonNull(medico, "Médico é obrigatório");
+  public void definirVinculacaoConsultorioMedico(ConsultorioMedico vinculacaoConsultorioMedico) {
+    this.vinculacaoConsultorioMedico =
+        Objects.requireNonNull(
+            vinculacaoConsultorioMedico, "Vínculo consultório-médico é obrigatório");
   }
 
   public void adicionarDiaTrabalho(DayOfWeek dia) {
@@ -84,10 +84,36 @@ public class Agenda extends BaseEntity {
   }
 
   public void adicionarBloqueio(LocalDateTime inicio, LocalDateTime fim) {
-    this.bloqueios.add(new BloqueioAgenda(inicio, fim));
+    this.adicionarBloqueio(inicio, fim, EscopoBloqueioAgenda.MEDICO);
+  }
+
+  public void adicionarBloqueio(
+      LocalDateTime inicio, LocalDateTime fim, EscopoBloqueioAgenda escopo) {
+    this.bloqueios.add(new BloqueioAgenda(inicio, fim, escopo));
+  }
+
+  public void adicionarBloqueioMedico(LocalDateTime inicio, LocalDateTime fim) {
+    this.adicionarBloqueio(inicio, fim, EscopoBloqueioAgenda.MEDICO);
+  }
+
+  public void adicionarBloqueioConsultorio(LocalDateTime inicio, LocalDateTime fim) {
+    this.adicionarBloqueio(inicio, fim, EscopoBloqueioAgenda.CONSULTORIO);
   }
 
   public void removerBloqueio(LocalDateTime inicio, LocalDateTime fim) {
-    this.bloqueios.remove(new BloqueioAgenda(inicio, fim));
+    this.removerBloqueio(inicio, fim, EscopoBloqueioAgenda.MEDICO);
+  }
+
+  public void removerBloqueio(
+      LocalDateTime inicio, LocalDateTime fim, EscopoBloqueioAgenda escopo) {
+    this.bloqueios.remove(new BloqueioAgenda(inicio, fim, escopo));
+  }
+
+  public void removerBloqueioMedico(LocalDateTime inicio, LocalDateTime fim) {
+    this.removerBloqueio(inicio, fim, EscopoBloqueioAgenda.MEDICO);
+  }
+
+  public void removerBloqueioConsultorio(LocalDateTime inicio, LocalDateTime fim) {
+    this.removerBloqueio(inicio, fim, EscopoBloqueioAgenda.CONSULTORIO);
   }
 }

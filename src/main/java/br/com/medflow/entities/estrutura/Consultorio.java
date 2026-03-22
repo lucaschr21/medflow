@@ -1,10 +1,5 @@
 package br.com.medflow.entities.estrutura;
 
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import br.com.medflow.entities.atendimento.Consulta;
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.pessoas.Medico;
@@ -16,16 +11,26 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name = "consultorio")
+@Table(
+    name = "consultorio",
+    uniqueConstraints =
+        @UniqueConstraint(
+            name = "uk_consultorio_unidade_numero_sala",
+            columnNames = {"unidade_id", "numero_sala"}))
 public class Consultorio extends BaseEntity {
 
   @NotBlank(message = "Nome do consultório é obrigatório")

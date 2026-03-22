@@ -1,8 +1,5 @@
 package br.com.medflow.entities.pessoas;
 
-import java.util.Locale;
-import java.util.Objects;
-
 import br.com.medflow.entities.base.BaseEntity;
 import jakarta.persistence.CheckConstraint;
 import jakarta.persistence.Column;
@@ -11,6 +8,8 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.util.Locale;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
