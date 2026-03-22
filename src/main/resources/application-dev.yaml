@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:medflow}}
+    username: ${DB_USERNAME:medflow}
+    password: ${DB_PASSWORD:medflow}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        '[default_schema]': ${DB_SCHEMA:medflow}
+        '[format_sql]': true
+        '[schema_update.unique_constraint_strategy]': RECREATE_QUIETLY
+    open-in-view: false
+  flyway:
+    enabled: true
+    create-schemas: true
+    default-schema: ${DB_SCHEMA:medflow}
+    schemas: ${DB_SCHEMA:medflow}
+    locations: classpath:migration
