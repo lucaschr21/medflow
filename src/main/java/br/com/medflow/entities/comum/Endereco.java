@@ -1,5 +1,8 @@
 package br.com.medflow.entities.comum;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
@@ -29,8 +32,9 @@ public class Endereco {
     @Column(name = "cidade", length = 120)
     private String cidade;
 
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Enumerated(EnumType.STRING)
-    @Column(name = "uf", length = 2)
+    @Column(name = "uf")
     private UF uf;
 
     @Size(max = 16, message = "CEP deve ter no máximo 16 caracteres")

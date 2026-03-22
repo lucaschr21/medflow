@@ -3,6 +3,9 @@ package br.com.medflow.entities.atendimento;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import br.com.medflow.entities.base.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,8 +26,9 @@ import lombok.NoArgsConstructor;
 public class DocumentoMedico extends BaseEntity {
 
     @NotNull(message = "Tipo de documento é obrigatório")
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 40)
+    @Column(nullable = false)
     private TipoDocumento tipo;
 
     @NotNull(message = "Data de emissão é obrigatória")

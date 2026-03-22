@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import br.com.medflow.entities.atendimento.Consulta;
 import br.com.medflow.entities.base.BaseEntity;
 import jakarta.persistence.Column;
@@ -36,8 +39,9 @@ public class Pagamento extends BaseEntity {
     private LocalDate dataVencimento;
 
     @NotNull(message = "Estado do pagamento é obrigatório")
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 40)
+    @Column(nullable = false)
     private EstadoPagamento estado = EstadoPagamento.PENDENTE;
 
     @Size(max = 80, message = "Método de pagamento deve ter no máximo 80 caracteres")

@@ -4,6 +4,9 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import br.com.medflow.entities.atendimento.Consulta;
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.estrutura.Organizacao;
@@ -36,8 +39,9 @@ public class Convenio extends BaseEntity {
     private String nomeFantasia;
 
     @NotNull(message = "Tipo de convênio é obrigatório")
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 40)
+    @Column(nullable = false)
     private TipoConvenio tipo;
 
     @Size(max = 80, message = "Registro da entidade reguladora deve ter no máximo 80 caracteres")

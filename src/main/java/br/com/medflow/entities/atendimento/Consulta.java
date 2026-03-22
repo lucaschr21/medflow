@@ -5,6 +5,9 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.estrutura.Consultorio;
 import br.com.medflow.entities.financeiro.Convenio;
@@ -39,8 +42,9 @@ public class Consulta extends BaseEntity {
     private LocalDateTime dataHoraMarcacao;
 
     @NotNull(message = "Estado da consulta é obrigatório")
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 40)
+    @Column(nullable = false)
     private EstadoConsulta estado = EstadoConsulta.AGENDADA;
 
     @Size(max = 80, message = "Tipo de consulta deve ter no máximo 80 caracteres")
