@@ -1,0 +1,15 @@
+package br.com.medflow.repositories.pessoas;
+
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import br.com.medflow.entities.pessoas.Utilizador;
+
+public interface UtilizadorRepository extends JpaRepository<Utilizador, UUID> {
+
+  Optional<Utilizador> findByEmail(String email);
+
+  boolean existsByEmail(String email);
+}

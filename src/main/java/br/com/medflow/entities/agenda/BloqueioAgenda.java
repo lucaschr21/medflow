@@ -1,10 +1,11 @@
 package br.com.medflow.entities.agenda;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+
 import jakarta.persistence.Embeddable;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-import java.util.Objects;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
