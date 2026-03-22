@@ -17,6 +17,7 @@ Arquivo relacionado: `src/main/resources/application-dev.yaml`.
 - `DB_HOST`: host do banco (padrao: `localhost`).
 - `DB_PORT`: porta do banco (padrao: `5432`).
 - `DB_NAME`: nome do banco (padrao: `medflow`).
+- `DB_SCHEMA`: schema usado pelo Hibernate/Flyway (padrao: `medflow`).
 - `DB_USERNAME`: usuario do banco (padrao: `medflow`).
 - `DB_PASSWORD`: senha do banco (padrao: `medflow`).
 
@@ -40,6 +41,7 @@ spring.profiles.active=dev
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=medflow
+DB_SCHEMA=medflow
 DB_USERNAME=medflow
 DB_PASSWORD=medflow
 

@@ -9,7 +9,13 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        format_sql: true
+        '[default_schema]': ${DB_SCHEMA:medflow}
+        '[format_sql]': true
+        '[schema_update.unique_constraint_strategy]': RECREATE_QUIETLY
     open-in-view: false
   flyway:
     enabled: true
+    create-schemas: true
+    default-schema: ${DB_SCHEMA:medflow}
+    schemas: ${DB_SCHEMA:medflow}
+    locations: classpath:migration
