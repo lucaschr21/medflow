@@ -5,6 +5,9 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.pessoas.Paciente;
 import jakarta.persistence.CascadeType;
@@ -12,6 +15,8 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
@@ -34,9 +39,10 @@ public class ProcessoClinico extends BaseEntity {
     @Column(name = "data_criacao", nullable = false)
     private LocalDate dataCriacao = LocalDate.now();
 
-    @Size(max = 8, message = "Tipo de sangue deve ter no máximo 8 caracteres")
-    @Column(name = "tipo_sangue", length = 8)
-    private String tipoSangue;
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_sangue")
+    private TipoSanguineo tipoSangue;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "processo_clinico_alergia", joinColumns = @JoinColumn(name = "processo_clinico_id"))
@@ -53,7 +59,7 @@ public class ProcessoClinico extends BaseEntity {
         this.dataCriacao = Objects.requireNonNull(dataCriacao, "Data de criação é obrigatória");
     }
 
-    public void definirTipoSangue(String tipoSangue) {
+    public void definirTipoSangue(TipoSanguineo tipoSangue) {
         this.tipoSangue = tipoSangue;
     }
 

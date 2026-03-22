@@ -5,10 +5,7 @@ import java.util.Objects;
 
 import br.com.medflow.entities.base.BaseEntity;
 import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -20,9 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "utilizador")
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "tipo_utilizador")
-public abstract class Utilizador extends BaseEntity {
+public class Utilizador extends BaseEntity {
 
     @NotBlank(message = "Nome é obrigatório")
     @Size(max = 160, message = "Nome deve ter no máximo 160 caracteres")

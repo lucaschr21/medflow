@@ -2,6 +2,7 @@ package br.com.medflow.entities.pessoas;
 
 import java.util.Objects;
 
+import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.estrutura.Organizacao;
 import br.com.medflow.entities.estrutura.Unidade;
 import jakarta.persistence.Column;
@@ -9,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -19,7 +21,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "administrador")
-public class Administrador extends Utilizador {
+public class Administrador extends BaseEntity {
+
+    @NotNull(message = "Utilizador é obrigatório")
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "utilizador_id", nullable = false, unique = true)
+    private Utilizador utilizador;
 
     @Size(max = 80, message = "Cargo deve ter no máximo 80 caracteres")
     @Column(length = 80)
@@ -36,6 +43,10 @@ public class Administrador extends Utilizador {
 
     public void definirCargo(String cargo) {
         this.cargo = cargo;
+    }
+
+    public void definirUtilizador(Utilizador utilizador) {
+        this.utilizador = Objects.requireNonNull(utilizador, "Utilizador é obrigatório");
     }
 
     public void definirOrganizacao(Organizacao organizacao) {

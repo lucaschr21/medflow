@@ -6,6 +6,9 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.pessoas.Medico;
 import jakarta.persistence.AttributeOverride;
@@ -32,6 +35,7 @@ import lombok.NoArgsConstructor;
 public class Agenda extends BaseEntity {
 
     @ElementCollection(fetch = FetchType.LAZY)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "agenda_horario_trabalho", joinColumns = @JoinColumn(name = "agenda_id"))
     @Column(name = "dia_semana", nullable = false, length = 16)

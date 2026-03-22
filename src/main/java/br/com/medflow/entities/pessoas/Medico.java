@@ -6,15 +6,18 @@ import java.util.Set;
 
 import br.com.medflow.entities.agenda.Agenda;
 import br.com.medflow.entities.atendimento.Consulta;
+import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.estrutura.Consultorio;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +26,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "medico")
-public class Medico extends Utilizador {
+public class Medico extends BaseEntity {
+
+    @NotNull(message = "Utilizador é obrigatório")
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "utilizador_id", nullable = false, unique = true)
+    private Utilizador utilizador;
 
     @Size(max = 120, message = "Especialidade deve ter no máximo 120 caracteres")
     @Column(length = 120)
@@ -45,6 +53,10 @@ public class Medico extends Utilizador {
 
     public void definirEspecialidade(String especialidade) {
         this.especialidade = especialidade;
+    }
+
+    public void definirUtilizador(Utilizador utilizador) {
+        this.utilizador = Objects.requireNonNull(utilizador, "Utilizador é obrigatório");
     }
 
     public void definirNumeroOrdem(String numeroOrdem) {

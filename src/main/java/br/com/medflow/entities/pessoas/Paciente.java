@@ -7,6 +7,7 @@ import java.util.Set;
 
 import br.com.medflow.entities.atendimento.Consulta;
 import br.com.medflow.entities.atendimento.ProcessoClinico;
+import br.com.medflow.entities.base.BaseEntity;
 import br.com.medflow.entities.comum.Endereco;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -27,7 +28,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name = "paciente")
-public class Paciente extends Utilizador {
+public class Paciente extends BaseEntity {
+
+    @NotNull(message = "Utilizador é obrigatório")
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "utilizador_id", nullable = false, unique = true)
+    private Utilizador utilizador;
 
     @PastOrPresent(message = "Data de nascimento deve ser hoje ou no passado")
     @Column(name = "data_nascimento")
@@ -46,9 +52,8 @@ public class Paciente extends Utilizador {
     @Column(name = "numero_beneficiario", length = 80)
     private String numeroBeneficiario;
 
-    @NotNull(message = "Processo clínico é obrigatório")
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "processo_clinico_id", nullable = false, unique = true)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "processo_clinico_id", unique = true)
     private ProcessoClinico processoClinico;
 
     @OneToMany(mappedBy = "paciente", fetch = FetchType.LAZY)
@@ -56,6 +61,10 @@ public class Paciente extends Utilizador {
 
     public void definirDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
+    }
+
+    public void definirUtilizador(Utilizador utilizador) {
+        this.utilizador = Objects.requireNonNull(utilizador, "Utilizador é obrigatório");
     }
 
     public void definirNif(String nif) {
@@ -71,6 +80,6 @@ public class Paciente extends Utilizador {
     }
 
     public void definirProcessoClinico(ProcessoClinico processoClinico) {
-        this.processoClinico = Objects.requireNonNull(processoClinico, "Processo clínico é obrigatório");
+        this.processoClinico = processoClinico;
     }
 }
