@@ -1,14 +1,69 @@
-<aside class="flex h-full w-64 flex-col bg-[#0a469a] text-white">
-  <div class="flex items-center gap-3 border-b border-blue-800/50 p-6 text-xl font-semibold">
-    <i class="pi pi-plus-circle text-2xl text-blue-300"></i>
-    portal de teleconsultas
+﻿<aside
+  class="flex h-full w-72 flex-col border-r border-slate-800 bg-gradient-to-b from-[#0f172a] to-[#1e293b] text-slate-300 shadow-xl"
+>
+  <div
+    class="flex items-center gap-3 border-b border-slate-800 p-6 text-xl font-bold tracking-tight text-white"
+  >
+    <div
+      class="flex items-center justify-center rounded-lg bg-indigo-500 p-2 shadow-lg shadow-indigo-500/20"
+    ></div>
+    MedFlow
   </div>
-  <nav class="mt-6 flex flex-1 flex-col gap-2 px-3">
+  <nav class="mt-8 flex flex-1 flex-col gap-2 overflow-y-auto px-4 pb-6">
+    <div class="mb-2 px-2 text-xs font-semibold tracking-wider text-slate-500 uppercase">
+      principal
+    </div>
+
     <a
       href="#"
-      class="flex items-center gap-3 rounded-lg bg-[#e85b24] px-4 py-3 font-medium shadow-sm transition-all hover:bg-orange-600"
+      class="flex items-center gap-3 rounded-xl bg-indigo-500/10 px-4 py-3 font-medium text-indigo-400 shadow-sm ring-1 ring-indigo-500/30 transition-all"
     >
-      <i class="pi pi-home"></i> Início teste
+      <i class="pi pi-home text-lg"></i>
+      <span>painel inicial</span>
+    </a>
+
+    <a
+      href="#"
+      class="group flex items-center gap-3 rounded-xl px-4 py-3 transition-all hover:bg-slate-800 hover:text-white"
+    >
+      <i
+        class="pi pi-calendar-plus text-lg text-slate-400 transition-colors group-hover:text-emerald-400"
+      ></i>
+      <span>novo agendamento</span>
+    </a>
+
+    <div class="mt-6 mb-2 px-2 text-xs font-semibold tracking-wider text-slate-500 uppercase">
+      consultas
+    </div>
+
+    <a
+      href="#"
+      class="group flex items-center gap-3 rounded-xl px-4 py-3 transition-all hover:bg-slate-800 hover:text-white"
+    >
+      <i
+        class="pi pi-calendar text-lg text-slate-400 transition-colors group-hover:text-sky-400"
+      ></i>
+      <span>meus agendamentos</span>
+    </a>
+
+    <a
+      href="#"
+      class="group flex items-center gap-3 rounded-xl px-4 py-3 transition-all hover:bg-slate-800 hover:text-white"
+    >
+      <i
+        class="pi pi-history text-lg text-slate-400 transition-colors group-hover:text-purple-400"
+      ></i>
+      <span>histórico médico</span>
     </a>
   </nav>
+
+  <div class="border-t border-slate-800 p-6">
+    <a
+      href="#"
+      class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-400 transition-all hover:bg-slate-800 hover:text-white"
+    >
+      <i class="pi pi-question-circle text-lg"></i>
+      <span>central de ajuda</span>
+    </a>
+  </div>
 </aside>
