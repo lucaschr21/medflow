@@ -1,0 +1,85 @@
+﻿<aside
+  class="flex h-full w-72 flex-col border-r border-slate-800 bg-gradient-to-b from-[#0f172a] to-[#1e293b] text-slate-300 shadow-xl"
+>
+  <div
+    class="flex items-center gap-3 border-b border-slate-800 p-6 text-xl font-bold tracking-tight text-white"
+  >
+    <div
+      class="flex items-center justify-center rounded-lg bg-indigo-500 p-2 shadow-lg shadow-indigo-500/20"
+    ></div>
+    MedFlow
+  </div>
+  <nav class="mt-8 flex flex-1 flex-col gap-2 overflow-y-auto px-4 pb-6">
+    <div class="mb-2 px-2 text-xs font-semibold tracking-wider text-slate-500 uppercase">
+      principal
+    </div>
+
+    <p-card
+      styleClass="cursor-pointer mb-2 transition-all hover:translate-y-[-2px] shadow-md border-0 bg-indigo-600/20 hover:bg-indigo-600/30 text-white rounded-xl overflow-hidden backdrop-blur-sm"
+    >
+      <div class="flex flex-col gap-1 p-1">
+        <div class="flex items-center gap-2 font-bold text-indigo-300">
+          <i class="pi pi-home text-lg"></i>
+          <span>Painel inicial</span>
+        </div>
+        <p class="m-0 pl-6 text-xs font-medium text-indigo-200/80">Visão geral do MedFlow</p>
+      </div>
+    </p-card>
+
+    <p-card
+      styleClass="cursor-pointer mb-2 transition-all hover:translate-y-[-2px] shadow-sm hover:shadow-md border border-slate-700/50 bg-slate-800/40 hover:bg-slate-800/80 text-slate-300 rounded-xl overflow-hidden"
+    >
+      <div class="flex flex-col gap-1 p-1">
+        <div class="flex items-center gap-2 font-semibold">
+          <i class="pi pi-calendar-plus text-lg text-emerald-400"></i>
+          <span>Novo agendamento</span>
+        </div>
+        <p class="m-0 pl-6 text-xs text-slate-400">Marcar nova consulta</p>
+      </div>
+    </p-card>
+
+    <div class="mt-6 mb-2 px-2 text-xs font-semibold tracking-wider text-slate-500 uppercase">
+      Consultas
+    </div>
+
+    <p-card
+      styleClass="cursor-pointer mb-2 transition-all hover:translate-y-[-2px] shadow-sm hover:shadow-md border border-slate-700/50 bg-slate-800/40 hover:bg-slate-800/80 text-slate-300 rounded-xl overflow-hidden"
+    >
+      <div class="flex flex-col gap-1 p-1">
+        <div class="flex items-center gap-2 font-semibold">
+          <i class="pi pi-calendar text-lg text-sky-400"></i>
+          <span>Meus agendamentos</span>
+        </div>
+        <p class="m-0 pl-6 text-xs text-slate-400">Visualize seus horários</p>
+      </div>
+    </p-card>
+
+    <p-card
+      styleClass="cursor-pointer mb-2 transition-all hover:translate-y-[-2px] shadow-sm hover:shadow-md border border-slate-700/50 bg-slate-800/40 hover:bg-slate-800/80 text-slate-300 rounded-xl overflow-hidden"
+    >
+      <div class="flex flex-col gap-1 p-1">
+        <div class="flex items-center gap-2 font-semibold">
+          <i class="pi pi-history text-lg text-purple-400"></i>
+          <span>Histórico médico</span>
+        </div>
+        <p class="m-0 pl-6 text-xs text-slate-400">Consulte seu prontuário</p>
+      </div>
+    </p-card>
+  </nav>
+
+  <div class="border-t border-slate-800 p-6">
+    <p-card
+      styleClass="cursor-pointer transition-all hover:translate-y-[-2px] shadow-sm border border-slate-700/50 bg-slate-800/30 hover:bg-slate-800/60 text-slate-300 rounded-xl overflow-hidden"
+    >
+      <div class="flex flex-col gap-1 p-1">
+        <div class="flex items-center gap-2 font-semibold">
+          <i class="pi pi-question-circle text-lg text-slate-400"></i>
+          <span>Central de ajuda</span>
+        </div>
+        <p class="m-0 pl-6 text-[10px] leading-tight text-slate-500">
+          Precisa de ajuda? Fale com nosso suporte técnico.
+        </p>
+      </div>
+    </p-card>
+  </div>
+</aside>
