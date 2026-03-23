@@ -18,15 +18,19 @@ import { RouterOutlet } from '@angular/router';
         </div>
         <div class="flex gap-4">
           <a
-            href="/login"
-            class="rounded-lg px-5 py-2 font-bold text-indigo-600 transition-colors hover:bg-slate-50"
-            >Entrar</a
-          >
-          <a
             href="/cadastro"
-            class="rounded-lg bg-indigo-600 px-5 py-2 font-bold text-white shadow-sm transition-all hover:bg-indigo-700 hover:shadow-md"
-            >Cadastrar</a
+            class="flex items-center justify-center rounded-lg rounded-br-2xl bg-indigo-600 px-6 py-2 text-sm font-bold text-white shadow-sm transition-all hover:bg-indigo-700 hover:shadow-md"
           >
+            Seja cliente
+          </a>
+
+          <a
+            href="/login"
+            class="flex items-center gap-2 rounded-lg border-2 border-indigo-600 bg-white px-6 py-2 text-sm font-bold text-indigo-600 shadow-sm transition-colors hover:bg-indigo-50"
+          >
+            Acesse sua área
+            <i class="pi pi-angle-down font-bold" style="font-size: 0.7rem"></i>
+          </a>
         </div>
       </header>
 
