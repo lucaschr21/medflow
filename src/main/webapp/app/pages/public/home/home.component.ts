@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, signal } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { CommonModule } from '@angular/common';
 
@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
       </div>
 
       <div class="grid w-full max-w-6xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        @for (clinica of clinicas; track clinica.id) {
+        @for (clinica of clinicas.slice(0, visibleCount()); track clinica.id) {
           <p-card
             styleClass="h-full border-none shadow-md hover:shadow-xl transition-shadow duration-300 rounded-xl overflow-hidden cursor-pointer"
           >
@@ -46,6 +46,17 @@ import { CommonModule } from '@angular/common';
   `,
 })
 export class HomePublicComponent {
+  visibleCount = signal(3);
+
+  @HostListener('window:scroll', [])
+  onScroll(): void {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+      if (this.visibleCount() < this.clinicas.length) {
+        this.visibleCount.update((val) => val + 3);
+      }
+    }
+  }
+
   clinicas = [
     {
       id: 1,
@@ -68,6 +79,30 @@ export class HomePublicComponent {
       categoria: 'james',
       informacao: 'blake',
       titulo: 'ye',
+    },
+    {
+      id: 4,
+      imagem:
+        'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=1000&auto=format&fit=crop',
+      categoria: 'pediatria',
+      informacao: 'infantil',
+      titulo: 'MedFlow Kids',
+    },
+    {
+      id: 5,
+      imagem:
+        'https://images.unsplash.com/photo-1538108149393-cebb47acddb2?q=80&w=1000&auto=format&fit=crop',
+      categoria: 'cardiologia',
+      informacao: 'especializada',
+      titulo: 'MedFlow Coração',
+    },
+    {
+      id: 6,
+      imagem:
+        'https://images.unsplash.com/photo-1516062423079-7ca13cdc7f5a?q=80&w=1000&auto=format&fit=crop',
+      categoria: 'clínica',
+      informacao: 'geral',
+      titulo: 'MedFlow Centro',
     },
   ];
 }
