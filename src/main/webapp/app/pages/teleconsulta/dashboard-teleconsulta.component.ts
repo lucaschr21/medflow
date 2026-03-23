@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel';
 import { AvatarModule } from 'primeng/avatar';
+import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-dashboard-teleconsulta',
   standalone: true,
-  imports: [CommonModule, ButtonModule, CarouselModule, AvatarModule],
+  imports: [CommonModule, ButtonModule, CarouselModule, AvatarModule, CardModule],
   templateUrl: './dashboard-teleconsulta.component.html',
 })
 export class DashboardTeleconsultaComponent {

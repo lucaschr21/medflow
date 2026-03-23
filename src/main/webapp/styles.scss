@@ -1,2 +1,15 @@
 @use 'tailwindcss';
 @import 'primeicons/primeicons.css';
+
+.p-carousel-prev,
+.p-carousel-next {
+  display: none !important;
+}
+
+.p-carousel-indicators {
+  display: none !important;
+}
+
+.p-carousel-content {
+  margin: -0.5rem;
+}

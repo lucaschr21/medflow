@@ -4,10 +4,25 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
+      import('./layouts/public-layout/public-layout.component').then(
+        (m) => m.PublicLayoutComponent,
+      ),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('./pages/public/home/home.component').then((m) => m.HomePublicComponent),
+      },
+    ],
+  },
+
+  {
+    path: 'paciente',
+    loadComponent: () =>
       import('./layouts/app-layout/app-layout.component').then((m) => m.AppLayoutComponent),
     children: [
       {
-        path: 'teleconsulta',
+        path: 'dashboard',
         loadComponent: () =>
           import('./pages/teleconsulta/dashboard-teleconsulta.component').then(
             (m) => m.DashboardTeleconsultaComponent,
@@ -15,7 +30,7 @@ export const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'teleconsulta',
+        redirectTo: 'dashboard',
         pathMatch: 'full',
       },
     ],
