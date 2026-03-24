@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
 import { CardModule } from 'primeng/card';
+import { DrawerModule } from 'primeng/drawer';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
   templateUrl: './sidebar.component.html',
-  imports: [CardModule],
+  imports: [CardModule, DrawerModule],
 })
-export class SidebarComponent {}
+export class SidebarComponent {
+  visible = true;
+}
