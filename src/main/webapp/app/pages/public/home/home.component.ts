@@ -1,108 +1,143 @@
-import { Component, HostListener, signal } from '@angular/core';
-import { CardModule } from 'primeng/card';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-home-public',
   standalone: true,
-  imports: [CardModule, CommonModule],
+  imports: [CommonModule, RouterModule, FormsModule, CardModule, ButtonModule, InputTextModule],
   template: `
-    <div
-      class="flex flex-1 flex-col items-center bg-gradient-to-b from-slate-50 to-slate-100 p-10 pb-20"
-    >
-      <div class="mt-10 mb-16 max-w-2xl text-center">
-        <h1 class="mb-6 text-5xl leading-tight font-extrabold tracking-tight text-slate-800">
-          Encontre a unidade MedFlow ideal para você
-        </h1>
-        <p class="text-lg text-slate-600"></p>
-      </div>
+    <div class="min-h-screen bg-slate-50">
+      <section
+        class="relative overflow-hidden rounded-b-[3rem] bg-gradient-to-b from-[#4f46e5] to-[#4338ca] px-6 py-24 text-white shadow-xl"
+      >
+        <div class="relative z-10 mx-auto max-w-4xl text-center">
+          <h1 class="mb-6 text-4xl font-extrabold tracking-tight md:text-6xl">
+            Sua saúde em boas mãos, de forma simples e rápida
+          </h1>
+          <p class="mx-auto mb-10 max-w-2xl text-lg text-indigo-100 md:text-xl">
+            Encontre os melhores especialistas, agende consultas e tenha acesso a toda a rede
+            MedFlow.
+          </p>
+        </div>
+      </section>
 
-      <div class="grid w-full max-w-6xl grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        @for (clinica of clinicas.slice(0, visibleCount()); track clinica.id) {
-          <p-card
-            styleClass="h-full border-none shadow-md hover:shadow-xl transition-shadow duration-300 rounded-xl overflow-hidden cursor-pointer"
-          >
-            <ng-template pTemplate="header">
-              <img [src]="clinica.imagem" [alt]="clinica.titulo" class="h-56 w-full object-cover" />
-            </ng-template>
+      <section class="mx-auto flex max-w-6xl flex-col items-center px-6 py-20">
+        <div class="mb-12 text-center">
+          <h2 class="text-3xl font-extrabold tracking-tight text-slate-800 md:text-4xl">
+            Nossas Unidades
+          </h2>
+        </div>
 
-            <div class="flex flex-col gap-3 p-2">
-              <div class="flex items-center gap-2 text-sm text-slate-500">
-                <span
-                  class="cursor-pointer font-semibold text-orange-500 transition-colors hover:underline"
-                  >{{ clinica.categoria }}</span
-                >
-                <span class="text-slate-300">|</span>
-                <span>{{ clinica.informacao }}</span>
+        <div class="grid w-full grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          @for (clinica of clinicas; track clinica.id) {
+            <p-card
+              styleClass="h-full border border-slate-100 shadow-lg hover:shadow-2xl transition-all duration-300 rounded-2xl overflow-hidden flex flex-col"
+            >
+              <ng-template pTemplate="header">
+                <div class="group relative h-56 cursor-pointer overflow-hidden">
+                  <img
+                    [src]="clinica.imagem"
+                    [alt]="clinica.titulo"
+                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div
+                    class="absolute top-4 left-4 rounded-full bg-white/95 px-3 py-1 text-xs font-bold text-[#4f46e5] shadow-sm backdrop-blur-sm"
+                  >
+                    {{ clinica.categoria | uppercase }}
+                  </div>
+                </div>
+              </ng-template>
+              <div class="flex flex-1 flex-col p-2">
+                <h3 class="mb-2 line-clamp-2 text-2xl font-bold text-slate-800">
+                  {{ clinica.titulo }}
+                </h3>
+                <p class="mb-6 flex items-center gap-2 text-slate-500">
+                  <svg
+                    class="h-4 w-4 shrink-0 text-slate-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                  </svg>
+                  <span>{{ clinica.informacao }}</span>
+                </p>
               </div>
-              <h3 class="line-clamp-2 text-xl leading-snug font-bold text-slate-800">
-                {{ clinica.titulo }}
-              </h3>
-            </div>
-          </p-card>
-        }
-      </div>
+            </p-card>
+          }
+        </div>
+      </section>
     </div>
   `,
 })
 export class HomePublicComponent {
-  visibleCount = signal(3);
+  searchQuery = '';
 
-  @HostListener('window:scroll', [])
-  onScroll(): void {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
-      if (this.visibleCount() < this.clinicas.length) {
-        this.visibleCount.update((val) => val + 3);
-      }
-    }
-  }
-
+  //teste
   clinicas = [
     {
       id: 1,
-      imagem: 'https://wallpapers.com/images/featured/playboi-carti-o1duxv134a98qd2w.jpg',
-      categoria: 'carti',
-      informacao: 'carti',
-      titulo: 'kdot > ',
+      imagem:
+        'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=1000&auto=format&fit=crop',
+      categoria: 'clinica',
+      informacao: 'belem',
+      titulo: 'clinica',
     },
     {
       id: 2,
-      imagem: 'https://www.nme.com/wp-content/uploads/2021/09/frank-ocean-2021.jpg',
-      categoria: 'ocean',
-      informacao: 'ivy',
-      titulo: 'lc',
+      imagem:
+        'https://images.unsplash.com/photo-1538108149393-cebb47acddb2?q=80&w=1000&auto=format&fit=crop',
+      categoria: 'clinica',
+      informacao: 'belem',
+      titulo: 'clinica',
     },
     {
       id: 3,
       imagem:
-        'https://tse2.mm.bing.net/th/id/OIF.lIQTIm0IHpVY1PO8icV0xw?rs=1&pid=ImgDetMain&o=7&rm=3',
-      categoria: 'james',
-      informacao: 'blake',
-      titulo: 'ye',
+        'https://images.unsplash.com/photo-1516062423079-7ca13cdc7f5a?q=80&w=1000&auto=format&fit=crop',
+      categoria: 'clinica',
+      informacao: 'belem',
+      titulo: 'clinica',
     },
     {
       id: 4,
       imagem:
-        'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=1000&auto=format&fit=crop',
-      categoria: 'pediatria',
-      informacao: 'infantil',
-      titulo: 'MedFlow Kids',
+        'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&w=1000&auto=format&fit=crop',
+      categoria: 'clinica',
+      informacao: 'belem',
+      titulo: 'clinica',
     },
     {
       id: 5,
       imagem:
-        'https://images.unsplash.com/photo-1538108149393-cebb47acddb2?q=80&w=1000&auto=format&fit=crop',
-      categoria: 'cardiologia',
-      informacao: 'especializada',
-      titulo: 'MedFlow Coração',
+        'https://images.unsplash.com/photo-1504439468489-c8920d786a2b?q=80&w=1000&auto=format&fit=crop',
+      categoria: 'clinica',
+      informacao: 'belem',
+      titulo: 'clinica',
     },
     {
       id: 6,
       imagem:
-        'https://images.unsplash.com/photo-1516062423079-7ca13cdc7f5a?q=80&w=1000&auto=format&fit=crop',
-      categoria: 'clínica',
-      informacao: 'geral',
-      titulo: 'MedFlow Centro',
+        'https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=1000&auto=format&fit=crop',
+      categoria: 'clinica',
+      informacao: 'belem',
+      titulo: 'clinica',
     },
   ];
 }
