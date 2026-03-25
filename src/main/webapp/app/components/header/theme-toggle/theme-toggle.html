@@ -1,0 +1,26 @@
+<button
+  pButton
+  type="button"
+  [attr.aria-label]="isDarkMode() ? 'Ativar tema claro' : 'Ativar tema escuro'"
+  [text]="true"
+  [rounded]="true"
+  severity="secondary"
+  class="overflow-hidden"
+  (click)="toggleTheme()"
+>
+  <span class="flex h-5 w-5 items-center justify-center">
+    @if (isDarkMode()) {
+      <i
+        class="pi pi-sun absolute will-change-transform"
+        animate.enter="theme-icon-enter"
+        animate.leave="theme-icon-leave"
+      ></i>
+    } @else {
+      <i
+        class="pi pi-moon absolute will-change-transform"
+        animate.enter="theme-icon-enter"
+        animate.leave="theme-icon-leave"
+      ></i>
+    }
+  </span>
+</button>

@@ -1,0 +1,39 @@
+.theme-icon-enter {
+  animation: theme-icon-enter 350ms both;
+}
+
+.theme-icon-leave {
+  animation: theme-icon-leave 350ms both;
+}
+
+@keyframes theme-icon-enter {
+  0% {
+    transform: translate(1.5rem, 1.5rem);
+    animation-timing-function: ease-in;
+  }
+
+  50% {
+    transform: translate(0.75rem, 0.38rem);
+    animation-timing-function: ease-out;
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes theme-icon-leave {
+  0% {
+    transform: translate(0, 0);
+    animation-timing-function: ease-in;
+  }
+
+  50% {
+    transform: translate(-0.75rem, 0.38rem);
+    animation-timing-function: ease-out;
+  }
+
+  100% {
+    transform: translate(-1.5rem, 1.5rem);
+  }
+}

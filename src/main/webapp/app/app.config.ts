@@ -33,7 +33,7 @@ export const appConfig: ApplicationConfig = {
       theme: {
         preset: MedflowPreset,
         options: {
-          darkModeSelector: 'app-dark',
+          darkModeSelector: '.app-dark',
         },
       },
     }),
