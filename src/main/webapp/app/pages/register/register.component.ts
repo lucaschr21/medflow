@@ -23,6 +23,8 @@ import { RippleModule } from 'primeng/ripple';
 })
 export class RegisterComponent {
   name = '';
+  cpf = '';
+  birthDate = '';
   email = '';
   password = '';
   termsAccepted = false;

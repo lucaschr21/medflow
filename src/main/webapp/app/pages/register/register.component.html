@@ -56,9 +56,35 @@
             id="name"
             type="text"
             placeholder="Seu nome"
-            class="mb-6 w-full !rounded-lg !border !border-slate-300 !p-3 !text-slate-700 focus:!border-[#4f46e5] focus:!ring-[#4f46e5] md:w-[30rem]"
+            class="mb-4 w-full !rounded-lg !border !border-slate-300 !p-3 !text-slate-700 focus:!border-[#4f46e5] focus:!ring-[#4f46e5] md:w-[30rem]"
             [(ngModel)]="name"
           />
+
+          <div class="mb-4 flex flex-col gap-4 sm:flex-row">
+            <div class="w-full">
+              <label for="cpf" class="mb-2 block text-xl font-medium text-slate-800">CPF</label>
+              <input
+                pInputText
+                id="cpf"
+                type="text"
+                placeholder="000.000.000-00"
+                class="w-full !rounded-lg !border !border-slate-300 !p-3 !text-slate-700 focus:!border-[#4f46e5] focus:!ring-[#4f46e5]"
+                [(ngModel)]="cpf"
+              />
+            </div>
+            <div class="w-full">
+              <label for="birth" class="mb-2 block text-xl font-medium text-slate-800"
+                >Data de nascimento</label
+              >
+              <input
+                pInputText
+                id="birth"
+                type="date"
+                class="w-full !rounded-lg !border !border-slate-300 !p-3 !text-slate-700 focus:!border-[#4f46e5] focus:!ring-[#4f46e5]"
+                [(ngModel)]="birthDate"
+              />
+            </div>
+          </div>
 
           <label for="email" class="mb-2 block text-xl font-medium text-slate-800">Email</label>
           <input
@@ -66,7 +92,7 @@
             id="email"
             type="email"
             placeholder="Endereço de email"
-            class="mb-6 w-full !rounded-lg !border !border-slate-300 !p-3 !text-slate-700 focus:!border-[#4f46e5] focus:!ring-[#4f46e5] md:w-[30rem]"
+            class="mb-4 w-full !rounded-lg !border !border-slate-300 !p-3 !text-slate-700 focus:!border-[#4f46e5] focus:!ring-[#4f46e5] md:w-[30rem]"
             [(ngModel)]="email"
           />
 
