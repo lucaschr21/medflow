@@ -1,0 +1,27 @@
+<header class="sticky top-0 z-50 h-22">
+  <div
+    class="pointer-events-auto absolute w-full transition-all duration-300"
+    [class]="isScrolled() ? 'top-0 px-0' : 'top-4 px-4'"
+  >
+    <p-menubar
+      [model]="items"
+      [pt]="{
+        root: {
+          class: [
+            'transition-all duration-300 border-surface-200',
+            isScrolled()
+              ? '!rounded-none !border-x-0 !border-t-0 !bg-white/20 dark:!bg-neutral-900/70 !backdrop-blur-md border-b'
+              : '!rounded-2xl border bg-surface-0',
+          ],
+        },
+      }"
+    >
+      <ng-template #start>
+        <span class="text-primary font-semibold tracking-tight">MedFlow</span>
+      </ng-template>
+      <ng-template #end>
+        <app-theme-toggle />
+      </ng-template>
+    </p-menubar>
+  </div>
+</header>

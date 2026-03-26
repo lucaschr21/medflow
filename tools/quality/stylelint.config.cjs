@@ -8,5 +8,11 @@ module.exports = {
   rules: {
     'no-empty-source': null,
     'selector-class-pattern': null,
+    'scss/at-rule-no-unknown': [
+      true,
+      {
+        ignoreAtRules: ['custom-variant'],
+      },
+    ],
   },
 };
