@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 
-import { ThemeService } from './theme';
+import { ThemeService } from '../../../services/theme';
 
 @Component({
   selector: 'app-theme-toggle',
