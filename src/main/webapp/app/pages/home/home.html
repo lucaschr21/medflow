@@ -79,36 +79,60 @@
         Como funciona
       </h2>
       <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <div class="bg-surface-100 rounded-2xl p-6 text-center">
-          <span
-            class="bg-primary text-primary-contrast mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full font-bold"
-            >1</span
-          >
-          <h3 class="mb-2 text-xl font-bold">Configure</h3>
-          <p class="text-surface-600">
-            Defina regras, perfis e processos conforme a realidade da sua operacao.
-          </p>
-        </div>
-        <div class="bg-surface-100 rounded-2xl p-6 text-center">
-          <span
-            class="bg-primary text-primary-contrast mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full font-bold"
-            >2</span
-          >
-          <h3 class="mb-2 text-xl font-bold">Execute</h3>
-          <p class="text-surface-600">
-            Gerencie demandas do dia a dia com uma interface simples para toda a equipe.
-          </p>
-        </div>
-        <div class="bg-surface-100 rounded-2xl p-6 text-center">
-          <span
-            class="bg-primary text-primary-contrast mb-4 inline-flex h-10 w-10 items-center justify-center rounded-full font-bold"
-            >3</span
-          >
-          <h3 class="mb-2 text-xl font-bold">Acompanhe</h3>
-          <p class="text-surface-600">
-            Visualize indicadores e resultados para otimizar continuamente sua operacao.
-          </p>
-        </div>
+        <p-card
+          pRipple
+          styleClass="h-full shadow-xl transition-transform hover:-translate-y-2 rounded-3xl pb-4"
+        >
+          <ng-template #content>
+            <div class="flex flex-col items-center text-center">
+              <div
+                class="bg-primary-100 text-primary-600 mb-6 flex h-20 w-20 items-center justify-center rounded-full"
+              >
+                <i class="pi pi-cog text-4xl"></i>
+              </div>
+              <h3 class="mb-3 text-2xl font-bold">Configure</h3>
+              <p class="text-lg">
+                Defina regras, perfis e processos conforme a realidade da sua operacao.
+              </p>
+            </div>
+          </ng-template>
+        </p-card>
+        <p-card
+          pRipple
+          styleClass="h-full shadow-xl transition-transform hover:-translate-y-2 rounded-3xl pb-4"
+        >
+          <ng-template #content>
+            <div class="flex flex-col items-center text-center">
+              <div
+                class="bg-primary-100 text-primary-600 mb-6 flex h-20 w-20 items-center justify-center rounded-full"
+              >
+                <i class="pi pi-play-circle text-4xl"></i>
+              </div>
+              <h3 class="mb-3 text-2xl font-bold">Execute</h3>
+              <p class="text-lg">
+                Gerencie demandas do dia a dia com uma interface simples para toda a equipe.
+              </p>
+            </div>
+          </ng-template>
+        </p-card>
+        <p-card
+          pRipple
+          styleClass="h-full shadow-xl transition-transform hover:-translate-y-2 rounded-3xl pb-4"
+        >
+          <ng-template #content>
+            <div class="flex flex-col items-center text-center">
+              <div
+                class="bg-primary-100 text-primary-600 mb-6 flex h-20 w-20 items-center justify-center rounded-full"
+              >
+                <i class="pi pi-chart-line text-4xl"></i>
+              </div>
+              <h3 class="mb-3 text-2xl font-bold">Acompanhe</h3>
+              <p class="text-lg">
+                Visualize indicadores e resultados para otimizar continuamente sua operacao.
+              </p>
+            </div>
+          </ng-template>
+        </p-card>
       </div>
     </div>
   </section>
