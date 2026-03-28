@@ -99,19 +99,13 @@
         <div class="overflow-y-auto">
           <ul class="m-0 list-none p-4">
             <li>
-              <div
-                pRipple
-                pStyleClass="@next"
-                enterFromClass="hidden"
-                enterActiveClass="animate-slidedown"
-                leaveToClass="hidden"
-                leaveActiveClass="animate-slideup"
-                class="text-surface-600 dark:text-surface-200 p-ripple flex cursor-pointer items-center justify-between p-4"
-              ></div>
               <ul class="m-0 list-none overflow-hidden p-0">
                 <li>
                   <a
                     pRipple
+                    (click)="selectInicio($event)"
+                    (keydown.enter)="selectInicio($event)"
+                    tabindex="0"
                     class="rounded-border text-surface-700 dark:text-surface-100 hover:bg-surface-100 dark:hover:bg-surface-700 p-ripple flex cursor-pointer items-center p-4 transition-colors duration-150"
                   >
                     <i class="pi pi-home mr-2"></i>

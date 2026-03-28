@@ -1,1 +1,76 @@
-<app-sidebar></app-sidebar>
+<div class="bg-surface-50 min-h-screen px-6 py-8 md:px-10">
+  <app-sidebar (menuSelect)="onMenuSelect($event)"></app-sidebar>
+
+  @if (activeSection() === 'inicio') {
+    <section class="mx-auto mt-6 max-w-5xl">
+      <div>
+        <h1 class="text-primary text-4xl leading-tight font-extrabold md:text-6xl">
+          Portal de<br />
+          Teleconsultas
+        </h1>
+      </div>
+
+      <section class="mt-10 flex justify-start md:justify-end">
+        <div class="w-full md:max-w-xs">
+          <p-card
+            pRipple
+            styleClass="h-full shadow-xl transition-transform hover:-translate-y-2 rounded-3xl pb-4"
+          >
+            <ng-template #content>
+              <div class="flex flex-col items-center text-center">
+                <div
+                  class="bg-primary-100 text-primary-600 mb-6 flex h-20 w-20 items-center justify-center rounded-full"
+                >
+                  <i class="pi pi-calendar-plus text-4xl"></i>
+                </div>
+                <h3 class="mb-3 text-2xl font-bold">Marcar Teleconsulta</h3>
+                <p class="text-lg">Defina data, horário e especialidade para seu atendimento.</p>
+              </div>
+            </ng-template>
+          </p-card>
+        </div>
+      </section>
+      <section class="mt-16">
+        <div class="mb-5 flex items-center justify-between gap-4">
+          <div class="flex items-center gap-5">
+            <h2 class="text-primary text-3xl font-bold">Teleconsultas Marcadas</h2>
+            <button type="button" class="text-primary text-sm font-semibold underline">
+              Ver todas
+              <i class="pi pi-angle-right"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-1">
+            <p-button
+              icon="pi pi-angle-left"
+              [text]="true"
+              styleClass="!text-primary"
+              ariaLabel="Anterior"
+            ></p-button>
+            <p-button
+              icon="pi pi-angle-right"
+              [text]="true"
+              styleClass="!text-primary"
+              ariaLabel="Próximo"
+            ></p-button>
+          </div>
+        </div>
+        <p-card styleClass="!rounded-none !bg-white border border-dashed border-surface-300">
+          <ng-template #content>
+            <p class="text-surface-500 py-8 text-center text-xl">
+              Você não tem teleconsultas marcadas no momento.
+            </p>
+          </ng-template>
+        </p-card>
+      </section>
+    </section>
+  } @else {
+    <section
+      class="border-surface-200 mx-auto mt-14 max-w-5xl rounded-2xl border bg-white p-8 text-center"
+    >
+      <p class="text-surface-600 text-lg">
+        Clique em <strong>Início</strong> na sidebar para abrir o portal.
+      </p>
+    </section>
+  }
+</div>
