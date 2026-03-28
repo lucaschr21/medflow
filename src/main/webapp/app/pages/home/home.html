@@ -94,35 +94,33 @@
     </div>
   </section>
   <section class="mx-auto max-w-6xl px-6 pb-12">
-    <div class="border-surface-200 rounded-3xl border bg-white p-8 shadow-sm md:p-10">
-      <div class="mb-8 flex items-center justify-between gap-4">
-        <h2 class="text-color text-3xl font-extrabold md:text-4xl">Especialidades disponiveis</h2>
-        <span class="text-sm font-semibold">Dados de exemplo</span>
-      </div>
-      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        @for (specialty of specialties(); track specialty.id) {
-          <p-card
-            pRipple
-            styleClass="h-full rounded-3xl border border-surface-200 shadow-xl transition-transform hover:-translate-y-2 pb-3"
-          >
-            <ng-template #content>
-              <div class="flex items-start justify-between gap-4">
-                <div class="mb-6 flex h-20 w-20 items-center justify-center rounded-full border">
-                  <i class="pi pi-heart text-4xl"></i>
-                </div>
-                <div>
-                  <p class="text-sm font-semibold tracking-wide uppercase">{{ specialty.name }}</p>
-                  <p class="mt-2 text-5xl font-black">{{ specialty.availableDoctors }}</p>
-                </div>
+    <div class="mb-8 flex items-center justify-between gap-4">
+      <h2 class="text-color text-3xl font-extrabold md:text-4xl">Especialidades disponiveis</h2>
+      <span class="text-sm font-semibold">Dados de exemplo</span>
+    </div>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      @for (specialty of specialties(); track specialty.id) {
+        <p-card
+          pRipple
+          styleClass="h-full rounded-3xl border border-surface-200 shadow-xl transition-transform hover:-translate-y-2 pb-3"
+        >
+          <ng-template #content>
+            <div class="flex items-start justify-between gap-4">
+              <div class="mb-6 flex h-20 w-20 items-center justify-center rounded-full border">
+                <i class="pi pi-heart text-4xl"></i>
               </div>
-              <p class="mt-2 text-base leading-relaxed">medicos disponiveis</p>
-              <p class="mt-2 text-sm font-semibold">
-                Tempo medio para consulta: {{ specialty.averageWait }}
-              </p>
-            </ng-template>
-          </p-card>
-        }
-      </div>
+              <div>
+                <p class="text-sm font-semibold tracking-wide uppercase">{{ specialty.name }}</p>
+                <p class="mt-2 text-5xl font-black">{{ specialty.availableDoctors }}</p>
+              </div>
+            </div>
+            <p class="mt-2 text-base leading-relaxed">medicos disponiveis</p>
+            <p class="mt-2 text-sm font-semibold">
+              Tempo medio para consulta: {{ specialty.averageWait }}
+            </p>
+          </ng-template>
+        </p-card>
+      }
     </div>
   </section>
 </div>
