@@ -1,156 +1,128 @@
 ﻿<div class="bg-surface-50 min-h-screen">
   <section
-    class="bg-primary text-primary-contrast relative overflow-hidden rounded-b-[4rem] px-6 py-20 pb-32 shadow-2xl lg:px-12 lg:py-28 lg:pb-40"
+    class="bg-primary text-primary-contrast relative overflow-hidden rounded-b-[4rem] px-6 py-20 pb-28 shadow-2xl lg:px-12 lg:py-24 lg:pb-36"
   >
     <div class="relative z-10 mx-auto max-w-6xl text-center">
       <h1 class="mb-6 text-4xl font-extrabold tracking-tight md:text-6xl lg:text-7xl">
-        A plataforma para simplificar sua operacao
+        Sua rede de atendimento em um so lugar
       </h1>
       <p class="mx-auto mb-10 max-w-2xl text-lg font-medium opacity-90 md:text-xl lg:text-2xl">
-        Centralize processos, dados e comunicacao em um unico lugar com uma experiencia intuitiva,
-        segura e pronta para escalar com o seu negocio.
+        Acompanhe clinicas ativas, quantidade de medicos e especialidades disponiveis para tomar
+        decisoes rapidas sobre sua proxima consulta.
       </p>
     </div>
+    <div
+      class="bg-primary-contrast/10 absolute -top-14 -right-10 h-44 w-44 rounded-full blur-2xl"
+    ></div>
+    <div
+      class="bg-primary-contrast/20 absolute right-10 bottom-0 h-28 w-28 rounded-full blur-xl"
+    ></div>
   </section>
-  <section class="relative z-20 mx-auto -mt-20 max-w-6xl px-6 py-16">
-    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-      <p-card
-        pRipple
-        styleClass="h-full shadow-xl transition-transform hover:-translate-y-2 rounded-3xl pb-4"
-      >
-        <ng-template #content>
-          <div class="flex flex-col items-center text-center">
-            <div
-              class="bg-primary-100 text-primary-600 mb-6 flex h-20 w-20 items-center justify-center rounded-full"
-            >
-              <i class="pi pi-calendar-plus text-4xl"></i>
-            </div>
-            <h3 class="mb-3 text-2xl font-bold">Fluxos automatizados</h3>
-            <p class="text-lg">
-              Reduza tarefas manuais com jornadas digitais claras, regras configuraveis e execucao
-              padronizada.
-            </p>
-          </div>
-        </ng-template>
-      </p-card>
-      <p-card
-        pRipple
-        styleClass="h-full shadow-xl transition-transform hover:-translate-y-2 rounded-3xl pb-4"
-      >
-        <ng-template #content>
-          <div class="flex flex-col items-center text-center">
-            <div
-              class="bg-primary-100 text-primary-600 mb-6 flex h-20 w-20 items-center justify-center rounded-full"
-            >
-              <i class="pi pi-file text-4xl"></i>
-            </div>
-            <h3 class="mb-3 text-2xl font-bold">Dados centralizados</h3>
-            <p class="text-lg">
-              Mantenha informacoes, documentos e historico operacional organizados em um unico
-              ambiente confiavel.
-            </p>
-          </div>
-        </ng-template>
-      </p-card>
-      <p-card
-        pRipple
-        styleClass="h-full shadow-xl transition-transform hover:-translate-y-2 rounded-3xl pb-4"
-      >
-        <ng-template #content>
-          <div class="flex flex-col items-center text-center">
-            <div
-              class="bg-primary-100 text-primary-600 mb-6 flex h-20 w-20 items-center justify-center rounded-full"
-            >
-              <i class="pi pi-users text-4xl"></i>
-            </div>
-            <h3 class="mb-3 text-2xl font-bold">Colaboracao em tempo real</h3>
-            <p class="text-lg">
-              Conecte equipes e clientes com atualizacoes instantaneas, melhorando alinhamento e
-              velocidade de entrega.
-            </p>
-          </div>
-        </ng-template>
-      </p-card>
+  <section class="relative z-20 mx-auto -mt-14 max-w-6xl px-6 py-12">
+    <div class="mx-auto grid max-w-4xl grid-cols-1 gap-8 md:grid-cols-2">
+      @for (metric of dashboardMetrics(); track metric.id) {
+        @if (metric.id !== 'active-clinics') {
+          <p-card
+            pRipple
+            styleClass="h-full rounded-3xl border border-surface-200 shadow-xl transition-transform hover:-translate-y-2 pb-3"
+          >
+            <ng-template #content>
+              <div class="flex items-start justify-between gap-4">
+                <div class="mb-6 flex h-20 w-20 items-center justify-center rounded-full border">
+                  <i [class]="metric.icon + ' text-4xl'"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold tracking-wide uppercase">{{ metric.label }}</p>
+                  <p class="mt-2 text-5xl font-black">{{ metric.value }}</p>
+                </div>
+              </div>
+              <p class="mt-2 text-base leading-relaxed">{{ metric.helper }}</p>
+            </ng-template>
+          </p-card>
+        }
+      }
     </div>
   </section>
-  <section class="mx-auto max-w-6xl px-6 pb-8">
+
+  <section class="mx-auto max-w-6xl px-6 pb-12">
+    <div class="mb-8 flex items-center justify-between gap-4">
+      <h2 class="text-3xl font-extrabold md:text-4xl">Clinicas ativas</h2>
+      <span class="text-sm font-semibold">Dados de exemplo</span>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      @for (clinic of activeClinics(); track clinic.id) {
+        <p-card
+          pRipple
+          styleClass="h-full overflow-hidden rounded-3xl border border-surface-200 shadow-xl transition-transform hover:-translate-y-2"
+        >
+          <ng-template #header>
+            <img [src]="clinic.photoUrl" [alt]="clinic.name" class="h-48 w-full object-cover" />
+          </ng-template>
+
+          <ng-template #content>
+            <div class="flex flex-col gap-2">
+              <h3 class="text-2xl font-bold">{{ clinic.name }}</h3>
+              <p class="text-sm">{{ clinic.city }}</p>
+              <p class="text-sm">{{ clinic.address }}</p>
+            </div>
+
+            <div class="mt-5 grid grid-cols-2 gap-3">
+              <div class="rounded-xl border p-3">
+                <p class="text-xs font-semibold uppercase">Medicos</p>
+                <p class="mt-1 text-3xl font-black">{{ clinic.availableDoctors }}</p>
+              </div>
+              <div class="rounded-xl border p-3">
+                <p class="text-xs font-semibold uppercase">Pacientes hoje</p>
+                <p class="mt-1 text-3xl font-black">{{ clinic.activePatientsToday }}</p>
+              </div>
+            </div>
+
+            <div class="mt-5">
+              <p class="text-xs font-semibold uppercase">Principais especialidades</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                @for (specialty of clinic.mainSpecialties; track specialty) {
+                  <span class="rounded-full border px-3 py-1 text-sm font-medium">{{
+                    specialty
+                  }}</span>
+                }
+              </div>
+            </div>
+          </ng-template>
+        </p-card>
+      }
+    </div>
+  </section>
+  <section class="mx-auto max-w-6xl px-6 pb-12">
     <div class="border-surface-200 rounded-3xl border bg-white p-8 shadow-sm md:p-10">
-      <h2 class="text-surface-900 mb-8 text-center text-3xl font-extrabold md:text-4xl">
-        Como funciona
-      </h2>
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-        <p-card
-          pRipple
-          styleClass="h-full shadow-xl transition-transform hover:-translate-y-2 rounded-3xl pb-4"
-        >
-          <ng-template #content>
-            <div class="flex flex-col items-center text-center">
-              <div
-                class="bg-primary-100 text-primary-600 mb-6 flex h-20 w-20 items-center justify-center rounded-full"
-              >
-                <i class="pi pi-cog text-4xl"></i>
+      <div class="mb-8 flex items-center justify-between gap-4">
+        <h2 class="text-3xl font-extrabold md:text-4xl">Especialidades disponiveis</h2>
+        <span class="text-sm font-semibold">Dados de exemplo</span>
+      </div>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        @for (specialty of specialties(); track specialty.id) {
+          <p-card
+            pRipple
+            styleClass="h-full rounded-3xl border border-surface-200 shadow-xl transition-transform hover:-translate-y-2 pb-3"
+          >
+            <ng-template #content>
+              <div class="flex items-start justify-between gap-4">
+                <div class="mb-6 flex h-20 w-20 items-center justify-center rounded-full border">
+                  <i class="pi pi-heart text-4xl"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold tracking-wide uppercase">{{ specialty.name }}</p>
+                  <p class="mt-2 text-5xl font-black">{{ specialty.availableDoctors }}</p>
+                </div>
               </div>
-              <h3 class="mb-3 text-2xl font-bold">Configure</h3>
-              <p class="text-lg">
-                Defina regras, perfis e processos conforme a realidade da sua operacao.
+              <p class="mt-2 text-base leading-relaxed">medicos disponiveis</p>
+              <p class="mt-2 text-sm font-semibold">
+                Tempo medio para consulta: {{ specialty.averageWait }}
               </p>
-            </div>
-          </ng-template>
-        </p-card>
-        <p-card
-          pRipple
-          styleClass="h-full shadow-xl transition-transform hover:-translate-y-2 rounded-3xl pb-4"
-        >
-          <ng-template #content>
-            <div class="flex flex-col items-center text-center">
-              <div
-                class="bg-primary-100 text-primary-600 mb-6 flex h-20 w-20 items-center justify-center rounded-full"
-              >
-                <i class="pi pi-play-circle text-4xl"></i>
-              </div>
-              <h3 class="mb-3 text-2xl font-bold">Execute</h3>
-              <p class="text-lg">
-                Gerencie demandas do dia a dia com uma interface simples para toda a equipe.
-              </p>
-            </div>
-          </ng-template>
-        </p-card>
-        <p-card
-          pRipple
-          styleClass="h-full shadow-xl transition-transform hover:-translate-y-2 rounded-3xl pb-4"
-        >
-          <ng-template #content>
-            <div class="flex flex-col items-center text-center">
-              <div
-                class="bg-primary-100 text-primary-600 mb-6 flex h-20 w-20 items-center justify-center rounded-full"
-              >
-                <i class="pi pi-chart-line text-4xl"></i>
-              </div>
-              <h3 class="mb-3 text-2xl font-bold">Acompanhe</h3>
-              <p class="text-lg">
-                Visualize indicadores e resultados para otimizar continuamente sua operacao.
-              </p>
-            </div>
-          </ng-template>
-        </p-card>
+            </ng-template>
+          </p-card>
+        }
       </div>
     </div>
-  </section>
-  <section class="mx-auto max-w-4xl px-6 py-20 text-center">
-    <h2 class="text-surface-900 mb-6 text-3xl font-extrabold md:text-4xl">
-      Pronto para evoluir sua operacao?
-    </h2>
-    <p class="text-surface-500 mx-auto mb-10 text-lg">
-      Entregue mais valor com menos retrabalho usando uma plataforma flexivel para diferentes
-      segmentos.
-    </p>
-    <p-button
-      [label]="heroActions()[0].label"
-      [routerLink]="heroActions()[0].routerLink"
-      icon="pi pi-arrow-right"
-      iconPos="right"
-      [size]="heroActions()[0].size"
-      styleClass="!rounded-2xl !px-10 !py-4 !font-bold !text-lg shadow-lg"
-    ></p-button>
   </section>
 </div>
