@@ -38,7 +38,7 @@ export class Header {
     {
       label: 'Empresa',
       icon: 'pi pi-building',
-      routerLink: '/login/empresa',
+      routerLink: 'login/empresa',
     },
   ];
 }
