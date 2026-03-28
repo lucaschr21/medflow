@@ -1,0 +1,33 @@
+{
+  "groups": [
+    {
+      "name": "medflow.security.oauth2",
+      "type": "br.com.medflow.core.security.config.SecurityOAuth2Properties",
+      "sourceType": "br.com.medflow.core.security.config.SecurityOAuth2Properties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "medflow.security.oauth2.enabled",
+      "type": "java.lang.Boolean",
+      "defaultValue": false,
+      "description": "Ativa ou desativa os componentes OAuth2 da aplicação."
+    },
+    {
+      "name": "medflow.security.oauth2.issuer-uri",
+      "type": "java.lang.String",
+      "description": "Issuer esperado dos access tokens JWT."
+    },
+    {
+      "name": "medflow.security.oauth2.audience",
+      "type": "java.lang.String",
+      "description": "Audience esperada para validação dos access tokens JWT."
+    },
+    {
+      "name": "medflow.security.oauth2.clock-skew",
+      "type": "java.time.Duration",
+      "description": "Tolerância de clock para validações temporais do token."
+    }
+  ],
+  "hints": []
+}
