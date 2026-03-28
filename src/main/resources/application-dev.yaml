@@ -19,3 +19,11 @@ spring:
     default-schema: ${DB_SCHEMA:medflow}
     schemas: ${DB_SCHEMA:medflow}
     locations: classpath:migration
+
+medflow:
+  security:
+    oauth2:
+      enabled: false
+      issuer-uri: ${MEDFLOW_OAUTH2_ISSUER_URI:}
+      audience: ${MEDFLOW_OAUTH2_AUDIENCE:}
+      clock-skew: ${MEDFLOW_OAUTH2_CLOCK_SKEW:60s}
