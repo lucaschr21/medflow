@@ -1,2 +1,10 @@
 @use './tailwind.css';
 @use 'primeicons/primeicons.css';
+
+html.app-dark body {
+  background-color: #000;
+}
+
+html.app-dark .bg-surface-50 {
+  background-color: #000 !important;
+}
