@@ -4,7 +4,7 @@
     [class]="isScrolled() ? 'top-0 px-0' : 'top-4 px-4'"
   >
     <p-menubar
-      [model]="items"
+      [model]="isDashboardRoute() ? [] : items"
       [pt]="{
         root: {
           class: [
@@ -17,28 +17,39 @@
       }"
     >
       <ng-template #start>
-        <span class="text-primary font-semibold tracking-tight">MedFlow</span>
+        @if (isDashboardRoute()) {
+          <div class="flex items-center gap-3">
+            <app-sidebar />
+            <span class="text-primary font-semibold tracking-tight">MedFlow</span>
+          </div>
+        } @else {
+          <span class="text-primary font-semibold tracking-tight">MedFlow</span>
+        }
       </ng-template>
       <ng-template #end>
         <div class="flex items-center gap-2">
-          <p-button
-            label="Seja cliente"
-            routerLink="/register"
-            [text]="true"
-            styleClass="!hidden sm:!inline-flex !font-medium"
-          />
-          <p-button
-            label="Acesse sua área"
-            icon="pi pi-angle-down"
-            iconPos="right"
-            severity="secondary"
-            [outlined]="true"
-            size="small"
-            styleClass="!rounded-xl"
-            (onClick)="accessMenu.toggle($event)"
-          />
-          <p-menu #accessMenu [model]="accessAreaItems" [popup]="true" appendTo="body" />
-          <app-theme-toggle />
+          @if (isDashboardRoute()) {
+            <app-theme-toggle />
+          } @else {
+            <p-button
+              label="Seja cliente"
+              routerLink="/register"
+              [text]="true"
+              styleClass="!hidden sm:!inline-flex !font-medium"
+            />
+            <p-button
+              label="Acesse sua área"
+              icon="pi pi-angle-down"
+              iconPos="right"
+              severity="secondary"
+              [outlined]="true"
+              size="small"
+              styleClass="!rounded-xl"
+              (onClick)="accessMenu.toggle($event)"
+            />
+            <p-menu #accessMenu [model]="accessAreaItems" [popup]="true" appendTo="body" />
+            <app-theme-toggle />
+          }
         </div>
       </ng-template>
     </p-menubar>

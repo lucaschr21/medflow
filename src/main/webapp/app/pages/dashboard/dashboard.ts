@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { Sidebar } from '../../components/sidebar/sidebar';
 
 interface QuickAction {
   id: 'book-consultation';
@@ -13,7 +12,7 @@ interface QuickAction {
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, Sidebar, ButtonModule, CardModule],
+  imports: [CommonModule, ButtonModule, CardModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -28,8 +27,4 @@ export class Dashboard {
       icon: 'pi pi-calendar-plus',
     },
   ]);
-
-  protected onMenuSelect(section: 'inicio'): void {
-    this.activeSection.set(section);
-  }
 }

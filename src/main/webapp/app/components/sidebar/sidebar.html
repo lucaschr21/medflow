@@ -1,5 +1,5 @@
-<div class="card flex justify-center">
-  <p-drawer #drawerRef [(visible)]="visible">
+<div class="flex items-center">
+  <p-drawer #drawerRef [(visible)]="visible" appendTo="body" [blockScroll]="false">
     <ng-template #headless>
       <div class="flex h-full flex-col">
         <div class="flex shrink-0 items-center justify-between px-6 pt-4">
@@ -168,5 +168,5 @@
       </div>
     </ng-template>
   </p-drawer>
-  <p-button (click)="visible = true" icon="pi pi-bars" />
+  <p-button (click)="visible = true" icon="pi pi-bars" [text]="true" [rounded]="true" />
 </div>
