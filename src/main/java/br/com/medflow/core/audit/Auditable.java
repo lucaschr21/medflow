@@ -1,24 +1,28 @@
 package br.com.medflow.core.audit;
 
 import java.time.Instant;
+import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.Version;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Version;
 import lombok.Getter;
 
 /**
  * Base comum de auditoria para entidades JPA do Medflow.
  *
- * <p>Esta superclasse centraliza os campos de auditoria de criação e última
- * alteração, sem definir {@code id} da entidade.
+ * <p>Esta superclasse centraliza o identificador, o controle otimista de versão
+ * e os campos de auditoria de criação e última alteração.
  *
  * <p>Exemplo de uso em uma entidade auditável:
  *
@@ -34,6 +38,11 @@ import lombok.Getter;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class Auditable {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id", nullable = false, updatable = false)
+  private UUID id;
 
   @CreatedBy
   @Column(name = "created_by", nullable = false, updatable = false)
