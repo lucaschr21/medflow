@@ -542,7 +542,7 @@
       "emailVerified": true,
       "attributes": {
         "cpf": ["65909567071"],
-        "dataNascimento": ["02/02/1977"],
+        "dataNascimento": ["1977-02-02"],
         "telefone": ["7427327175"]
       },
       "enabled": true,
@@ -569,7 +569,7 @@
       "emailVerified": true,
       "attributes": {
         "cpf": ["12925136087"],
-        "dataNascimento": ["03/03/1987"],
+        "dataNascimento": ["1987-03-03"],
         "telefone": ["3223352566"]
       },
       "enabled": true,
@@ -596,7 +596,7 @@
       "emailVerified": true,
       "attributes": {
         "cpf": ["34797785004"],
-        "dataNascimento": ["01/01/1967"],
+        "dataNascimento": ["1967-01-01"],
         "telefone": ["9622026445"]
       },
       "enabled": true,
@@ -642,7 +642,7 @@
       "emailVerified": true,
       "attributes": {
         "cpf": ["06722867005"],
-        "dataNascimento": ["04/04/1997"],
+        "dataNascimento": ["1997-04-04"],
         "telefone": ["2437853428"]
       },
       "enabled": true,
@@ -1851,6 +1851,57 @@
           }
         },
         {
+          "id": "2f7f0ea8-74f0-490b-bfda-8b86e9c80735",
+          "name": "telefone",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "user.attribute": "telefone",
+            "id.token.claim": "true",
+            "lightweight.claim": "false",
+            "access.token.claim": "true",
+            "claim.name": "telefone",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "d483fd1f-e254-4fc7-a2f1-e3a1c173448f",
+          "name": "cpf",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "user.attribute": "cpf",
+            "id.token.claim": "true",
+            "lightweight.claim": "false",
+            "access.token.claim": "true",
+            "claim.name": "cpf",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "7b32d004-0550-49c4-925e-3b89cd38f859",
+          "name": "dataNascimento",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "user.attribute": "dataNascimento",
+            "id.token.claim": "true",
+            "lightweight.claim": "false",
+            "access.token.claim": "true",
+            "claim.name": "dataNascimento",
+            "jsonType.label": "String"
+          }
+        },
+        {
           "id": "84c89715-0ce1-43a0-8733-c34e86bafaac",
           "name": "profile",
           "protocol": "openid-connect",
@@ -2604,7 +2655,7 @@
         "subComponents": {},
         "config": {
           "kc.user.profile.config": [
-            "{\"attributes\":[{\"name\":\"username\",\"displayName\":\"${username}\",\"validations\":{\"length\":{\"min\":3,\"max\":255},\"username-prohibited-characters\":{},\"up-username-not-idn-homograph\":{}},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"email\",\"displayName\":\"${email}\",\"validations\":{\"email\":{},\"length\":{\"max\":255}},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"firstName\",\"displayName\":\"${firstName}\",\"validations\":{\"length\":{\"max\":255},\"person-name-prohibited-characters\":{}},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"lastName\",\"displayName\":\"${lastName}\",\"validations\":{\"length\":{\"max\":255},\"person-name-prohibited-characters\":{}},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"telefone\",\"displayName\":\"Telefone\",\"validations\":{\"pattern\":{\"pattern\":\"^\\\\d{10,11}$\",\"error-message\":\"Informe um telefone brasileiro válido com DDD, contendo apenas números.\"}},\"annotations\":{},\"required\":{\"roles\":[\"admin\",\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"cpf\",\"displayName\":\"CPF\",\"validations\":{\"pattern\":{\"pattern\":\"^(?!([0-9])\\\\1{10}$)[0-9]{11}$\",\"error-message\":\"Informe um CPF válido, contendo somente números.\"}},\"annotations\":{},\"required\":{\"roles\":[\"admin\",\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\"]},\"multivalued\":false},{\"name\":\"dataNascimento\",\"displayName\":\"Data de Nascimento\",\"validations\":{\"local-date\":{}},\"annotations\":{},\"required\":{\"roles\":[\"admin\",\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false}],\"groups\":[{\"name\":\"user-metadata\",\"displayHeader\":\"User metadata\",\"displayDescription\":\"Attributes, which refer to user metadata\"}]}"
+            "{\"attributes\":[{\"name\":\"username\",\"displayName\":\"${username}\",\"validations\":{\"length\":{\"min\":3,\"max\":255},\"username-prohibited-characters\":{},\"up-username-not-idn-homograph\":{}},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"email\",\"displayName\":\"${email}\",\"validations\":{\"email\":{},\"length\":{\"max\":255}},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"firstName\",\"displayName\":\"${firstName}\",\"validations\":{\"length\":{\"max\":255},\"person-name-prohibited-characters\":{}},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"lastName\",\"displayName\":\"${lastName}\",\"validations\":{\"length\":{\"max\":255},\"person-name-prohibited-characters\":{}},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"telefone\",\"displayName\":\"Telefone\",\"validations\":{\"pattern\":{\"pattern\":\"^\\\\d{10,11}$\",\"error-message\":\"Informe um telefone brasileiro válido com DDD, contendo apenas números.\"}},\"annotations\":{},\"required\":{\"roles\":[\"admin\",\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"cpf\",\"displayName\":\"CPF\",\"validations\":{\"pattern\":{\"pattern\":\"^(?!([0-9])\\\\1{10}$)[0-9]{11}$\",\"error-message\":\"Informe um CPF válido, contendo somente números.\"}},\"annotations\":{},\"required\":{\"roles\":[\"admin\",\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\"]},\"multivalued\":false},{\"name\":\"dataNascimento\",\"displayName\":\"Data de Nascimento\",\"validations\":{\"iso-date\":{}},\"annotations\":{},\"required\":{\"roles\":[\"admin\",\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false}],\"groups\":[{\"name\":\"user-metadata\",\"displayHeader\":\"User metadata\",\"displayDescription\":\"Attributes, which refer to user metadata\"}]}"
           ]
         }
       }
