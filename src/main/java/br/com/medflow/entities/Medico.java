@@ -15,8 +15,10 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,10 +30,11 @@ import lombok.Setter;
 @Setter
 @Entity
 @Audited
-@Table(name = "medico")
+@Table(name = "medico", indexes = @Index(name = "ix_medico_usuario_id", columnList = "usuario_id"))
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 public class Medico extends Auditable {
 
+  @NotNull(message = "O usuário do médico é obrigatório.")
   @OneToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "usuario_id", nullable = false, unique = true)
   private Usuario usuario;
@@ -44,6 +47,10 @@ public class Medico extends Auditable {
   @ManyToMany
   @JoinTable(
       name = "medico_especialidade",
+      indexes = {
+          @Index(name = "ix_medico_especialidade_medico_id", columnList = "medico_id"),
+          @Index(name = "ix_medico_especialidade_especialidade_id", columnList = "especialidade_id")
+      },
       uniqueConstraints = @UniqueConstraint(name = "uk_medico_especialidade", columnNames = { "medico_id",
           "especialidade_id" }),
       joinColumns = @JoinColumn(name = "medico_id", nullable = false),

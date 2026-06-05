@@ -1060,12 +1060,12 @@
             "icon_uri": ""
           },
           {
-            "name": "agenda",
-            "type": "medflow:agenda",
+            "name": "agenda-medica",
+            "type": "medflow:agenda-medica",
             "ownerManagedAccess": false,
-            "displayName": "Agenda",
+            "displayName": "Agenda Médica",
             "attributes": {},
-            "uris": ["/api/agendas/*", "/api/agendas"],
+            "uris": ["/api/agendas-medicas/*", "/api/agendas-medicas"],
             "scopes": [
               {
                 "name": "read"
@@ -1382,37 +1382,37 @@
             }
           },
           {
-            "name": "perm-agenda-administrador",
+            "name": "perm-agenda-medica-administrador",
             "description": "Permite que administradores criem, visualizem, atualizem e desativem agendas.",
             "type": "scope",
             "logic": "POSITIVE",
             "decisionStrategy": "AFFIRMATIVE",
             "config": {
-              "resources": "[\"agenda\"]",
+              "resources": "[\"agenda-medica\"]",
               "scopes": "[\"read\",\"update\",\"create\",\"deactivate\"]",
               "applyPolicies": "[\"policy-administrador\"]"
             }
           },
           {
-            "name": "perm-agenda-read-operacional",
+            "name": "perm-agenda-medica-read-operacional",
             "description": "Permite que recepcionistas, médicos e usuários comuns visualizem agendas.",
             "type": "scope",
             "logic": "POSITIVE",
             "decisionStrategy": "AFFIRMATIVE",
             "config": {
-              "resources": "[\"agenda\"]",
+              "resources": "[\"agenda-medica\"]",
               "scopes": "[\"read\"]",
               "applyPolicies": "[\"policy-usuario\",\"policy-recepcionista\",\"policy-medico\"]"
             }
           },
           {
-            "name": "perm-agenda-update-medico",
+            "name": "perm-agenda-medica-update-medico",
             "description": "Permite que médicos atualizem informações permitidas da própria agenda, conforme validação da lógica de negócios.",
             "type": "scope",
             "logic": "POSITIVE",
             "decisionStrategy": "AFFIRMATIVE",
             "config": {
-              "resources": "[\"agenda\"]",
+              "resources": "[\"agenda-medica\"]",
               "scopes": "[\"update\"]",
               "applyPolicies": "[\"policy-medico\"]"
             }
