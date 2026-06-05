@@ -8,10 +8,10 @@ import br.com.medflow.core.persistence.query.PageResult;
 import br.com.medflow.core.persistence.query.QueryCriteria;
 
 /**
- * Contrato base dos repositories JPA da aplicacao.
+ * Contrato base dos repositories JPA da aplicação.
  *
- * <p>Este contrato preserva as operacoes padrao do Spring Data e adiciona uma
- * abstracao unica para listagens filtradas, paginadas e ordenadas por meio de
+ * <p>Este contrato preserva as operações padrão do Spring Data e adiciona uma
+ * abstração única para listagens filtradas, paginadas e ordenadas por meio de
  * {@link QueryCriteria}.
  *
  * @param <T> tipo da entidade persistida
@@ -23,7 +23,7 @@ import br.com.medflow.core.persistence.query.QueryCriteria;
 public interface CommonRepository<T, ID> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
 
   /**
-   * Lista entidades com suporte a filtros, ordenacao e paginacao.
+   * Lista entidades com suporte a filtros, ordenação e paginação.
    *
    * <p>Uso tipico:
    *
@@ -32,8 +32,8 @@ public interface CommonRepository<T, ID> extends JpaRepository<T, ID>, JpaSpecif
    *     usuarioRepository.findAll(rsqlQuery.toCriteria(pageable));
    * }</pre>
    *
-   * @param queryCriteria criterios da consulta
-   * @return pagina com o resultado da listagem
+   * @param queryCriteria critérios da consulta
+   * @return página com o resultado da listagem
    */
   PageResult<T> findAll(QueryCriteria<T> queryCriteria);
 }

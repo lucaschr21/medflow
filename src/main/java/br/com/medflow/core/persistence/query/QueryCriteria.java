@@ -4,10 +4,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 /**
- * Agrega os criterios usados por listagens da aplicacao.
+ * Agrega os critérios usados por listagens da aplicação.
  *
- * <p>Esta abstracao combina o filtro da consulta, representado por
- * {@link Specification}, com a configuracao de paginacao e ordenacao contida em
+ * <p>Esta abstração combina o filtro da consulta, representado por
+ * {@link Specification}, com a configuração de paginação e ordenação contida em
  * {@link Pageable}.
  *
  * <p>Uso tipico:
@@ -23,44 +23,44 @@ import org.springframework.data.jpa.domain.Specification;
 public record QueryCriteria<T>(Specification<T> specification, Pageable pageable) {
 
   /**
-   * Cria criterios de consulta, normalizando pagina nao informada como
+   * Cria critérios de consulta, normalizando página não informada como
    * {@link Pageable#unpaged()}.
    *
    * @param specification filtro da consulta
-   * @param pageable paginacao e ordenacao da consulta
+   * @param pageable paginação e ordenação da consulta
    */
   public QueryCriteria {
     pageable = pageable == null ? Pageable.unpaged() : pageable;
   }
 
   /**
-   * Cria criterios de consulta com filtro e paginacao.
+   * Cria critérios de consulta com filtro e paginação.
    *
    * @param specification filtro da consulta
-   * @param pageable paginacao e ordenacao da consulta
+   * @param pageable paginação e ordenação da consulta
    * @param <T> tipo da entidade consultada
-   * @return criterios criados
+   * @return critérios criados
    */
   public static <T> QueryCriteria<T> of(Specification<T> specification, Pageable pageable) {
     return new QueryCriteria<>(specification, pageable);
   }
 
   /**
-   * Cria criterios sem paginacao.
+   * Cria critérios sem paginação.
    *
    * @param specification filtro da consulta
    * @param <T> tipo da entidade consultada
-   * @return criterios criados sem paginacao
+   * @return critérios criados sem paginação
    */
   public static <T> QueryCriteria<T> unpaged(Specification<T> specification) {
     return new QueryCriteria<>(specification, Pageable.unpaged());
   }
 
   /**
-   * Combina a especificacao atual com uma nova especificacao via {@code and}.
+   * Combina a especificação atual com uma nova especificação via {@code and}.
    *
-   * @param additionalSpecification especificacao adicional
-   * @return novos criterios com a especificacao composta
+   * @param additionalSpecification especificação adicional
+   * @return novos critérios com a especificação composta
    */
   public QueryCriteria<T> and(Specification<T> additionalSpecification) {
     if (additionalSpecification == null) {

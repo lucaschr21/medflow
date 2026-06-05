@@ -6,40 +6,41 @@ import org.springframework.data.jpa.domain.Specification;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 
 /**
- * Representa a expressao RSQL recebida em listagens filtraveis.
+ * Representa a expressão RSQL recebida em listagens filtráveis.
  *
- * <p>Este tipo concentra a conversao da query string {@code q} em
+ * <p>Este tipo concentra a conversão da query string {@code q} em
  * {@link Specification}, evitando espalhar detalhes da biblioteca de RSQL
  * pelos controllers e services.
  */
 public record RsqlQuery(String expression) {
 
   /**
-   * Indica se a expressao RSQL esta ausente ou vazia.
+   * Indica se a expressão RSQL está ausente ou vazia.
    *
-   * @return {@code true} quando nao houver expressao valida
+   * @return {@code true} quando não houver expressão válida
    */
   public boolean isEmpty() {
     return expression == null || expression.isBlank();
   }
 
   /**
-   * Converte a expressao RSQL em uma {@link Specification}.
+   * Converte a expressão RSQL em uma {@link Specification}.
    *
    * @param <T> tipo da entidade alvo da consulta
-   * @return especificacao gerada ou {@code null} quando a expressao estiver vazia
+   * @return especificação gerada ou {@code null} quando a expressão estiver
+   *         vazia
    */
   public <T> Specification<T> toSpecification() {
     return isEmpty() ? null : RSQLJPASupport.toSpecification(expression);
   }
 
   /**
-   * Converte a expressao RSQL em {@link QueryCriteria} com a paginacao
+   * Converte a expressão RSQL em {@link QueryCriteria} com a paginação
    * informada.
    *
-   * @param pageable paginacao e ordenacao da consulta
+   * @param pageable paginação e ordenação da consulta
    * @param <T> tipo da entidade alvo da consulta
-   * @return criterios prontos para uso no repository
+   * @return critérios prontos para uso no repository
    */
   public <T> QueryCriteria<T> toCriteria(Pageable pageable) {
     return QueryCriteria.of(toSpecification(), pageable);

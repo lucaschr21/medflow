@@ -6,7 +6,7 @@ import java.util.function.Function;
 import org.springframework.data.domain.Page;
 
 /**
- * Representa uma pagina da aplicacao sem expor diretamente o tipo
+ * Representa uma página da aplicação sem expor diretamente o tipo
  * {@link Page} do Spring Data para as camadas externas.
  *
  * @param <T> tipo dos itens da pagina
@@ -15,13 +15,13 @@ public record PageResult<T>(
     List<T> content, int page, int size, long totalElements, int totalPages) {
 
   /**
-   * Cria uma pagina imutavel com copia defensiva do conteudo.
+   * Cria uma página imutável com cópia defensiva do conteúdo.
    *
-   * @param content itens da pagina
-   * @param page indice da pagina atual baseado em zero
-   * @param size tamanho solicitado da pagina
+   * @param content itens da página
+   * @param page índice da página atual baseado em zero
+   * @param size tamanho solicitado da página
    * @param totalElements total de registros encontrados
-   * @param totalPages total de paginas calculado
+   * @param totalPages total de páginas calculado
    */
   public PageResult {
     content = content == null ? List.of() : List.copyOf(content);
@@ -30,9 +30,9 @@ public record PageResult<T>(
   /**
    * Converte uma {@link Page} do Spring Data em {@link PageResult}.
    *
-   * @param page pagina de origem
-   * @param <T> tipo dos itens da pagina
-   * @return pagina convertida
+   * @param page página de origem
+   * @param <T> tipo dos itens da página
+   * @return página convertida
    */
   public static <T> PageResult<T> from(Page<T> page) {
     return new PageResult<>(
@@ -44,11 +44,11 @@ public record PageResult<T>(
   }
 
   /**
-   * Mapeia os itens da pagina preservando os metadados de paginacao.
+   * Mapeia os itens da página preservando os metadados de paginação.
    *
-   * @param mapper funcao de transformacao do item
+   * @param mapper função de transformação do item
    * @param <R> tipo do item transformado
-   * @return nova pagina com o conteudo transformado
+   * @return nova página com o conteúdo transformado
    */
   public <R> PageResult<R> map(Function<? super T, ? extends R> mapper) {
     List<R> mappedContent = content.stream().<R>map(mapper).toList();

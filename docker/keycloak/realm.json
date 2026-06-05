@@ -1931,6 +1931,22 @@
           }
         },
         {
+          "id": "61d21790-90b9-40e4-82ba-f7855ef9eb48",
+          "name": "groups",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-group-membership-mapper",
+          "consentRequired": false,
+          "config": {
+            "full.path": "true",
+            "introspection.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
+            "lightweight.claim": "false",
+            "access.token.claim": "true",
+            "claim.name": "groups"
+          }
+        },
+        {
           "id": "55b8db9a-79aa-41bd-95fc-1b8e962f3991",
           "name": "full name",
           "protocol": "openid-connect",

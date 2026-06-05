@@ -22,7 +22,7 @@ public class RsqlQueryConfig implements WebMvcConfigurer {
   }
 
   /**
-   * Resolve o parametro HTTP {@code q} diretamente para {@link RsqlQuery}.
+   * Resolve o parâmetro HTTP {@code q} diretamente para {@link RsqlQuery}.
    */
   private static final class RsqlQueryArgumentResolver implements HandlerMethodArgumentResolver {
 

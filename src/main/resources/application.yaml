@@ -3,6 +3,15 @@ spring:
     name: medflow
   config:
     import: optional:file:.env[.properties]
+  profiles:
+    default: dev
+  security:
+    oauth2:
+      resourceserver:
+        opaquetoken:
+          introspection-uri: ${OAUTH2_INTROSPECTION_URI:http://localhost:8085/realms/medflow/protocol/openid-connect/token/introspect}
+          client-id: ${OAUTH2_CLIENT_ID:medflow-backend}
+          client-secret: ${OAUTH2_CLIENT_SECRET:change-me}
 
 springdoc:
   api-docs:

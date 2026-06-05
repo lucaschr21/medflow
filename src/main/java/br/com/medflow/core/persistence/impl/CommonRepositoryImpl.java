@@ -11,7 +11,7 @@ import br.com.medflow.core.persistence.query.QueryCriteria;
 import jakarta.persistence.EntityManager;
 
 /**
- * Implementacao base do {@link CommonRepository}.
+ * Implementação base do {@link CommonRepository}.
  *
  * @param <T> tipo da entidade persistida
  * @param <ID> tipo do identificador da entidade
@@ -20,7 +20,7 @@ public class CommonRepositoryImpl<T, ID extends Serializable> extends SimpleJpaR
     implements CommonRepository<T, ID> {
 
   /**
-   * Cria a implementacao base a partir dos metadados JPA da entidade.
+   * Cria a implementação base a partir dos metadados JPA da entidade.
    *
    * @param entityInformation metadados da entidade
    * @param entityManager entity manager associado

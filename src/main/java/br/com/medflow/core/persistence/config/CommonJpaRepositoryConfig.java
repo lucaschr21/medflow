@@ -7,7 +7,7 @@ import br.com.medflow.MedflowApplication;
 import br.com.medflow.core.persistence.impl.CommonRepositoryImpl;
 
 /**
- * Habilita o {@link CommonRepositoryImpl} como implementacao base dos
+ * Habilita o {@link CommonRepositoryImpl} como implementação base dos
  * repositories JPA do projeto.
  */
 @Configuration(proxyBeanMethods = false)
