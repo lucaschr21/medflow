@@ -38,7 +38,7 @@ import lombok.Setter;
     },
     uniqueConstraints = @UniqueConstraint(name = "uk_usuario_organizacao_keycloak", columnNames = {
         "organizacao_id", "keycloak_id" }))
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Usuario extends Auditable {
 
   @NotNull(message = "A organização do usuário é obrigatória.")

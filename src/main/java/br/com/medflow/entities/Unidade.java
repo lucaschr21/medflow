@@ -44,7 +44,7 @@ import lombok.Setter;
     check = @CheckConstraint(
         name = "ck_unidade_campos_textuais",
         constraint = "char_length(trim(nome)) > 0 and char_length(trim(telefone)) > 0"))
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Unidade extends Auditable {
 
   @NotNull(message = "A organização da unidade é obrigatória.")

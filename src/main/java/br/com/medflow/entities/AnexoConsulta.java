@@ -34,7 +34,7 @@ import lombok.Setter;
     check = @CheckConstraint(
         name = "ck_anexo_consulta_dados",
         constraint = "tamanho_bytes >= 0 and char_length(trim(nome_arquivo)) > 0 and char_length(trim(content_type)) > 0"))
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class AnexoConsulta extends Auditable {
 
   @NotNull(message = "A consulta do anexo é obrigatória.")

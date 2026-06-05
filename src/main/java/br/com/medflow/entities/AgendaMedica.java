@@ -42,7 +42,7 @@ import lombok.Setter;
         name = "uk_agenda_medica_alocacao_dia_horas",
         columnNames = { "alocacao_medico_id", "dia_semana", "hora_inicio", "hora_fim" }),
     check = @CheckConstraint(name = "ck_agenda_medica_intervalo", constraint = "hora_fim > hora_inicio"))
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class AgendaMedica extends Auditable {
 
   @NotNull(message = "A alocação médica da agenda é obrigatória.")

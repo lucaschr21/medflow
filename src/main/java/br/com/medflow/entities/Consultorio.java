@@ -38,7 +38,7 @@ import lombok.Setter;
     check = @CheckConstraint(
         name = "ck_consultorio_campos_textuais",
         constraint = "char_length(trim(nome)) > 0 and char_length(trim(sala)) > 0"))
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Consultorio extends Auditable {
 
   @NotNull(message = "A unidade do consultório é obrigatória.")

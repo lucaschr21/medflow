@@ -31,7 +31,7 @@ import lombok.Setter;
 @Entity
 @Audited
 @Table(name = "medico", indexes = @Index(name = "ix_medico_usuario_id", columnList = "usuario_id"))
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Medico extends Auditable {
 
   @NotNull(message = "O usuário do médico é obrigatório.")

@@ -50,7 +50,7 @@ import lombok.Setter;
     check = @CheckConstraint(
         name = "ck_consulta_intervalo_campos_textuais",
         constraint = "data_hora_fim > data_hora_inicio and char_length(trim(tipo_consulta)) > 0 and char_length(trim(motivo)) > 0"))
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Consulta extends Auditable {
 
   @NotNull(message = "O usuário da consulta é obrigatório.")

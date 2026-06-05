@@ -28,7 +28,7 @@ import lombok.Setter;
 @Table(
     name = "especialidade",
     check = @CheckConstraint(name = "ck_especialidade_nome", constraint = "char_length(trim(nome)) > 0"))
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Especialidade extends Auditable {
 
   @NotBlank(message = "O nome da especialidade é obrigatório.")

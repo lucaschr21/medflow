@@ -22,7 +22,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Endereco {
 
   @NotBlank(message = "O logradouro é obrigatório.")

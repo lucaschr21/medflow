@@ -40,7 +40,7 @@ import lombok.Setter;
     check = @CheckConstraint(
         name = "ck_alocacao_medico_periodo",
         constraint = "data_fim is null or data_fim >= data_inicio"))
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class AlocacaoMedico extends Auditable {
 
   @NotNull(message = "O médico da alocação é obrigatório.")

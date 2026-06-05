@@ -36,7 +36,7 @@ import lombok.Setter;
     check = @CheckConstraint(
         name = "ck_registro_atendimento_campos_textuais",
         constraint = "char_length(trim(queixa_principal)) > 0 and char_length(trim(anamnese)) > 0 and char_length(trim(conduta)) > 0"))
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class RegistroAtendimento extends Auditable {
 
   @NotNull(message = "A consulta do registro de atendimento é obrigatória.")

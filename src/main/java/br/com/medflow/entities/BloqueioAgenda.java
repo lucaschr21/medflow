@@ -43,7 +43,7 @@ import lombok.Setter;
     check = @CheckConstraint(
         name = "ck_bloqueio_agenda_intervalo",
         constraint = "fim > inicio and char_length(trim(motivo)) > 0"))
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class BloqueioAgenda extends Auditable {
 
   @NotNull(message = "O médico do bloqueio é obrigatório.")

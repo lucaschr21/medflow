@@ -37,7 +37,7 @@ import lombok.Setter;
     check = @CheckConstraint(
         name = "ck_organizacao_campos_textuais",
         constraint = "char_length(trim(nome)) > 0 and char_length(trim(email)) > 0 and char_length(trim(telefone)) > 0 and char_length(trim(cor_primaria)) > 0"))
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Organizacao extends Auditable {
 
   @NotBlank(message = "O nome da organização é obrigatório.")
