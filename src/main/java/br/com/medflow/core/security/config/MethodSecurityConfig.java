@@ -1,6 +1,7 @@
 package br.com.medflow.core.security.config;
 
 import org.springframework.aop.Advisor;
+import org.springframework.aop.support.ComposablePointcut;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,7 @@ import org.springframework.security.authorization.method.AuthorizationIntercepto
 import org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
+import br.com.medflow.core.security.annotations.AuthorizePermission;
 import br.com.medflow.core.security.annotations.AuthorizeResource;
 import br.com.medflow.core.security.authorization.AuthorizeResourceAuthorizationManager;
 
@@ -22,7 +24,7 @@ import br.com.medflow.core.security.authorization.AuthorizeResourceAuthorization
 public class MethodSecurityConfig {
 
   /**
-   * Publica o interceptor da anotacao {@link AuthorizeResource}.
+   * Publica o interceptor das anotações de autorização funcional do projeto.
    *
    * @param authorizationManager gerenciador da anotacao
    * @return advisor da anotacao
@@ -32,10 +34,9 @@ public class MethodSecurityConfig {
   Advisor authorizeResourceMethodInterceptor(
       AuthorizeResourceAuthorizationManager authorizationManager) {
     AuthorizationManagerBeforeMethodInterceptor interceptor = new AuthorizationManagerBeforeMethodInterceptor(
-        new AnnotationMatchingPointcut(
-            AuthorizeResource.class,
-            AuthorizeResource.class,
-            true),
+        new ComposablePointcut(
+            new AnnotationMatchingPointcut(AuthorizeResource.class, AuthorizeResource.class, true))
+            .union(new AnnotationMatchingPointcut(AuthorizePermission.class, AuthorizePermission.class, true)),
         authorizationManager);
     interceptor.setOrder(AuthorizationInterceptorsOrder.PRE_AUTHORIZE.getOrder() - 1);
     return interceptor;

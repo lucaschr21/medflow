@@ -23,6 +23,9 @@ import java.lang.annotation.Target;
  *   ...
  * }
  * }</pre>
+ *
+ * <p>Para operações especiais, como check-in, cancelamento ou finalização,
+ * prefira {@link AuthorizePermission}.
  */
 @Documented
 @Target({ ElementType.TYPE, ElementType.METHOD })

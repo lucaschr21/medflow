@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 
-import br.com.medflow.core.security.authorization.PermissionAuthoritiesMapper;
+import br.com.medflow.core.security.authorization.TokenAuthoritiesMapper;
 import br.com.medflow.core.security.identity.MedflowAuthenticatedPrincipal;
 
 /**
@@ -16,7 +16,7 @@ public class MedflowOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
   private final OpaqueTokenIntrospector delegate;
   private final AuthenticatedUserMapper authenticatedUserMapper;
-  private final PermissionAuthoritiesMapper permissionAuthoritiesMapper;
+  private final TokenAuthoritiesMapper tokenAuthoritiesMapper;
 
   /**
    * Cria o introspector do Medflow.
@@ -24,15 +24,15 @@ public class MedflowOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
    * @param delegate                    introspector que valida o token no
    *                                    authorization server
    * @param authenticatedUserMapper     mapper do principal autenticado
-   * @param permissionAuthoritiesMapper mapper das authorities do principal
+   * @param tokenAuthoritiesMapper mapper das authorities do principal
    */
   public MedflowOpaqueTokenIntrospector(
       OpaqueTokenIntrospector delegate,
       AuthenticatedUserMapper authenticatedUserMapper,
-      PermissionAuthoritiesMapper permissionAuthoritiesMapper) {
+      TokenAuthoritiesMapper tokenAuthoritiesMapper) {
     this.delegate = Objects.requireNonNull(delegate);
     this.authenticatedUserMapper = Objects.requireNonNull(authenticatedUserMapper);
-    this.permissionAuthoritiesMapper = Objects.requireNonNull(permissionAuthoritiesMapper);
+    this.tokenAuthoritiesMapper = Objects.requireNonNull(tokenAuthoritiesMapper);
   }
 
   /** {@inheritDoc} */
@@ -43,6 +43,6 @@ public class MedflowOpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     return new MedflowAuthenticatedPrincipal(
         mappedPrincipal.user(),
         mappedPrincipal.getAttributes(),
-        permissionAuthoritiesMapper.convert(mappedPrincipal));
+        tokenAuthoritiesMapper.convert(mappedPrincipal));
   }
 }

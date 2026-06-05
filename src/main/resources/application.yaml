@@ -12,6 +12,9 @@ spring:
           introspection-uri: ${OAUTH2_INTROSPECTION_URI:http://localhost:8085/realms/medflow/protocol/openid-connect/token/introspect}
           client-id: ${OAUTH2_CLIENT_ID:medflow-backend}
           client-secret: ${OAUTH2_CLIENT_SECRET:change-me}
+        authorization:
+          token-uri: ${OAUTH2_AUTHORIZATION_TOKEN_URI:http://localhost:8085/realms/medflow/protocol/openid-connect/token}
+          audience: ${OAUTH2_AUTHORIZATION_AUDIENCE:${OAUTH2_CLIENT_ID:medflow-backend}}
 
 springdoc:
   api-docs:

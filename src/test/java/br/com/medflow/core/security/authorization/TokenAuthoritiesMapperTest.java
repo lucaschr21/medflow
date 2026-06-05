@@ -1,6 +1,7 @@
 package br.com.medflow.core.security.authorization;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,14 +10,16 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import br.com.medflow.core.security.config.AuthorizationProperties;
 import br.com.medflow.core.security.identity.AuthenticatedUser;
 import br.com.medflow.core.security.identity.MedflowAuthenticatedPrincipal;
 
 class TokenAuthoritiesMapperTest {
 
   @Test
-  void shouldMapClientRolesAndAuthorizationPermissionsToAuthorities() {
-    PermissionAuthoritiesMapper mapper = new PermissionAuthoritiesMapper();
+  void shouldMapConfiguredClientRolesAndPreserveOriginalAuthorities() {
+    TokenAuthoritiesMapper mapper = new TokenAuthoritiesMapper(
+        new AuthorizationProperties("http://localhost:8085/token", "medflow-backend"));
     MedflowAuthenticatedPrincipal principal =
         new MedflowAuthenticatedPrincipal(
             new AuthenticatedUser(
@@ -28,15 +31,11 @@ class TokenAuthoritiesMapperTest {
                 "91999999999",
                 LocalDate.parse("1990-04-10"),
                 java.util.Set.of("default-roles-medflow"),
-                Map.of("medflow-backend", java.util.Set.of("MEDICO", "USUARIO")),
-                java.util.Set.of("MEDICOS")),
-            Map.of(
-                "authorization",
                 Map.of(
-                    "permissions",
-                    List.of(
-                        Map.of("rsname", "usuario", "scopes", List.of("read", "update")),
-                        Map.of("rsname", "consulta", "scopes", List.of("create"))))),
+                    "medflow-backend", java.util.Set.of("MEDICO", "USUARIO"),
+                    "frontend-client", java.util.Set.of("ADMINISTRADOR")),
+                java.util.Set.of("MEDICOS")),
+            Map.of(),
             List.of(new SimpleGrantedAuthority("SCOPE_profile")));
 
     List<String> authorities =
@@ -44,9 +43,8 @@ class TokenAuthoritiesMapperTest {
 
     assertTrue(authorities.contains("ROLE_MEDICO"));
     assertTrue(authorities.contains("ROLE_USUARIO"));
-    assertTrue(authorities.contains("usuario:read"));
-    assertTrue(authorities.contains("usuario:update"));
-    assertTrue(authorities.contains("consulta:create"));
     assertTrue(authorities.contains("SCOPE_profile"));
+    assertFalse(authorities.contains("ROLE_ADMINISTRADOR"));
+    assertFalse(authorities.contains("usuario:read"));
   }
 }

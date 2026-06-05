@@ -17,10 +17,16 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import br.com.medflow.core.security.annotations.AuthorizePermission;
 import br.com.medflow.core.security.annotations.AuthorizeResource;
 
 /**
- * Autoriza metodos anotados com {@link AuthorizeResource}.
+ * Autoriza métodos anotados com {@link AuthorizeResource} ou
+ * {@link AuthorizePermission}.
+ *
+ * <p>A prioridade é sempre da anotação explícita {@link AuthorizePermission}.
+ * Quando ela não estiver presente, o gerenciador usa
+ * {@link AuthorizeResource} e infere a ação pelo método HTTP atual.
  */
 @Component
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
@@ -48,19 +54,20 @@ public class AuthorizeResourceAuthorizationManager
   @Override
   public AuthorizationDecision authorize(
       Supplier<? extends Authentication> authentication, MethodInvocation invocation) {
-    AuthorizeResource annotation = findAnnotation(invocation);
+    RequiredPermission requiredPermission = resolveRequiredPermission(invocation);
     Authentication currentAuthentication = authentication.get();
     boolean granted = currentAuthentication != null
         && functionalAuthorizer.hasAccess(
-            currentAuthentication, annotation.value(), ResourceAction.from(currentHttpMethod()));
+            currentAuthentication, requiredPermission.resourceType(), requiredPermission.action());
     return new AuthorizationDecision(granted);
   }
 
-  private static AuthorizeResource findAnnotation(MethodInvocation invocation) {
+  private static RequiredPermission resolveRequiredPermission(MethodInvocation invocation) {
     Method method = invocation.getMethod();
-    AuthorizeResource methodAnnotation = AnnotatedElementUtils.findMergedAnnotation(method, AuthorizeResource.class);
-    if (methodAnnotation != null) {
-      return methodAnnotation;
+    AuthorizePermission methodPermission =
+        AnnotatedElementUtils.findMergedAnnotation(method, AuthorizePermission.class);
+    if (methodPermission != null) {
+      return new RequiredPermission(methodPermission.resource(), methodPermission.action());
     }
 
     Class<?> targetClass = AopProxyUtils.ultimateTargetClass(invocation.getThis());
@@ -68,13 +75,26 @@ public class AuthorizeResourceAuthorizationManager
       targetClass = method.getDeclaringClass();
     }
 
-    AuthorizeResource typeAnnotation = AnnotatedElementUtils.findMergedAnnotation(targetClass, AuthorizeResource.class);
-    if (typeAnnotation != null) {
-      return typeAnnotation;
+    AuthorizePermission typePermission =
+        AnnotatedElementUtils.findMergedAnnotation(targetClass, AuthorizePermission.class);
+    if (typePermission != null) {
+      return new RequiredPermission(typePermission.resource(), typePermission.action());
+    }
+
+    AuthorizeResource methodResource =
+        AnnotatedElementUtils.findMergedAnnotation(method, AuthorizeResource.class);
+    if (methodResource != null) {
+      return new RequiredPermission(methodResource.value(), ResourceAction.from(currentHttpMethod()));
+    }
+
+    AuthorizeResource typeResource =
+        AnnotatedElementUtils.findMergedAnnotation(targetClass, AuthorizeResource.class);
+    if (typeResource != null) {
+      return new RequiredPermission(typeResource.value(), ResourceAction.from(currentHttpMethod()));
     }
 
     throw new IllegalStateException(
-        "@AuthorizeResource was not found for method: " + method.toGenericString());
+        "Nenhuma anotação de autorização do recurso foi encontrada para o método: " + method.toGenericString());
   }
 
   private static HttpMethod currentHttpMethod() {
@@ -85,4 +105,6 @@ public class AuthorizeResourceAuthorizationManager
 
     return HttpMethod.valueOf(servletRequestAttributes.getRequest().getMethod());
   }
+
+  private record RequiredPermission(Class<?> resourceType, ResourceAction action) {}
 }

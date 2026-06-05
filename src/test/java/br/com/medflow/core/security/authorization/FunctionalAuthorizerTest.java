@@ -5,13 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -21,7 +20,10 @@ import br.com.medflow.core.security.annotations.ProtectedResource;
 class FunctionalAuthorizerTest {
 
   private final FunctionalAuthorizer functionalAuthorizer =
-      new FunctionalAuthorizer(new ProtectedResourceResolver());
+      new FunctionalAuthorizer(
+          new ProtectedResourceResolver(),
+          (authentication, permission) -> permittedAuthorities(authentication.getAuthorities())
+              .contains(permission.authority()));
 
   @AfterEach
   void tearDown() {
@@ -36,9 +38,8 @@ class FunctionalAuthorizerTest {
             new TestingAuthenticationToken(
                 "user",
                 "credentials",
-                List.of(
-                    new SimpleGrantedAuthority("usuario:read"),
-                    new SimpleGrantedAuthority("ROLE_USUARIO"))));
+                "usuario:read",
+                "ROLE_USUARIO"));
 
     assertTrue(functionalAuthorizer.hasAccess(Usuario.class, ResourceAction.READ));
     assertFalse(functionalAuthorizer.hasAccess(Usuario.class, ResourceAction.UPDATE));
@@ -51,9 +52,8 @@ class FunctionalAuthorizerTest {
             new TestingAuthenticationToken(
                 "user",
                 "credentials",
-                List.of(
-                    new SimpleGrantedAuthority("consulta:create"),
-                    new SimpleGrantedAuthority("ROLE_USUARIO"))));
+                "consulta:create",
+                "ROLE_USUARIO"));
 
     MockHttpServletRequest request = new MockHttpServletRequest("POST", "/api/consultas");
     RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
@@ -76,7 +76,7 @@ class FunctionalAuthorizerTest {
             new TestingAuthenticationToken(
                 "user",
                 "credentials",
-                List.of(new SimpleGrantedAuthority("usuario:read"))));
+                "usuario:read"));
 
     assertThrows(
         org.springframework.security.access.AccessDeniedException.class,
@@ -87,4 +87,11 @@ class FunctionalAuthorizerTest {
   private static final class Usuario {}
 
   private static final class Consulta {}
+
+  private static Set<String> permittedAuthorities(
+      java.util.Collection<? extends org.springframework.security.core.GrantedAuthority> authorities) {
+    return authorities.stream()
+        .map(org.springframework.security.core.GrantedAuthority::getAuthority)
+        .collect(java.util.stream.Collectors.toUnmodifiableSet());
+  }
 }

@@ -3,55 +3,36 @@ package br.com.medflow.core.security.config;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.context.annotation.Role;
+import org.springframework.web.client.RestClient;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 import org.springframework.security.oauth2.server.resource.introspection.SpringOpaqueTokenIntrospector;
-import org.springframework.security.web.SecurityFilterChain;
 
 import br.com.medflow.core.security.authentication.AuthenticatedUserMapper;
 import br.com.medflow.core.security.authentication.MedflowOpaqueTokenIntrospector;
-import br.com.medflow.core.security.authorization.PermissionAuthoritiesMapper;
+import br.com.medflow.core.security.authorization.TokenAuthoritiesMapper;
 
 /**
  * Configuração de autenticação do backend como OAuth2 resource server.
  *
- * <p>Este módulo registra a {@link SecurityFilterChain} stateless da aplicação
- * e configura a introspecção de bearer token no Keycloak.
+ * <p>Este módulo configura a introspecção de bearer token no Keycloak e os
+ * beans auxiliares usados pela autenticação.
  */
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(AuthenticationProperties.class)
+@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+@EnableConfigurationProperties({AuthenticationProperties.class, AuthorizationProperties.class})
 public class ResourceServerAuthenticationConfig {
 
   /**
-   * Configura o backend como resource server stateless.
+   * Publica o builder HTTP usado pelas integrações de segurança.
    *
-   * @param http configurador de segurança HTTP
-   * @return filter chain configurada
-   * @throws Exception quando houver falha de configuração
+   * @return builder HTTP do Spring
    */
   @Bean
-  SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.csrf(AbstractHttpConfigurer::disable)
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(
-            authorize -> authorize
-                .requestMatchers(
-                    "/api/actuator/health",
-                    "/api/actuator/info",
-                    "/api/openapi",
-                    "/api/openapi/**",
-                    "/docs",
-                    "/docs/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated())
-        .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(Customizer.withDefaults()));
-
-    return http.build();
+  @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+  RestClient.Builder restClientBuilder() {
+    return RestClient.builder();
   }
 
   /**
@@ -60,20 +41,20 @@ public class ResourceServerAuthenticationConfig {
    * @param properties propriedades de introspecção configuradas para o resource
    *        server
    * @param authenticatedUserMapper mapper da identidade autenticada
-   * @param permissionAuthoritiesMapper mapper das authorities funcionais
+   * @param tokenAuthoritiesMapper mapper das authorities locais
    * @return introspector configurado
    */
   @Bean
   OpaqueTokenIntrospector opaqueTokenIntrospector(
       AuthenticationProperties properties,
       AuthenticatedUserMapper authenticatedUserMapper,
-      PermissionAuthoritiesMapper permissionAuthoritiesMapper) {
+      TokenAuthoritiesMapper tokenAuthoritiesMapper) {
     OpaqueTokenIntrospector delegate = SpringOpaqueTokenIntrospector
         .withIntrospectionUri(properties.introspectionUri())
         .clientId(properties.clientId())
         .clientSecret(properties.clientSecret())
         .build();
     return new MedflowOpaqueTokenIntrospector(
-        delegate, authenticatedUserMapper, permissionAuthoritiesMapper);
+        delegate, authenticatedUserMapper, tokenAuthoritiesMapper);
   }
 }

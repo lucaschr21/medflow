@@ -6,7 +6,6 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.context.annotation.Role;
 import org.springframework.stereotype.Component;
@@ -17,25 +16,32 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
- * Autoriza operacoes funcionais do Medflow a partir do tipo do recurso.
+ * Autoriza operações funcionais do Medflow a partir do tipo do recurso.
  *
- * <p>Este componente converte um tipo de recurso em authority no formato
- * {@code recurso:acao}, usando a convencao do projeto e, quando aplicavel, o
- * metodo HTTP da requisicao atual.
+ * <p>Este componente converte um tipo de recurso em uma permissão funcional no
+ * formato {@code recurso:ação}, usando a convenção do projeto e, quando
+ * aplicável, o método HTTP da requisição atual. A decisão final é delegada ao
+ * serviço de autorização funcional configurado para o backend.
  */
 @Component("functionalAuthorizer")
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class FunctionalAuthorizer {
 
   private final ProtectedResourceResolver protectedResourceResolver;
+  private final FunctionalPermissionDecisionService functionalPermissionDecisionService;
 
   /**
    * Cria o autorizador funcional.
    *
    * @param protectedResourceResolver resolvedor de nomes de recurso
+   * @param functionalPermissionDecisionService serviço que decide a permissão
+   *        funcional
    */
-  public FunctionalAuthorizer(ProtectedResourceResolver protectedResourceResolver) {
+  public FunctionalAuthorizer(
+      ProtectedResourceResolver protectedResourceResolver,
+      FunctionalPermissionDecisionService functionalPermissionDecisionService) {
     this.protectedResourceResolver = protectedResourceResolver;
+    this.functionalPermissionDecisionService = functionalPermissionDecisionService;
   }
 
   /**
@@ -69,11 +75,11 @@ public class FunctionalAuthorizer {
    *
    * @param authentication autenticacao a ser avaliada
    * @param resourceType tipo do recurso
-   * @param action acao funcional desejada
+   * @param action ação funcional desejada
    * @return {@code true} quando o acesso funcional for permitido
    */
   public boolean hasAccess(Authentication authentication, Class<?> resourceType, ResourceAction action) {
-    return hasAuthority(authentication, permission(resourceType, action).authority());
+    return functionalPermissionDecisionService.isGranted(authentication, permission(resourceType, action));
   }
 
   /**
@@ -99,7 +105,7 @@ public class FunctionalAuthorizer {
         authentication -> checkAccess(authentication, resourceType, action),
         () -> {
           throw new AccessDeniedException(
-              "Access denied for authority: " + permission(resourceType, action).authority());
+              "Access denied for permission: " + permission(resourceType, action).authority());
         });
   }
 
@@ -109,12 +115,12 @@ public class FunctionalAuthorizer {
    * @param authentication autenticacao a ser avaliada
    * @param resourceType tipo do recurso
    * @param action acao funcional desejada
-   * @throws AccessDeniedException quando o acesso nao for permitido
+   * @throws AccessDeniedException quando o acesso não for permitido
    */
   public void checkAccess(Authentication authentication, Class<?> resourceType, ResourceAction action) {
     FunctionalPermission permission = permission(resourceType, action);
-    if (!hasAuthority(authentication, permission.authority())) {
-      throw new AccessDeniedException("Access denied for authority: " + permission.authority());
+    if (!functionalPermissionDecisionService.isGranted(authentication, permission)) {
+      throw new AccessDeniedException("Access denied for permission: " + permission.authority());
     }
   }
 
@@ -133,12 +139,6 @@ public class FunctionalAuthorizer {
     return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
         .filter(Authentication::isAuthenticated)
         .filter(authentication -> !(authentication instanceof AnonymousAuthenticationToken));
-  }
-
-  private static boolean hasAuthority(Authentication authentication, String authority) {
-    return authentication.getAuthorities().stream()
-        .map(GrantedAuthority::getAuthority)
-        .anyMatch(authority::equals);
   }
 
   private static ResourceAction currentAction() {

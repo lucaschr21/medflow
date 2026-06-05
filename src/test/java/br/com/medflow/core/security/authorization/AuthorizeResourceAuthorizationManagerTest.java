@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Method;
-import java.util.List;
+import java.util.Set;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.AfterEach;
@@ -13,17 +13,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.authorization.AuthorizationDecision;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import br.com.medflow.core.security.annotations.AuthorizePermission;
 import br.com.medflow.core.security.annotations.AuthorizeResource;
 import br.com.medflow.core.security.annotations.ProtectedResource;
 
 class AuthorizeResourceAuthorizationManagerTest {
 
   private final AuthorizeResourceAuthorizationManager authorizationManager = new AuthorizeResourceAuthorizationManager(
-      new FunctionalAuthorizer(new ProtectedResourceResolver()));
+      new FunctionalAuthorizer(
+          new ProtectedResourceResolver(),
+          (authentication, permission) -> grantedAuthorities(authentication).contains(permission.authority())));
 
   @AfterEach
   void tearDown() {
@@ -35,7 +37,7 @@ class AuthorizeResourceAuthorizationManagerTest {
     TestingAuthenticationToken authentication = new TestingAuthenticationToken(
         "user",
         "credentials",
-        List.of(new SimpleGrantedAuthority("usuario:create")));
+        "usuario:create");
     RequestContextHolder.setRequestAttributes(
         new ServletRequestAttributes(new MockHttpServletRequest("POST", "/api/usuarios")));
 
@@ -51,7 +53,7 @@ class AuthorizeResourceAuthorizationManagerTest {
     TestingAuthenticationToken authentication = new TestingAuthenticationToken(
         "user",
         "credentials",
-        List.of(new SimpleGrantedAuthority("consulta:read")));
+        "consulta:read");
     RequestContextHolder.setRequestAttributes(
         new ServletRequestAttributes(new MockHttpServletRequest("GET", "/api/consultas/1")));
 
@@ -67,7 +69,7 @@ class AuthorizeResourceAuthorizationManagerTest {
     TestingAuthenticationToken authentication = new TestingAuthenticationToken(
         "user",
         "credentials",
-        List.of(new SimpleGrantedAuthority("usuario:read")));
+        "usuario:read");
     RequestContextHolder.setRequestAttributes(
         new ServletRequestAttributes(new MockHttpServletRequest("DELETE", "/api/usuarios/1")));
 
@@ -76,6 +78,38 @@ class AuthorizeResourceAuthorizationManagerTest {
         invocation(new ResourceController(), "delete"));
 
     assertFalse(decision.isGranted());
+  }
+
+  @Test
+  void shouldPrioritizeExplicitPermissionOverHttpMethodInference() throws NoSuchMethodException {
+    TestingAuthenticationToken authentication = new TestingAuthenticationToken(
+        "user",
+        "credentials",
+        "consulta:update");
+    RequestContextHolder.setRequestAttributes(
+        new ServletRequestAttributes(new MockHttpServletRequest("POST", "/api/consultas/1/cancelamento")));
+
+    AuthorizationDecision decision = authorizationManager.authorize(
+        () -> authentication,
+        invocation(new WorkflowController(), "cancel"));
+
+    assertTrue(decision.isGranted());
+  }
+
+  @Test
+  void shouldUseExplicitPermissionDeclaredAtTypeLevel() throws NoSuchMethodException {
+    TestingAuthenticationToken authentication = new TestingAuthenticationToken(
+        "user",
+        "credentials",
+        "consulta:update");
+    RequestContextHolder.setRequestAttributes(
+        new ServletRequestAttributes(new MockHttpServletRequest("POST", "/api/consultas/1/check-in")));
+
+    AuthorizationDecision decision = authorizationManager.authorize(
+        () -> authentication,
+        invocation(new CheckInController(), "checkIn"));
+
+    assertTrue(decision.isGranted());
   }
 
   private static MethodInvocation invocation(Object target, String methodName)
@@ -127,10 +161,31 @@ class AuthorizeResourceAuthorizationManagerTest {
     }
   }
 
+  private static final class WorkflowController {
+
+    @AuthorizePermission(resource = Consulta.class, action = ResourceAction.UPDATE)
+    void cancel() {
+    }
+  }
+
+  @AuthorizePermission(resource = Consulta.class, action = ResourceAction.UPDATE)
+  private static final class CheckInController {
+
+    void checkIn() {
+    }
+  }
+
   @ProtectedResource("usuario")
   private static final class Usuario {
   }
 
   private static final class Consulta {
+  }
+
+  private static Set<String> grantedAuthorities(
+      org.springframework.security.core.Authentication authentication) {
+    return authentication.getAuthorities().stream()
+        .map(org.springframework.security.core.GrantedAuthority::getAuthority)
+        .collect(java.util.stream.Collectors.toUnmodifiableSet());
   }
 }
