@@ -55,6 +55,16 @@ public class UnidadeService {
   }
 
   /**
+   * Obtém uma unidade pelo identificador já convertida para saída.
+   *
+   * @param unidadeId identificador da unidade
+   * @return unidade encontrada
+   */
+  public UnidadeOutput findById(UUID unidadeId) {
+    return unidadeMapper.toOutput(findByIdOrThrow(unidadeId));
+  }
+
+  /**
    * Lista unidades com filtros e paginação.
    *
    * @param query filtro RSQL

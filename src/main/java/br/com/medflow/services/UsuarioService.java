@@ -55,6 +55,16 @@ public class UsuarioService {
   }
 
   /**
+   * Obtém um usuário pelo identificador já convertido para saída.
+   *
+   * @param usuarioId identificador do usuário
+   * @return usuário encontrado
+   */
+  public UsuarioOutput findById(UUID usuarioId) {
+    return usuarioMapper.toOutput(findByIdOrThrow(usuarioId));
+  }
+
+  /**
    * Lista usuários com filtros e paginação.
    *
    * @param query filtro RSQL

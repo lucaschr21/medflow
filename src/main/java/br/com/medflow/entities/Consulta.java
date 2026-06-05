@@ -54,22 +54,22 @@ import lombok.Setter;
 public class Consulta extends Auditable {
 
   @NotNull(message = "O usuário da consulta é obrigatório.")
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(optional = false)
   @JoinColumn(name = "usuario_id", nullable = false)
   private Usuario usuario;
 
   @NotNull(message = "O médico da consulta é obrigatório.")
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(optional = false)
   @JoinColumn(name = "medico_id", nullable = false)
   private Medico medico;
 
   @NotNull(message = "O consultório da consulta é obrigatório.")
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(optional = false)
   @JoinColumn(name = "consultorio_id", nullable = false)
   private Consultorio consultorio;
 
   @NotNull(message = "A alocação médica da consulta é obrigatória.")
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(optional = false)
   @JoinColumn(name = "alocacao_medico_id", nullable = false)
   private AlocacaoMedico alocacaoMedico;
 

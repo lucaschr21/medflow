@@ -65,6 +65,16 @@ public class RegistroAtendimentoService {
   }
 
   /**
+   * Obtém um registro de atendimento pelo identificador já convertido para saída.
+   *
+   * @param registroAtendimentoId identificador do registro
+   * @return registro encontrado
+   */
+  public RegistroAtendimentoOutput findById(UUID registroAtendimentoId) {
+    return registroAtendimentoMapper.toOutput(findByIdOrThrow(registroAtendimentoId));
+  }
+
+  /**
    * Lista registros de atendimento com filtros e paginação.
    *
    * @param query filtro RSQL

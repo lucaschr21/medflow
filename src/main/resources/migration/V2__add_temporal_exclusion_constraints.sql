@@ -1,6 +1,6 @@
-CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS btree_gist WITH SCHEMA medflow;
 
-ALTER TABLE app.alocacao_medico
+ALTER TABLE medflow.alocacao_medico
     ADD CONSTRAINT ex_alocacao_medico_sem_sobreposicao_por_medico
         EXCLUDE USING gist (
             medico_id WITH =,
@@ -12,7 +12,7 @@ ALTER TABLE app.alocacao_medico
         )
         WHERE (ativo);
 
-ALTER TABLE app.alocacao_medico
+ALTER TABLE medflow.alocacao_medico
     ADD CONSTRAINT ex_alocacao_medico_sem_sobreposicao_por_consultorio
         EXCLUDE USING gist (
             consultorio_id WITH =,
@@ -24,7 +24,7 @@ ALTER TABLE app.alocacao_medico
         )
         WHERE (ativo);
 
-ALTER TABLE app.agenda_medica
+ALTER TABLE medflow.agenda_medica
     ADD CONSTRAINT ex_agenda_medica_sem_sobreposicao
         EXCLUDE USING gist (
             alocacao_medico_id WITH =,
@@ -37,21 +37,21 @@ ALTER TABLE app.agenda_medica
         )
         WHERE (ativo);
 
-ALTER TABLE app.bloqueio_agenda
+ALTER TABLE medflow.bloqueio_agenda
     ADD CONSTRAINT ex_bloqueio_agenda_sem_sobreposicao_por_medico
         EXCLUDE USING gist (
             medico_id WITH =,
             tsrange(inicio, fim, '[)') WITH &&
         );
 
-ALTER TABLE app.bloqueio_agenda
+ALTER TABLE medflow.bloqueio_agenda
     ADD CONSTRAINT ex_bloqueio_agenda_sem_sobreposicao_por_consultorio
         EXCLUDE USING gist (
             consultorio_id WITH =,
             tsrange(inicio, fim, '[)') WITH &&
         );
 
-ALTER TABLE app.consulta
+ALTER TABLE medflow.consulta
     ADD CONSTRAINT ex_consulta_sem_sobreposicao_por_medico
         EXCLUDE USING gist (
             medico_id WITH =,
@@ -59,7 +59,7 @@ ALTER TABLE app.consulta
         )
         WHERE (status IN ('AGENDADA', 'CONFIRMADA', 'EM_ESPERA', 'EM_ATENDIMENTO'));
 
-ALTER TABLE app.consulta
+ALTER TABLE medflow.consulta
     ADD CONSTRAINT ex_consulta_sem_sobreposicao_por_consultorio
         EXCLUDE USING gist (
             consultorio_id WITH =,

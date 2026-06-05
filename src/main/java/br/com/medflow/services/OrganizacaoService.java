@@ -50,6 +50,16 @@ public class OrganizacaoService {
   }
 
   /**
+   * Obtém uma organização pelo identificador já convertida para saída.
+   *
+   * @param organizacaoId identificador da organização
+   * @return organização encontrada
+   */
+  public OrganizacaoOutput findById(UUID organizacaoId) {
+    return organizacaoMapper.toOutput(findByIdOrThrow(organizacaoId));
+  }
+
+  /**
    * Lista organizações com filtros e paginação.
    *
    * @param query filtro RSQL

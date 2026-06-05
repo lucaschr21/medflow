@@ -75,6 +75,16 @@ public class ConsultaService {
   }
 
   /**
+   * Obtém uma consulta pelo identificador já convertida para saída.
+   *
+   * @param consultaId identificador da consulta
+   * @return consulta encontrada
+   */
+  public ConsultaOutput findById(UUID consultaId) {
+    return consultaMapper.toOutput(findByIdOrThrow(consultaId));
+  }
+
+  /**
    * Lista consultas com filtros e paginação.
    *
    * @param query filtro RSQL

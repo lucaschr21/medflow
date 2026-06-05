@@ -9,14 +9,13 @@ import org.hibernate.annotations.SoftDeleteType;
 import org.hibernate.envers.Audited;
 
 import br.com.medflow.core.audit.Auditable;
+import jakarta.persistence.CheckConstraint;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.CheckConstraint;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
@@ -34,18 +33,14 @@ import lombok.Setter;
 @Entity
 @Audited
 @SoftDelete(strategy = SoftDeleteType.ACTIVE, columnName = "ativo")
-@Table(
-    name = "consultorio",
-    indexes = @Index(name = "ix_consultorio_unidade_id", columnList = "unidade_id"),
-    uniqueConstraints = @UniqueConstraint(name = "uk_consultorio_unidade_sala", columnNames = { "unidade_id", "sala" }),
-    check = @CheckConstraint(
-        name = "ck_consultorio_campos_textuais",
-        constraint = "char_length(trim(nome)) > 0 and char_length(trim(sala)) > 0"))
+@Table(name = "consultorio", indexes = @Index(name = "ix_consultorio_unidade_id", columnList = "unidade_id"), uniqueConstraints = @UniqueConstraint(name = "uk_consultorio_unidade_sala", columnNames = {
+    "unidade_id",
+    "sala" }), check = @CheckConstraint(name = "ck_consultorio_campos_textuais", constraint = "char_length(trim(nome)) > 0 and char_length(trim(sala)) > 0"))
 @NoArgsConstructor
 public class Consultorio extends Auditable {
 
   @NotNull(message = "A unidade do consultório é obrigatória.")
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @ManyToOne(optional = false)
   @JoinColumn(name = "unidade_id", nullable = false)
   private Unidade unidade;
 
@@ -60,7 +55,7 @@ public class Consultorio extends Auditable {
   private String sala;
 
   @ColumnDefault("true")
-  @Column(name = "ativo", nullable = false)
+  @Column(name = "ativo", nullable = false, insertable = false, updatable = false)
   private boolean ativo = true;
 
   @Setter(lombok.AccessLevel.NONE)

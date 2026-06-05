@@ -54,6 +54,16 @@ public class AnexoConsultaService {
   }
 
   /**
+   * Obtém um anexo de consulta pelo identificador já convertido para saída.
+   *
+   * @param anexoConsultaId identificador do anexo
+   * @return anexo encontrado
+   */
+  public AnexoConsultaOutput findById(UUID anexoConsultaId) {
+    return anexoConsultaMapper.toOutput(findByIdOrThrow(anexoConsultaId));
+  }
+
+  /**
    * Lista anexos de consulta com filtros e paginação.
    *
    * @param query filtro RSQL

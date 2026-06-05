@@ -55,6 +55,16 @@ public class ConsultorioService {
   }
 
   /**
+   * Obtém um consultório pelo identificador já convertido para saída.
+   *
+   * @param consultorioId identificador do consultório
+   * @return consultório encontrado
+   */
+  public ConsultorioOutput findById(UUID consultorioId) {
+    return consultorioMapper.toOutput(findByIdOrThrow(consultorioId));
+  }
+
+  /**
    * Lista consultórios com filtros e paginação.
    *
    * @param query filtro RSQL

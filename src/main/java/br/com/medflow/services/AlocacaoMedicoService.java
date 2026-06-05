@@ -65,6 +65,16 @@ public class AlocacaoMedicoService {
   }
 
   /**
+   * Obtém uma alocação médica pelo identificador já convertida para saída.
+   *
+   * @param alocacaoMedicoId identificador da alocação
+   * @return alocação encontrada
+   */
+  public AlocacaoMedicoOutput findById(UUID alocacaoMedicoId) {
+    return alocacaoMedicoMapper.toOutput(findByIdOrThrow(alocacaoMedicoId));
+  }
+
+  /**
    * Lista alocações médicas com filtros e paginação.
    *
    * @param query filtro RSQL

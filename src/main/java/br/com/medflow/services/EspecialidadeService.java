@@ -52,6 +52,16 @@ public class EspecialidadeService {
   }
 
   /**
+   * Obtém uma especialidade pelo identificador já convertida para saída.
+   *
+   * @param especialidadeId identificador da especialidade
+   * @return especialidade encontrada
+   */
+  public EspecialidadeOutput findById(UUID especialidadeId) {
+    return especialidadeMapper.toOutput(findByIdOrThrow(especialidadeId));
+  }
+
+  /**
    * Lista especialidades com filtros e paginação.
    *
    * @param query filtro RSQL

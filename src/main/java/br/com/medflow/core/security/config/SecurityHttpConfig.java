@@ -46,7 +46,8 @@ public class SecurityHttpConfig {
                     "/api/openapi",
                     "/api/openapi/**",
                     "/docs",
-                    "/docs/**")
+                    "/docs/**",
+                    "/swagger-ui/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated())

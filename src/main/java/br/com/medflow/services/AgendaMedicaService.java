@@ -54,6 +54,16 @@ public class AgendaMedicaService {
   }
 
   /**
+   * Obtém uma agenda médica pelo identificador já convertida para saída.
+   *
+   * @param agendaMedicaId identificador da agenda
+   * @return agenda encontrada
+   */
+  public AgendaMedicaOutput findById(UUID agendaMedicaId) {
+    return agendaMedicaMapper.toOutput(findByIdOrThrow(agendaMedicaId));
+  }
+
+  /**
    * Lista agendas médicas com filtros e paginação.
    *
    * @param query filtro RSQL

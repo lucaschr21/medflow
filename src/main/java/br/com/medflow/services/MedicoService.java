@@ -62,6 +62,16 @@ public class MedicoService {
   }
 
   /**
+   * Obtém um médico pelo identificador já convertido para saída.
+   *
+   * @param medicoId identificador do médico
+   * @return médico encontrado
+   */
+  public MedicoOutput findById(UUID medicoId) {
+    return medicoMapper.toOutput(findByIdOrThrow(medicoId));
+  }
+
+  /**
    * Lista médicos com filtros e paginação.
    *
    * @param query filtro RSQL

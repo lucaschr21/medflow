@@ -60,6 +60,16 @@ public class BloqueioAgendaService {
   }
 
   /**
+   * Obtém um bloqueio de agenda pelo identificador já convertido para saída.
+   *
+   * @param bloqueioAgendaId identificador do bloqueio
+   * @return bloqueio encontrado
+   */
+  public BloqueioAgendaOutput findById(UUID bloqueioAgendaId) {
+    return bloqueioAgendaMapper.toOutput(findByIdOrThrow(bloqueioAgendaId));
+  }
+
+  /**
    * Lista bloqueios de agenda com filtros e paginação.
    *
    * @param query filtro RSQL

@@ -44,7 +44,7 @@ public class Especialidade extends Auditable {
   private String descricao;
 
   @ColumnDefault("true")
-  @Column(name = "ativo", nullable = false)
+  @Column(name = "ativo", nullable = false, insertable = false, updatable = false)
   private boolean ativo = true;
 
   @Setter(lombok.AccessLevel.NONE)
