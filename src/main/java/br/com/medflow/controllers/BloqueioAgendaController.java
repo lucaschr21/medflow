@@ -26,6 +26,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 
+import br.com.medflow.core.security.annotations.AuthorizeResource;
+import br.com.medflow.entities.BloqueioAgenda;
+
 /**
  * Endpoints HTTP para bloqueios de agenda.
  */
@@ -33,6 +36,7 @@ import org.springdoc.core.annotations.ParameterObject;
 @RestController
 @RequestMapping("/api/bloqueios-agenda")
 @Tag(name = "Bloqueios de Agenda")
+@AuthorizeResource(BloqueioAgenda.class)
 public class BloqueioAgendaController {
 
   private final BloqueioAgendaService bloqueioAgendaService;

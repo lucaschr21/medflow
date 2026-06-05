@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
+import org.hibernate.annotations.SoftDelete;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -22,6 +23,7 @@ class FunctionalAuthorizerTest {
   private final FunctionalAuthorizer functionalAuthorizer =
       new FunctionalAuthorizer(
           new ProtectedResourceResolver(),
+          new ResourceActionResolver(),
           (authentication, permission) -> permittedAuthorities(authentication.getAuthorities())
               .contains(permission.authority()));
 
@@ -62,6 +64,22 @@ class FunctionalAuthorizerTest {
   }
 
   @Test
+  void shouldInferDeactivateForSoftDeletedResourceOnDelete() {
+    SecurityContextHolder.getContext()
+        .setAuthentication(
+            new TestingAuthenticationToken(
+                "user",
+                "credentials",
+                "usuario:deactivate",
+                "ROLE_USUARIO"));
+
+    MockHttpServletRequest request = new MockHttpServletRequest("DELETE", "/api/usuarios/1");
+    RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+    assertTrue(functionalAuthorizer.hasAccess(Usuario.class));
+  }
+
+  @Test
   void shouldResolvePermissionFromResourceType() {
     FunctionalPermission permission =
         functionalAuthorizer.permission(Usuario.class, ResourceAction.DELETE);
@@ -83,6 +101,7 @@ class FunctionalAuthorizerTest {
         () -> functionalAuthorizer.checkAccess(Usuario.class, ResourceAction.DELETE));
   }
 
+  @SoftDelete
   @ProtectedResource("usuario")
   private static final class Usuario {}
 

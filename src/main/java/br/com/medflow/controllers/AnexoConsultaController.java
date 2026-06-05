@@ -26,6 +26,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 
+import br.com.medflow.core.security.annotations.AuthorizeResource;
+import br.com.medflow.entities.AnexoConsulta;
+
 /**
  * Endpoints HTTP para anexos de consulta.
  */
@@ -33,6 +36,7 @@ import org.springdoc.core.annotations.ParameterObject;
 @RestController
 @RequestMapping("/api/anexos-consulta")
 @Tag(name = "Anexos de Consulta")
+@AuthorizeResource(AnexoConsulta.class)
 public class AnexoConsultaController {
 
   private final AnexoConsultaService anexoConsultaService;

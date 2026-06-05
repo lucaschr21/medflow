@@ -14,7 +14,6 @@ import jakarta.validation.constraints.Size;
  * @param logotipo logotipo da organização
  * @param logotipoContentType content type do logotipo
  * @param corPrimaria cor primária da organização
- * @param ativo indicador de atividade
  */
 public record OrganizacaoInput(
     @NotBlank(message = "O nome da organização é obrigatório.")
@@ -33,6 +32,5 @@ public record OrganizacaoInput(
     String logotipoContentType,
     @NotBlank(message = "A cor primária da organização é obrigatória.")
     @Pattern(regexp = "#[0-9A-Fa-f]{6}", message = "A cor primária deve estar no formato hexadecimal #RRGGBB.")
-    String corPrimaria,
-    boolean ativo) {
+    String corPrimaria) {
 }

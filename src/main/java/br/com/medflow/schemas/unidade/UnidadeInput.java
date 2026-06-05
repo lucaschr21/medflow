@@ -16,7 +16,6 @@ import jakarta.validation.constraints.Size;
  * @param nome nome da unidade
  * @param telefone telefone da unidade
  * @param endereco endereço da unidade
- * @param ativo indicador de atividade
  */
 public record UnidadeInput(
     @NotNull(message = "A organização da unidade é obrigatória.")
@@ -30,6 +29,5 @@ public record UnidadeInput(
     String telefone,
     @Valid
     @NotNull(message = "O endereço da unidade é obrigatório.")
-    EnderecoInput endereco,
-    boolean ativo) {
+    EnderecoInput endereco) {
 }

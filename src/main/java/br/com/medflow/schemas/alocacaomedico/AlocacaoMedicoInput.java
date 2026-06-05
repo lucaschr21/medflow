@@ -12,7 +12,6 @@ import jakarta.validation.constraints.NotNull;
  * @param consultorioId identificador do consultório
  * @param dataInicio data de início da alocação
  * @param dataFim data de fim da alocação
- * @param ativo indicador de atividade
  */
 public record AlocacaoMedicoInput(
     @NotNull(message = "O médico da alocação é obrigatório.")
@@ -21,6 +20,5 @@ public record AlocacaoMedicoInput(
     UUID consultorioId,
     @NotNull(message = "A data de início da alocação é obrigatória.")
     LocalDate dataInicio,
-    LocalDate dataFim,
-    boolean ativo) {
+    LocalDate dataFim) {
 }

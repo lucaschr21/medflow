@@ -2,8 +2,6 @@ package br.com.medflow.core.security.authorization;
 
 import java.util.Locale;
 
-import org.springframework.http.HttpMethod;
-
 /**
  * Enumera as acoes funcionais padrao do Medflow.
  */
@@ -44,27 +42,6 @@ public enum ResourceAction {
       case "deactivate" -> DEACTIVATE;
       case "delete" -> DELETE;
       default -> throw new IllegalArgumentException("Unsupported resource action: " + value);
-    };
-  }
-
-  /**
-   * Mapeia um metodo HTTP para a acao funcional padrao do projeto.
-   *
-   * @param method metodo HTTP
-   * @return acao correspondente
-   */
-  public static ResourceAction from(HttpMethod method) {
-    if (method == null) {
-      throw new IllegalArgumentException("method cannot be null");
-    }
-
-    return switch (method.name()) {
-      case "GET" -> READ;
-      case "POST" -> CREATE;
-      case "PUT" -> UPDATE;
-      case "PATCH" -> DEACTIVATE;
-      case "DELETE" -> DELETE;
-      default -> throw new IllegalArgumentException("Unsupported HTTP method: " + method);
     };
   }
 

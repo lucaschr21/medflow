@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.method.ParameterErrors;
@@ -35,6 +36,7 @@ import br.com.medflow.core.exceptions.EntityNotFoundException;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
   private static final HttpStatus VALIDATION_STATUS = HttpStatus.UNPROCESSABLE_CONTENT;
+  private static final URI ACCESS_DENIED_TYPE = URI.create("urn:medflow:problem:access-denied");
   private static final URI BUSINESS_RULE_TYPE = URI.create("urn:medflow:problem:business-rule");
   private static final URI NOT_FOUND_TYPE = URI.create("urn:medflow:problem:not-found");
   private static final URI VALIDATION_TYPE = URI.create("urn:medflow:problem:validation-error");
@@ -70,6 +72,22 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         errorResponseException(HttpStatus.NOT_FOUND, NOT_FOUND_TYPE, "Recurso não encontrado", exception),
         HttpHeaders.EMPTY,
         HttpStatus.NOT_FOUND,
+        request);
+  }
+
+  /**
+   * Trata negações de acesso da camada de segurança.
+   *
+   * @param exception exceção capturada
+   * @param request   requisição atual
+   * @return resposta padronizada
+   */
+  @ExceptionHandler(AccessDeniedException.class)
+  ResponseEntity<Object> handleAccessDenied(AccessDeniedException exception, WebRequest request) {
+    return handleErrorResponseException(
+        errorResponseException(HttpStatus.FORBIDDEN, ACCESS_DENIED_TYPE, "Acesso negado", exception),
+        HttpHeaders.EMPTY,
+        HttpStatus.FORBIDDEN,
         request);
   }
 

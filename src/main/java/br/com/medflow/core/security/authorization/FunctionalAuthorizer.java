@@ -28,19 +28,23 @@ import jakarta.servlet.http.HttpServletRequest;
 public class FunctionalAuthorizer {
 
   private final ProtectedResourceResolver protectedResourceResolver;
+  private final ResourceActionResolver resourceActionResolver;
   private final FunctionalPermissionDecisionService functionalPermissionDecisionService;
 
   /**
    * Cria o autorizador funcional.
    *
    * @param protectedResourceResolver resolvedor de nomes de recurso
+   * @param resourceActionResolver resolvedor da ação funcional do recurso
    * @param functionalPermissionDecisionService serviço que decide a permissão
    *        funcional
    */
   public FunctionalAuthorizer(
       ProtectedResourceResolver protectedResourceResolver,
+      ResourceActionResolver resourceActionResolver,
       FunctionalPermissionDecisionService functionalPermissionDecisionService) {
     this.protectedResourceResolver = protectedResourceResolver;
+    this.resourceActionResolver = resourceActionResolver;
     this.functionalPermissionDecisionService = functionalPermissionDecisionService;
   }
 
@@ -52,7 +56,7 @@ public class FunctionalAuthorizer {
    * @return {@code true} quando o acesso funcional for permitido
    */
   public boolean hasAccess(Class<?> resourceType) {
-    return hasAccess(resourceType, currentAction());
+    return hasAccess(resourceType, currentAction(resourceType));
   }
 
   /**
@@ -90,7 +94,7 @@ public class FunctionalAuthorizer {
    * @throws AccessDeniedException quando o acesso nao for permitido
    */
   public void checkAccess(Class<?> resourceType) {
-    checkAccess(resourceType, currentAction());
+    checkAccess(resourceType, currentAction(resourceType));
   }
 
   /**
@@ -141,13 +145,13 @@ public class FunctionalAuthorizer {
         .filter(authentication -> !(authentication instanceof AnonymousAuthenticationToken));
   }
 
-  private static ResourceAction currentAction() {
+  private ResourceAction currentAction(Class<?> resourceType) {
     RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
     if (!(requestAttributes instanceof ServletRequestAttributes servletRequestAttributes)) {
       throw new IllegalStateException("No current HTTP request is available");
     }
 
     HttpServletRequest request = servletRequestAttributes.getRequest();
-    return ResourceAction.from(org.springframework.http.HttpMethod.valueOf(request.getMethod()));
+    return resourceActionResolver.resolve(resourceType, org.springframework.http.HttpMethod.valueOf(request.getMethod()));
   }
 }

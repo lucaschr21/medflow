@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.util.Set;
 
 import org.aopalliance.intercept.MethodInvocation;
+import org.hibernate.annotations.SoftDelete;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -22,10 +23,13 @@ import br.com.medflow.core.security.annotations.ProtectedResource;
 
 class AuthorizeResourceAuthorizationManagerTest {
 
+  private final ResourceActionResolver resourceActionResolver = new ResourceActionResolver();
   private final AuthorizeResourceAuthorizationManager authorizationManager = new AuthorizeResourceAuthorizationManager(
       new FunctionalAuthorizer(
           new ProtectedResourceResolver(),
-          (authentication, permission) -> grantedAuthorities(authentication).contains(permission.authority())));
+          resourceActionResolver,
+          (authentication, permission) -> grantedAuthorities(authentication).contains(permission.authority())),
+      resourceActionResolver);
 
   @AfterEach
   void tearDown() {
@@ -78,6 +82,22 @@ class AuthorizeResourceAuthorizationManagerTest {
         invocation(new ResourceController(), "delete"));
 
     assertFalse(decision.isGranted());
+  }
+
+  @Test
+  void shouldInferDeactivateForSoftDeletedResourceOnDelete() throws NoSuchMethodException {
+    TestingAuthenticationToken authentication = new TestingAuthenticationToken(
+        "user",
+        "credentials",
+        "usuario:deactivate");
+    RequestContextHolder.setRequestAttributes(
+        new ServletRequestAttributes(new MockHttpServletRequest("DELETE", "/api/usuarios/1")));
+
+    AuthorizationDecision decision = authorizationManager.authorize(
+        () -> authentication,
+        invocation(new ResourceController(), "delete"));
+
+    assertTrue(decision.isGranted());
   }
 
   @Test
@@ -175,6 +195,7 @@ class AuthorizeResourceAuthorizationManagerTest {
     }
   }
 
+  @SoftDelete
   @ProtectedResource("usuario")
   private static final class Usuario {
   }

@@ -20,6 +20,7 @@ public interface OrganizacaoMapper {
   @Mapping(target = "lastModifiedBy", ignore = true)
   @Mapping(target = "lastModifiedAt", ignore = true)
   @Mapping(target = "version", ignore = true)
+  @Mapping(target = "ativo", ignore = true)
   @Mapping(target = "unidades", ignore = true)
   @Mapping(target = "usuarios", ignore = true)
   Organizacao toEntity(OrganizacaoInput source);
@@ -33,6 +34,7 @@ public interface OrganizacaoMapper {
   @Mapping(target = "lastModifiedBy", ignore = true)
   @Mapping(target = "lastModifiedAt", ignore = true)
   @Mapping(target = "version", ignore = true)
+  @Mapping(target = "ativo", ignore = true)
   @Mapping(target = "unidades", ignore = true)
   @Mapping(target = "usuarios", ignore = true)
   void updateEntity(OrganizacaoInput source, @MappingTarget Organizacao target);

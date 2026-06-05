@@ -26,6 +26,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 
+import br.com.medflow.core.security.annotations.AuthorizeResource;
+import br.com.medflow.entities.Unidade;
+
 /**
  * Endpoints HTTP para unidades.
  */
@@ -33,6 +36,7 @@ import org.springdoc.core.annotations.ParameterObject;
 @RestController
 @RequestMapping("/api/unidades")
 @Tag(name = "Unidades")
+@AuthorizeResource(Unidade.class)
 public class UnidadeController {
 
   private final UnidadeService unidadeService;

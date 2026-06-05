@@ -12,7 +12,6 @@ import jakarta.validation.constraints.Size;
  * @param unidadeId identificador da unidade
  * @param nome nome do consultório
  * @param sala sala do consultório
- * @param ativo indicador de atividade
  */
 public record ConsultorioInput(
     @NotNull(message = "A unidade do consultório é obrigatória.")
@@ -22,6 +21,5 @@ public record ConsultorioInput(
     String nome,
     @NotBlank(message = "A sala do consultório é obrigatória.")
     @Size(max = 40, message = "A sala do consultório deve ter no máximo 40 caracteres.")
-    String sala,
-    boolean ativo) {
+    String sala) {
 }

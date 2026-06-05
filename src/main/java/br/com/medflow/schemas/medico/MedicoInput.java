@@ -10,11 +10,9 @@ import jakarta.validation.constraints.NotNull;
  *
  * @param usuarioId identificador do usuário associado
  * @param especialidadeIds identificadores das especialidades associadas
- * @param ativo indicador de atividade
  */
 public record MedicoInput(
     @NotNull(message = "O usuário do médico é obrigatório.")
     UUID usuarioId,
-    Set<UUID> especialidadeIds,
-    boolean ativo) {
+    Set<UUID> especialidadeIds) {
 }

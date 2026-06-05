@@ -20,6 +20,7 @@ public interface EspecialidadeMapper {
   @Mapping(target = "lastModifiedBy", ignore = true)
   @Mapping(target = "lastModifiedAt", ignore = true)
   @Mapping(target = "version", ignore = true)
+  @Mapping(target = "ativo", ignore = true)
   @Mapping(target = "medicos", ignore = true)
   Especialidade toEntity(EspecialidadeInput source);
 
@@ -32,6 +33,7 @@ public interface EspecialidadeMapper {
   @Mapping(target = "lastModifiedBy", ignore = true)
   @Mapping(target = "lastModifiedAt", ignore = true)
   @Mapping(target = "version", ignore = true)
+  @Mapping(target = "ativo", ignore = true)
   @Mapping(target = "medicos", ignore = true)
   void updateEntity(EspecialidadeInput source, @MappingTarget Especialidade target);
 }

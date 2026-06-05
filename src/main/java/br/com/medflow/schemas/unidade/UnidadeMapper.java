@@ -21,6 +21,7 @@ public interface UnidadeMapper {
   @Mapping(target = "lastModifiedBy", ignore = true)
   @Mapping(target = "lastModifiedAt", ignore = true)
   @Mapping(target = "version", ignore = true)
+  @Mapping(target = "ativo", ignore = true)
   @Mapping(target = "organizacao", ignore = true)
   @Mapping(target = "consultorios", ignore = true)
   Unidade toEntity(UnidadeInput source);
@@ -35,6 +36,7 @@ public interface UnidadeMapper {
   @Mapping(target = "lastModifiedBy", ignore = true)
   @Mapping(target = "lastModifiedAt", ignore = true)
   @Mapping(target = "version", ignore = true)
+  @Mapping(target = "ativo", ignore = true)
   @Mapping(target = "organizacao", ignore = true)
   @Mapping(target = "consultorios", ignore = true)
   void updateEntity(UnidadeInput source, @MappingTarget Unidade target);

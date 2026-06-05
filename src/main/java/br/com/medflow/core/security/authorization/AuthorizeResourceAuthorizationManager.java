@@ -34,14 +34,19 @@ public class AuthorizeResourceAuthorizationManager
     implements AuthorizationManager<MethodInvocation> {
 
   private final FunctionalAuthorizer functionalAuthorizer;
+  private final ResourceActionResolver resourceActionResolver;
 
   /**
    * Cria o gerenciador de autorizacao da anotacao {@link AuthorizeResource}.
    *
    * @param functionalAuthorizer autorizador funcional do projeto
+   * @param resourceActionResolver resolvedor da ação funcional do recurso
    */
-  public AuthorizeResourceAuthorizationManager(FunctionalAuthorizer functionalAuthorizer) {
+  public AuthorizeResourceAuthorizationManager(
+      FunctionalAuthorizer functionalAuthorizer,
+      ResourceActionResolver resourceActionResolver) {
     this.functionalAuthorizer = functionalAuthorizer;
+    this.resourceActionResolver = resourceActionResolver;
   }
 
   /**
@@ -62,7 +67,7 @@ public class AuthorizeResourceAuthorizationManager
     return new AuthorizationDecision(granted);
   }
 
-  private static RequiredPermission resolveRequiredPermission(MethodInvocation invocation) {
+  private RequiredPermission resolveRequiredPermission(MethodInvocation invocation) {
     Method method = invocation.getMethod();
     AuthorizePermission methodPermission =
         AnnotatedElementUtils.findMergedAnnotation(method, AuthorizePermission.class);
@@ -84,13 +89,17 @@ public class AuthorizeResourceAuthorizationManager
     AuthorizeResource methodResource =
         AnnotatedElementUtils.findMergedAnnotation(method, AuthorizeResource.class);
     if (methodResource != null) {
-      return new RequiredPermission(methodResource.value(), ResourceAction.from(currentHttpMethod()));
+      return new RequiredPermission(
+          methodResource.value(),
+          resourceActionResolver.resolve(methodResource.value(), currentHttpMethod()));
     }
 
     AuthorizeResource typeResource =
         AnnotatedElementUtils.findMergedAnnotation(targetClass, AuthorizeResource.class);
     if (typeResource != null) {
-      return new RequiredPermission(typeResource.value(), ResourceAction.from(currentHttpMethod()));
+      return new RequiredPermission(
+          typeResource.value(),
+          resourceActionResolver.resolve(typeResource.value(), currentHttpMethod()));
     }
 
     throw new IllegalStateException(

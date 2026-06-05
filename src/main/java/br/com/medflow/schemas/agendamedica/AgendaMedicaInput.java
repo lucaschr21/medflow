@@ -13,7 +13,6 @@ import jakarta.validation.constraints.NotNull;
  * @param diaSemana dia da semana da agenda
  * @param horaInicio hora de início
  * @param horaFim hora de fim
- * @param ativo indicador de atividade
  */
 public record AgendaMedicaInput(
     @NotNull(message = "A alocação médica da agenda é obrigatória.")
@@ -23,6 +22,5 @@ public record AgendaMedicaInput(
     @NotNull(message = "A hora de início da agenda é obrigatória.")
     LocalTime horaInicio,
     @NotNull(message = "A hora de fim da agenda é obrigatória.")
-    LocalTime horaFim,
-    boolean ativo) {
+    LocalTime horaFim) {
 }

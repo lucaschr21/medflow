@@ -20,6 +20,7 @@ public interface AgendaMedicaMapper {
   @Mapping(target = "lastModifiedBy", ignore = true)
   @Mapping(target = "lastModifiedAt", ignore = true)
   @Mapping(target = "version", ignore = true)
+  @Mapping(target = "ativo", ignore = true)
   @Mapping(target = "alocacaoMedico", ignore = true)
   AgendaMedica toEntity(AgendaMedicaInput source);
 
@@ -33,6 +34,7 @@ public interface AgendaMedicaMapper {
   @Mapping(target = "lastModifiedBy", ignore = true)
   @Mapping(target = "lastModifiedAt", ignore = true)
   @Mapping(target = "version", ignore = true)
+  @Mapping(target = "ativo", ignore = true)
   @Mapping(target = "alocacaoMedico", ignore = true)
   void updateEntity(AgendaMedicaInput source, @MappingTarget AgendaMedica target);
 }

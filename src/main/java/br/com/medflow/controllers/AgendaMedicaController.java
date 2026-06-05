@@ -26,6 +26,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springdoc.core.annotations.ParameterObject;
 
+import br.com.medflow.core.security.annotations.AuthorizeResource;
+import br.com.medflow.entities.AgendaMedica;
+
 /**
  * Endpoints HTTP para agendas médicas.
  */
@@ -33,6 +36,7 @@ import org.springdoc.core.annotations.ParameterObject;
 @RestController
 @RequestMapping("/api/agendas-medicas")
 @Tag(name = "Agendas Médicas")
+@AuthorizeResource(AgendaMedica.class)
 public class AgendaMedicaController {
 
   private final AgendaMedicaService agendaMedicaService;
