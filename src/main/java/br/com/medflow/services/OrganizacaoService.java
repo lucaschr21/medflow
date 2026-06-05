@@ -2,10 +2,13 @@ package br.com.medflow.services;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.medflow.core.persistence.EntityNotFoundException;
+import br.com.medflow.core.exceptions.EntityNotFoundException;
+import br.com.medflow.core.persistence.query.PageResult;
+import br.com.medflow.core.persistence.query.RsqlQuery;
 import br.com.medflow.entities.Organizacao;
 import br.com.medflow.repositories.OrganizacaoRepository;
 import br.com.medflow.schemas.organizacao.OrganizacaoInput;
@@ -47,6 +50,17 @@ public class OrganizacaoService {
   }
 
   /**
+   * Lista organizações com filtros e paginação.
+   *
+   * @param query filtro RSQL
+   * @param pageable paginação e ordenação
+   * @return página de organizações
+   */
+  public PageResult<OrganizacaoOutput> findAll(RsqlQuery query, Pageable pageable) {
+    return organizacaoRepository.findAll(query.toCriteria(pageable)).map(organizacaoMapper::toOutput);
+  }
+
+  /**
    * Persiste uma nova organização.
    *
    * @param input dados da organização
@@ -73,12 +87,12 @@ public class OrganizacaoService {
   }
 
   /**
-   * Remove uma organização existente.
+   * Inativa uma organização existente.
    *
    * @param organizacaoId identificador da organização
    */
   @Transactional
-  public void delete(UUID organizacaoId) {
+  public void deactivate(UUID organizacaoId) {
     organizacaoRepository.delete(findByIdOrThrow(organizacaoId));
   }
 }

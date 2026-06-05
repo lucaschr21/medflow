@@ -5,6 +5,8 @@ import java.time.LocalTime;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
 import org.hibernate.envers.Audited;
 import org.hibernate.type.SqlTypes;
 
@@ -32,6 +34,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Audited
+@SoftDelete(strategy = SoftDeleteType.ACTIVE, columnName = "ativo")
 @Table(
     name = "agenda_medica",
     indexes = {

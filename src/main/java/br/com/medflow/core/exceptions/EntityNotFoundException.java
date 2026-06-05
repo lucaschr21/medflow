@@ -1,4 +1,4 @@
-package br.com.medflow.core.persistence;
+package br.com.medflow.core.exceptions;
 
 /**
  * Sinaliza que uma entidade obrigatória não foi localizada.

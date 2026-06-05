@@ -2,10 +2,13 @@ package br.com.medflow.services;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.medflow.core.persistence.EntityNotFoundException;
+import br.com.medflow.core.exceptions.EntityNotFoundException;
+import br.com.medflow.core.persistence.query.PageResult;
+import br.com.medflow.core.persistence.query.RsqlQuery;
 import br.com.medflow.entities.Organizacao;
 import br.com.medflow.entities.Usuario;
 import br.com.medflow.repositories.UsuarioRepository;
@@ -52,6 +55,17 @@ public class UsuarioService {
   }
 
   /**
+   * Lista usuários com filtros e paginação.
+   *
+   * @param query filtro RSQL
+   * @param pageable paginação e ordenação
+   * @return página de usuários
+   */
+  public PageResult<UsuarioOutput> findAll(RsqlQuery query, Pageable pageable) {
+    return usuarioRepository.findAll(query.toCriteria(pageable)).map(usuarioMapper::toOutput);
+  }
+
+  /**
    * Obtém um usuário pela organização e pelo identificador do Keycloak.
    *
    * @param organizacaoId identificador da organização
@@ -95,12 +109,12 @@ public class UsuarioService {
   }
 
   /**
-   * Remove um usuário existente.
+   * Inativa um usuário existente.
    *
    * @param usuarioId identificador do usuário
    */
   @Transactional
-  public void delete(UUID usuarioId) {
+  public void deactivate(UUID usuarioId) {
     usuarioRepository.delete(findByIdOrThrow(usuarioId));
   }
 }

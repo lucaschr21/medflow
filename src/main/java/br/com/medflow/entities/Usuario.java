@@ -5,6 +5,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
 import org.hibernate.envers.Audited;
 
 import br.com.medflow.core.audit.Auditable;
@@ -30,6 +32,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Audited
+@SoftDelete(strategy = SoftDeleteType.ACTIVE, columnName = "ativo")
 @Table(
     name = "usuario",
     indexes = {

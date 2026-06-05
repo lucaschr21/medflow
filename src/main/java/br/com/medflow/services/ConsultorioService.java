@@ -2,10 +2,13 @@ package br.com.medflow.services;
 
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.medflow.core.persistence.EntityNotFoundException;
+import br.com.medflow.core.exceptions.EntityNotFoundException;
+import br.com.medflow.core.persistence.query.PageResult;
+import br.com.medflow.core.persistence.query.RsqlQuery;
 import br.com.medflow.entities.Consultorio;
 import br.com.medflow.entities.Unidade;
 import br.com.medflow.repositories.ConsultorioRepository;
@@ -52,6 +55,17 @@ public class ConsultorioService {
   }
 
   /**
+   * Lista consultórios com filtros e paginação.
+   *
+   * @param query filtro RSQL
+   * @param pageable paginação e ordenação
+   * @return página de consultórios
+   */
+  public PageResult<ConsultorioOutput> findAll(RsqlQuery query, Pageable pageable) {
+    return consultorioRepository.findAll(query.toCriteria(pageable)).map(consultorioMapper::toOutput);
+  }
+
+  /**
    * Persiste um novo consultório associado a uma unidade.
    *
    * @param input dados do consultório
@@ -81,12 +95,12 @@ public class ConsultorioService {
   }
 
   /**
-   * Remove um consultório existente.
+   * Inativa um consultório existente.
    *
    * @param consultorioId identificador do consultório
    */
   @Transactional
-  public void delete(UUID consultorioId) {
+  public void deactivate(UUID consultorioId) {
     consultorioRepository.delete(findByIdOrThrow(consultorioId));
   }
 }

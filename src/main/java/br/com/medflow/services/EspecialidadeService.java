@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.medflow.core.persistence.EntityNotFoundException;
+import br.com.medflow.core.exceptions.EntityNotFoundException;
+import br.com.medflow.core.persistence.query.PageResult;
+import br.com.medflow.core.persistence.query.RsqlQuery;
 import br.com.medflow.entities.Especialidade;
 import br.com.medflow.repositories.EspecialidadeRepository;
 import br.com.medflow.schemas.especialidade.EspecialidadeInput;
@@ -46,6 +49,17 @@ public class EspecialidadeService {
   public Especialidade findByIdOrThrow(UUID especialidadeId) {
     return especialidadeRepository.findById(especialidadeId)
         .orElseThrow(() -> new EntityNotFoundException("Especialidade não encontrada: " + especialidadeId));
+  }
+
+  /**
+   * Lista especialidades com filtros e paginação.
+   *
+   * @param query filtro RSQL
+   * @param pageable paginação e ordenação
+   * @return página de especialidades
+   */
+  public PageResult<EspecialidadeOutput> findAll(RsqlQuery query, Pageable pageable) {
+    return especialidadeRepository.findAll(query.toCriteria(pageable)).map(especialidadeMapper::toOutput);
   }
 
   /**
@@ -89,12 +103,12 @@ public class EspecialidadeService {
   }
 
   /**
-   * Remove uma especialidade existente.
+   * Inativa uma especialidade existente.
    *
    * @param especialidadeId identificador da especialidade
    */
   @Transactional
-  public void delete(UUID especialidadeId) {
+  public void deactivate(UUID especialidadeId) {
     especialidadeRepository.delete(findByIdOrThrow(especialidadeId));
   }
 }

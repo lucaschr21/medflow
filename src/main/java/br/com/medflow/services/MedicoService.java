@@ -4,10 +4,13 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.medflow.core.persistence.EntityNotFoundException;
+import br.com.medflow.core.exceptions.EntityNotFoundException;
+import br.com.medflow.core.persistence.query.PageResult;
+import br.com.medflow.core.persistence.query.RsqlQuery;
 import br.com.medflow.entities.Especialidade;
 import br.com.medflow.entities.Medico;
 import br.com.medflow.entities.Usuario;
@@ -59,6 +62,17 @@ public class MedicoService {
   }
 
   /**
+   * Lista médicos com filtros e paginação.
+   *
+   * @param query filtro RSQL
+   * @param pageable paginação e ordenação
+   * @return página de médicos
+   */
+  public PageResult<MedicoOutput> findAll(RsqlQuery query, Pageable pageable) {
+    return medicoRepository.findAll(query.toCriteria(pageable)).map(medicoMapper::toOutput);
+  }
+
+  /**
    * Obtém um médico pelo identificador do usuário associado.
    *
    * @param usuarioId identificador do usuário
@@ -101,12 +115,12 @@ public class MedicoService {
   }
 
   /**
-   * Remove um médico existente.
+   * Inativa um médico existente.
    *
    * @param medicoId identificador do médico
    */
   @Transactional
-  public void delete(UUID medicoId) {
+  public void deactivate(UUID medicoId) {
     medicoRepository.delete(findByIdOrThrow(medicoId));
   }
 
