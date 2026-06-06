@@ -59,6 +59,22 @@ export type PermissionTuple<
 > = readonly [resource: ResourceType, scope: ScopeType];
 
 /**
+ * Formas aceitas para declarar uma permissão funcional na UI.
+ *
+ * Regras:
+ * - `resource` isolado significa `resource:read`
+ * - `[resource, scope]` representa `resource:scope`
+ * - `PermissionDescriptor` representa a forma explícita completa
+ */
+export type PermissionInput<
+  ResourceType extends Resource = Resource,
+  ScopeType extends Scope = Scope,
+> =
+  | ResourceType
+  | PermissionTuple<ResourceType, ScopeType>
+  | PermissionDescriptor<ResourceType, ScopeType>;
+
+/**
  * Estrutura simplificada retornada pelo Keycloak Authorization Services em
  * `response_mode=permissions`.
  */

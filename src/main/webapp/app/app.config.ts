@@ -1,10 +1,14 @@
 import type { ApplicationConfig } from '@angular/core';
 import { provideBrowserGlobalErrorListeners } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { inject } from '@angular/core';
+import { provideRouter, withNavigationErrorHandler } from '@angular/router';
 import { definePreset } from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 
+import { ErrorNotifierService } from './@core/handler/error-notifier.service';
+import { httpErrorInterceptor } from './@core/handler/http-error.interceptor';
+import { provideHandler } from './@core/handler/handler.providers';
 import { authenticationConfig } from './@core/security/authentication/authentication.config';
 import { provideAuthentication } from './@core/security/authentication/authentication.providers';
 import { routes } from './app.routes';
@@ -30,7 +34,8 @@ const MedflowPreset = definePreset(Aura, {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideAuthentication(authenticationConfig),
+    provideAuthentication(authenticationConfig, httpErrorInterceptor),
+    provideHandler(),
     providePrimeNG({
       ripple: true,
       theme: {
@@ -40,6 +45,11 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      withNavigationErrorHandler((error) => {
+        inject(ErrorNotifierService).notifyUnexpected(error);
+      }),
+    ),
   ],
 };

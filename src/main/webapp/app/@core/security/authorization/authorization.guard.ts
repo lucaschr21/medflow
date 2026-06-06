@@ -7,7 +7,7 @@ import { type AuthenticationGuardOptions } from '../authentication/authenticatio
 import { AuthenticationService } from '../authentication/authentication.service';
 import { buildRedirectTree } from '../guard.utils';
 import { AuthorizationService } from './authorization.service';
-import type { PermissionDescriptor } from './authorization.types';
+import type { PermissionDescriptor, PermissionInput } from './authorization.types';
 
 /**
  * Opções de comportamento do guard de autorização.
@@ -27,17 +27,12 @@ export interface AuthorizationGuardOptions extends AuthenticationGuardOptions {
  * ```ts
  * {
  *   path: 'organizacoes',
- *   canActivate: [
- *     authorizationGuard(
- *       { resource: 'organizacao', scope: 'read' },
- *       { unauthorizedRedirectTo: '/' },
- *     ),
- *   ],
+ *   canActivate: [authorizationGuard('organizacao')],
  * }
  * ```
  */
 export function authorizationGuard(
-  permissions: PermissionDescriptor | readonly PermissionDescriptor[],
+  permissions: PermissionInput | readonly PermissionInput[],
   options: AuthorizationGuardOptions = {},
 ): CanActivateFn {
   const normalizedPermissions = normalizePermissions(permissions);
@@ -49,7 +44,7 @@ export function authorizationGuard(
  * Variante de {@link authorizationGuard} para {@code canMatch}.
  */
 export function authorizationMatchGuard(
-  permissions: PermissionDescriptor | readonly PermissionDescriptor[],
+  permissions: PermissionInput | readonly PermissionInput[],
   options: AuthorizationGuardOptions = {},
 ): CanMatchFn {
   const normalizedPermissions = normalizePermissions(permissions);
@@ -101,7 +96,19 @@ function isAuthorized(
 }
 
 function normalizePermissions(
-  permissions: PermissionDescriptor | readonly PermissionDescriptor[],
+  permissions: PermissionInput | readonly PermissionInput[],
 ): readonly PermissionDescriptor[] {
-  return Array.isArray(permissions) ? permissions : [permissions as PermissionDescriptor];
+  return (Array.isArray(permissions) ? permissions : [permissions]).map((permission) =>
+    toPermissionDescriptor(permission),
+  );
+}
+
+function toPermissionDescriptor(permission: PermissionInput): PermissionDescriptor {
+  if (typeof permission === 'string') {
+    return { resource: permission, scope: 'read' };
+  }
+
+  return Array.isArray(permission)
+    ? { resource: permission[0], scope: permission[1] }
+    : (permission as PermissionDescriptor);
 }

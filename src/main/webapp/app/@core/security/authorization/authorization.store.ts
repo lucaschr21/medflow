@@ -5,10 +5,11 @@ import {
   httpResource,
   type HttpResourceRequest,
 } from '@angular/common/http';
-import { computed, inject, Injectable } from '@angular/core';
+import { computed, effect, inject, Injectable } from '@angular/core';
 import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType } from 'keycloak-angular';
 import Keycloak from 'keycloak-js';
 
+import { ErrorNotifierService } from '../../handler/error-notifier.service';
 import { AUTHENTICATION_CONFIG } from '../authentication/authentication.config';
 import {
   type GrantedPermission,
@@ -42,6 +43,7 @@ export class AuthorizationStore {
   private readonly keycloak = inject(Keycloak);
   private readonly keycloakEvent = inject(KEYCLOAK_EVENT_SIGNAL);
   private readonly authenticationConfig = inject(AUTHENTICATION_CONFIG);
+  private readonly errorNotifier = inject(ErrorNotifierService);
 
   private readonly permissionResource = httpResource<ReadonlyMap<Resource, ReadonlySet<Scope>>>(
     () => this.permissionRequest(),
@@ -60,6 +62,16 @@ export class AuthorizationStore {
       : this.permissionResource.value(),
   );
   readonly availableResources = computed(() => Array.from(this.permissions().keys()));
+
+  constructor() {
+    effect(() => {
+      const error = this.permissionResource.error();
+
+      if (error != null && !this.isForbidden(error)) {
+        this.errorNotifier.notifyPermissionLoadFailure(error);
+      }
+    });
+  }
 
   /**
    * Indica se uma permissão funcional específica está disponível.

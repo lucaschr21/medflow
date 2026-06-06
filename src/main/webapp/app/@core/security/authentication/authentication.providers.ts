@@ -1,5 +1,5 @@
 import { makeEnvironmentProviders, type EnvironmentProviders } from '@angular/core';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, type HttpInterceptorFn, withInterceptors } from '@angular/common/http';
 import {
   AutoRefreshTokenService,
   createInterceptorCondition,
@@ -29,10 +29,13 @@ import { AUTHENTICATION_CONFIG, type AuthenticationConfig } from './authenticati
  * providers: [provideAuthentication(authenticationConfig)]
  * ```
  */
-export function provideAuthentication(config: AuthenticationConfig): EnvironmentProviders {
+export function provideAuthentication(
+  config: AuthenticationConfig,
+  ...interceptors: readonly HttpInterceptorFn[]
+): EnvironmentProviders {
   return makeEnvironmentProviders([
     { provide: AUTHENTICATION_CONFIG, useValue: config },
-    provideHttpClient(withInterceptors([includeBearerTokenInterceptor])),
+    provideHttpClient(withInterceptors([...interceptors, includeBearerTokenInterceptor])),
     {
       provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
       useValue: [
