@@ -1,0 +1,57 @@
+<aside [class]="sidebarClasses()">
+  <div class="app-sidebar__brand">
+    <div class="app-sidebar__brand-mark">M</div>
+
+    @if (!collapsed()) {
+      <div class="app-sidebar__brand-copy">
+        <strong>Medflow</strong>
+        <span>Gestão clínica</span>
+      </div>
+    }
+  </div>
+
+  <nav class="app-sidebar__nav" aria-label="Navegação principal">
+    @for (group of groups(); track group.label) {
+      <section class="app-sidebar__group">
+        @if (!collapsed()) {
+          <h2 class="app-sidebar__group-title">{{ group.label }}</h2>
+        }
+
+        <ul class="app-sidebar__items">
+          @for (item of group.items; track item.label) {
+            <li>
+              @if (item.href; as href) {
+                <a
+                  [routerLink]="href"
+                  routerLinkActive="app-sidebar__link--active"
+                  [routerLinkActiveOptions]="{ exact: href === '/' }"
+                  class="app-sidebar__link"
+                  [title]="item.label"
+                >
+                  <i [class]="item.icon" aria-hidden="true"></i>
+
+                  @if (!collapsed()) {
+                    <span>{{ item.label }}</span>
+                  }
+                </a>
+              } @else {
+                <button
+                  type="button"
+                  class="app-sidebar__link app-sidebar__link--disabled"
+                  [title]="item.label"
+                  disabled
+                >
+                  <i [class]="item.icon" aria-hidden="true"></i>
+
+                  @if (!collapsed()) {
+                    <span>{{ item.label }}</span>
+                  }
+                </button>
+              }
+            </li>
+          }
+        </ul>
+      </section>
+    }
+  </nav>
+</aside>

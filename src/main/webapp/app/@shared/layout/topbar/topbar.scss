@@ -1,0 +1,82 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.app-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 4.25rem;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--p-surface-0), transparent 8%);
+  border-bottom: 1px solid var(--p-surface-200);
+  backdrop-filter: blur(14px);
+}
+
+.app-topbar__start,
+.app-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-topbar__mobile-trigger {
+  display: none;
+}
+
+.app-topbar__org {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app-topbar__org-label {
+  font-size: 0.75rem;
+  color: var(--p-surface-500);
+}
+
+.app-topbar__org-name {
+  font-size: 0.95rem;
+  color: var(--p-surface-900);
+}
+
+.app-topbar__user-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  white-space: nowrap;
+}
+
+.app-topbar__user-name {
+  color: var(--p-surface-800);
+  font-weight: 500;
+}
+
+:host ::ng-deep .app-topbar__avatar {
+  background: var(--p-primary-100);
+  color: var(--p-primary-700);
+}
+
+@media (max-width: 960px) {
+  .app-topbar {
+    padding-inline: 1rem;
+  }
+
+  .app-topbar__mobile-trigger {
+    display: inline-flex;
+  }
+
+  .app-topbar__collapse,
+  .app-topbar__org-label {
+    display: none;
+  }
+
+  .app-topbar__user-name {
+    display: none;
+  }
+}

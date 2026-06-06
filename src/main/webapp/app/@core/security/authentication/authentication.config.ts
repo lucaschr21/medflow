@@ -31,13 +31,13 @@ export const AUTHENTICATION_CONFIG = new InjectionToken<AuthenticationConfig>(
 /**
  * Configuração padrão de autenticação derivada do environment atual.
  *
- * O projeto inicia a sessão com `check-sso`, permitindo que a SPA descubra
- * uma sessão já existente sem forçar login na carga inicial.
+ * O projeto inicia a sessão exigindo autenticação imediatamente, sem manter
+ * um estado intermediário de "não autenticado" na SPA.
  */
 export const authenticationConfig: AuthenticationConfig = {
   ...environment.authentication,
   initOptions: {
-    onLoad: 'check-sso',
+    onLoad: 'login-required',
     checkLoginIframe: false,
     redirectUri: location.origin,
   },

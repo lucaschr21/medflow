@@ -1,0 +1,11 @@
+<header class="app-page-header">
+  <div class="app-page-header__copy">
+    <h1>{{ title() }}</h1>
+
+    @if (subtitle(); as subtitle) {
+      <p>{{ subtitle }}</p>
+    }
+  </div>
+
+  <ng-content />
+</header>

@@ -1,0 +1,40 @@
+<app-page-header [title]="title()" [subtitle]="subtitle()">
+  @if (createLabel(); as createLabel) {
+    <button pButton type="button" [label]="createLabel"></button>
+  }
+</app-page-header>
+
+<p-card>
+  <div class="resource-table-page__meta">
+    <p-tag severity="secondary" [value]="total() + ' registros'" />
+  </div>
+
+  @if (loading()) {
+    <div class="resource-table-page__state">Carregando dados...</div>
+  } @else if (rows().length) {
+    <p-table
+      [value]="tableRows()"
+      size="small"
+      [stripedRows]="true"
+      [tableStyle]="{ 'min-width': '100%' }"
+    >
+      <ng-template #header>
+        <tr>
+          @for (column of columns(); track column.field) {
+            <th>{{ column.header }}</th>
+          }
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-row>
+        <tr>
+          @for (column of columns(); track column.field) {
+            <td>{{ row.values[column.field] }}</td>
+          }
+        </tr>
+      </ng-template>
+    </p-table>
+  } @else {
+    <div class="resource-table-page__state">{{ emptyMessage() }}</div>
+  }
+</p-card>

@@ -1,0 +1,87 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.app-shell__boot {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 2rem;
+  background: var(--p-surface-50);
+}
+
+.app-shell__boot-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 2rem 2.25rem;
+  background: var(--p-surface-0);
+  border: 1px solid var(--p-surface-200);
+  border-radius: 1rem;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+}
+
+.app-shell__boot-mark {
+  color: var(--p-primary-700);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.app-shell__boot-title {
+  margin: 0;
+  color: var(--p-surface-900);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--p-surface-50);
+}
+
+.app-shell__sidebar {
+  flex: 0 0 auto;
+  height: 100vh;
+}
+
+.app-shell__content {
+  flex: 1 1 auto;
+  width: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-shell__main {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 1.5rem;
+  overflow: auto;
+}
+
+.app-shell__loading {
+  display: grid;
+  place-items: center;
+  min-height: 16rem;
+  color: var(--p-surface-500);
+}
+
+@media (max-width: 960px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell__sidebar {
+    display: none;
+  }
+
+  .app-shell__main {
+    padding: 1rem;
+  }
+}

@@ -1,0 +1,62 @@
+<header class="app-topbar">
+  <div class="app-topbar__start">
+    <button
+      pButton
+      type="button"
+      icon="pi pi-bars"
+      severity="secondary"
+      text
+      class="app-topbar__mobile-trigger"
+      (click)="openMobileMenu()"
+    ></button>
+
+    <button
+      pButton
+      type="button"
+      severity="secondary"
+      text
+      [icon]="sidebarCollapsed() ? 'pi pi-angle-right' : 'pi pi-angle-left'"
+      class="app-topbar__collapse"
+      (click)="toggleSidebarCollapse()"
+    ></button>
+
+    <div class="app-topbar__org">
+      <span class="app-topbar__org-label">Workspace atual</span>
+      <strong class="app-topbar__org-name">
+        {{ currentOrganization() || 'Painel clínico' }}
+      </strong>
+    </div>
+  </div>
+
+  <div class="app-topbar__actions">
+    <button
+      pButton
+      type="button"
+      severity="secondary"
+      text
+      icon="pi pi-bell"
+      aria-label="Notificações"
+    ></button>
+
+    <button
+      pButton
+      type="button"
+      severity="secondary"
+      text
+      class="app-topbar__user-trigger"
+      (click)="toggleUserMenu($event)"
+    >
+      <p-avatar
+        [label]="userInitials()"
+        shape="circle"
+        styleClass="app-topbar__avatar"
+        ariaLabel="Usuário autenticado"
+      />
+
+      <span class="app-topbar__user-name">{{ displayName() || 'Usuário' }}</span>
+      <i class="pi pi-angle-down" aria-hidden="true"></i>
+    </button>
+
+    <p-menu #userMenu [model]="userMenuItems()" [popup]="true" appendTo="body" />
+  </div>
+</header>

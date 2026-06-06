@@ -1,0 +1,18 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.resource-table-page__meta {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.resource-table-page__state {
+  display: grid;
+  place-items: center;
+  min-height: 10rem;
+  color: var(--p-surface-500);
+  text-align: center;
+}

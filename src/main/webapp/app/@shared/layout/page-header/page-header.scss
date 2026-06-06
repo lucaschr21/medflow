@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.app-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.app-page-header__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.app-page-header__copy h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  line-height: 1.15;
+  color: var(--p-surface-950);
+}
+
+.app-page-header__copy p {
+  margin: 0;
+  color: var(--p-surface-600);
+}
+
+@media (max-width: 768px) {
+  .app-page-header {
+    flex-direction: column;
+  }
+}
