@@ -1,7 +1,7 @@
 import { Directive, effect, inject, input, TemplateRef, ViewContainerRef } from '@angular/core';
 
 import { AuthorizationService } from './authorization.service';
-import type { PermissionDescriptor, PermissionTuple } from './authorization.types';
+import type { PermissionTuple } from './authorization.types';
 
 /**
  * Diretiva estrutural para renderização condicional por permissão funcional.
@@ -22,13 +22,13 @@ export class CanDirective {
   private readonly authorizationService = inject(AuthorizationService);
   private hasView = false;
 
-  readonly permission = input.required<PermissionDescriptor | PermissionTuple>({
+  readonly permission = input.required<PermissionTuple>({
     alias: 'mfCan',
   });
 
   constructor() {
     effect(() => {
-      const allowed = this.authorizationService.can(this.toPermissionDescriptor(this.permission()));
+      const allowed = this.authorizationService.can(this.permission());
 
       if (allowed && !this.hasView) {
         this.viewContainerRef.createEmbeddedView(this.templateRef);
@@ -41,13 +41,5 @@ export class CanDirective {
         this.hasView = false;
       }
     });
-  }
-
-  private toPermissionDescriptor(
-    permission: PermissionDescriptor | PermissionTuple,
-  ): PermissionDescriptor {
-    return Array.isArray(permission)
-      ? { resource: permission[0], scope: permission[1] }
-      : (permission as PermissionDescriptor);
   }
 }

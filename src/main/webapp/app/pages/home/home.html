@@ -1,53 +1,202 @@
-<section aria-label="home" class="mx-auto mt-8 max-w-4xl p-6">
-  <h1 class="mb-8 text-4xl font-bold">aaaaaaa</h1>
+<section aria-label="home" class="mx-auto mt-8 max-w-6xl space-y-6 p-6">
+  <header class="space-y-2">
+    <h1 class="text-4xl font-bold">Sandbox do Core</h1>
+    <p class="text-surface-600 dark:text-surface-300">
+      Esta tela existe só para validar autenticação, autorização, diretivas e services do frontend.
+    </p>
+  </header>
 
-  <div class="space-y-6 pb-32 text-lg leading-relaxed">
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
-      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-      laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-      voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-    </p>
-    <p>
-      Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim
-      id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
-      doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
-      architecto beatae vitae dicta sunt explicabo.
-    </p>
-    <p>
-      Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
-      consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam
-      est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam
-      eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.
-    </p>
-    <div
-      class="bg-surface-100 border-surface-200 flex h-64 items-center justify-center rounded-2xl border"
-    ></div>
-    <p>
-      Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi
-      ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea
-      voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo
-      voluptas nulla pariatur?
-    </p>
-    <p>
-      At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium
-      voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati
-      cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est
-      laborum et dolorum fuga.
-    </p>
-    <div
-      class="bg-surface-100 border-surface-200 flex h-64 items-center justify-center rounded-2xl border"
-    ></div>
-    <p>
-      Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis
-      est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus,
-      omnis voluptas assumenda est, omnis dolor repellendus.
-    </p>
-    <p>
-      Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut
-      et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a
-      sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis
-      doloribus asperiores repellat.
-    </p>
+  <div class="grid gap-6 lg:grid-cols-2">
+    <section
+      class="border-surface-200 bg-surface-0 dark:bg-surface-900 rounded-2xl border p-5 shadow-sm"
+    >
+      <h2 class="mb-4 text-xl font-semibold">Sessão</h2>
+
+      <dl class="grid gap-3 text-sm">
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-surface-500">Autenticado</dt>
+          <dd class="font-medium">{{ authenticated() ? 'Sim' : 'Não' }}</dd>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-surface-500">Usuário</dt>
+          <dd class="font-medium">{{ displayName() || 'Não identificado' }}</dd>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-surface-500">Permissões carregadas</dt>
+          <dd class="font-medium">{{ permissionsLoaded() ? 'Sim' : 'Não' }}</dd>
+        </div>
+      </dl>
+
+      <div class="mt-5 flex flex-wrap gap-3">
+        <button pButton type="button" severity="contrast" (click)="login()">Entrar</button>
+        <button pButton type="button" severity="secondary" (click)="logout()">Sair</button>
+        <button
+          pButton
+          type="button"
+          severity="info"
+          variant="outlined"
+          (click)="reloadPermissions()"
+        >
+          Recarregar permissões
+        </button>
+      </div>
+    </section>
+
+    <section
+      class="border-surface-200 bg-surface-0 dark:bg-surface-900 rounded-2xl border p-5 shadow-sm"
+    >
+      <h2 class="mb-4 text-xl font-semibold">Permissões de organização</h2>
+
+      <dl class="grid gap-3 text-sm">
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-surface-500">`permissions.read`</dt>
+          <dd class="font-medium">{{ canReadOrganizacao() ? 'Permitido' : 'Negado' }}</dd>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-surface-500">`permissions.create`</dt>
+          <dd class="font-medium">{{ canCreateOrganizacao() ? 'Permitido' : 'Negado' }}</dd>
+        </div>
+        <div class="flex items-center justify-between gap-4">
+          <dt class="text-surface-500">`permissions.remove`</dt>
+          <dd class="font-medium">{{ canDeactivateOrganizacao() ? 'Permitido' : 'Negado' }}</dd>
+        </div>
+      </dl>
+
+      <div class="mt-5 flex flex-wrap gap-2">
+        @for (resource of availableResources(); track resource) {
+          <span
+            class="bg-surface-100 text-surface-700 dark:bg-surface-800 dark:text-surface-100 rounded-full px-3 py-1 text-xs font-medium"
+          >
+            {{ resource }}
+          </span>
+        }
+      </div>
+    </section>
   </div>
+
+  <section
+    class="border-surface-200 bg-surface-0 dark:bg-surface-900 rounded-2xl border p-5 shadow-sm"
+  >
+    <h2 class="mb-2 text-xl font-semibold">Teste com diretiva `mfCan`</h2>
+    <p class="text-surface-600 dark:text-surface-300 mb-5 text-sm">
+      Estes botões só aparecem quando a permissão existir. Aqui a UI e o service estão alinhados.
+    </p>
+
+    <div class="flex flex-wrap gap-3">
+      <button
+        *mfCan="['organizacao', 'read']"
+        pButton
+        type="button"
+        severity="info"
+        (click)="loadOrganizacoes()"
+      >
+        Ler organizações via tuple
+      </button>
+
+      <button
+        *mfCan="['organizacao', 'create']"
+        pButton
+        type="button"
+        severity="success"
+        [loading]="submittingOrganizacao()"
+        (click)="createOrganizacao()"
+      >
+        Criar organização
+      </button>
+
+      <button
+        *mfCan="['organizacao', 'deactivate']"
+        pButton
+        type="button"
+        severity="danger"
+        [loading]="removingOrganizacao()"
+        (click)="removeFirstOrganizacao()"
+      >
+        Remover primeira organização
+      </button>
+    </div>
+  </section>
+
+  <section
+    class="border-surface-200 bg-surface-0 dark:bg-surface-900 rounded-2xl border p-5 shadow-sm"
+  >
+    <h2 class="mb-2 text-xl font-semibold">Teste sem proteção de UI</h2>
+    <p class="text-surface-600 dark:text-surface-300 mb-5 text-sm">
+      Estes botões ficam sempre visíveis. Se a ação for proibida, o bloqueio deve acontecer dentro
+      do próprio service base.
+    </p>
+
+    <div class="flex flex-wrap gap-3">
+      <button
+        pButton
+        type="button"
+        severity="contrast"
+        [loading]="loadingOrganizacoes()"
+        (click)="loadOrganizacoes()"
+      >
+        Ler organizações sem `mfCan`
+      </button>
+
+      <button
+        pButton
+        type="button"
+        severity="success"
+        variant="outlined"
+        [loading]="submittingOrganizacao()"
+        (click)="createOrganizacao()"
+      >
+        Criar organização sem `mfCan`
+      </button>
+
+      <button
+        pButton
+        type="button"
+        severity="danger"
+        variant="outlined"
+        [loading]="removingOrganizacao()"
+        (click)="removeFirstOrganizacao()"
+      >
+        Remover primeira organização sem `mfCan`
+      </button>
+    </div>
+  </section>
+
+  <section
+    class="border-surface-200 bg-surface-0 dark:bg-surface-900 rounded-2xl border p-5 shadow-sm"
+  >
+    <h2 class="mb-2 text-xl font-semibold">Última ação</h2>
+
+    <p class="text-surface-600 dark:text-surface-300 text-sm">
+      Use esta seção para comparar o comportamento da UI com a proteção do service.
+    </p>
+
+    <p class="bg-surface-100 dark:bg-surface-800 mt-4 rounded-xl p-3 text-sm">
+      {{ lastAction() || 'Nenhuma ação executada ainda.' }}
+    </p>
+  </section>
+
+  <section
+    class="border-surface-200 bg-surface-0 dark:bg-surface-900 rounded-2xl border p-5 shadow-sm"
+  >
+    <h2 class="mb-4 text-xl font-semibold">Resultado do service</h2>
+
+    @if (loadingOrganizacoes()) {
+      <p class="text-surface-600 dark:text-surface-300 text-sm">Carregando organizações...</p>
+    } @else if (organizacoes().length) {
+      <div class="space-y-4">
+        <pre
+          class="bg-surface-950 text-surface-0 overflow-auto rounded-xl p-4 text-xs"
+        ><code>{{ organizacoes() | json }}</code></pre>
+
+        <div class="text-sm">
+          <strong>Primeira organização:</strong>
+          {{ selectedOrganizacao().nome }}
+        </div>
+      </div>
+    } @else {
+      <p class="text-surface-600 dark:text-surface-300 text-sm">
+        Nenhuma organização carregada ainda.
+      </p>
+    }
+  </section>
 </section>

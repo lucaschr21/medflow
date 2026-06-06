@@ -37,12 +37,25 @@ export interface FindAllParams {
  * ```
  */
 export function buildFindAllParams(params: FindAllParams = {}): HttpParams {
+  const fromObject: Record<string, string | number | readonly string[]> = {};
+
+  if (params.q) {
+    fromObject['q'] = params.q;
+  }
+
+  if (params.page != null) {
+    fromObject['page'] = params.page;
+  }
+
+  if (params.size != null) {
+    fromObject['size'] = params.size;
+  }
+
+  if (params.sort) {
+    fromObject['sort'] = Array.isArray(params.sort) ? params.sort : [params.sort];
+  }
+
   return new HttpParams({
-    fromObject: {
-      ...(params.q ? { q: params.q } : {}),
-      ...(params.page != null ? { page: params.page } : {}),
-      ...(params.size != null ? { size: params.size } : {}),
-      ...(params.sort ? { sort: Array.isArray(params.sort) ? params.sort : [params.sort] } : {}),
-    },
+    fromObject,
   });
 }

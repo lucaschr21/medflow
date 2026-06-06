@@ -1,79 +1,118 @@
-import {
-  type AuthorizedHttpMethod,
-  type PermissionDescriptor,
-  type Resource,
-  type ScopeFromHttpMethod,
-} from './authorization.types';
+import { HttpClient } from '@angular/common/http';
+import { inject } from '@angular/core';
+import type { Observable } from 'rxjs';
+
+import { buildFindAllParams, type FindAllParams } from '../../persistence/find-all.params';
+import type { PageResult } from '../../persistence/page-result';
+import { environment } from '../../../environments/environment';
+import { AuthorizationService } from './authorization.service';
+import type { PermissionTuple, Resource, Scope } from './authorization.types';
 
 /**
  * Classe base para services de recurso protegido do frontend.
  *
- * Cada service concreto informa:
- * - o nome funcional do recurso
- * - se `DELETE` significa `deactivate` ou `delete`
+ * Cada service concreto informa apenas o path REST do recurso.
  *
  * @example
  * ```ts
  * export class OrganizacaoService
- *   extends ProtectedResourceService<'organizacao', true> {
+ *   extends ProtectedResourceService<'organizacao', 'deactivate', Organizacao, OrganizacaoInput> {
  *   protected readonly resource = 'organizacao' as const;
- *   protected readonly softDelete = true;
+ *   protected readonly resourcePath = 'organizacoes';
+ *   protected readonly removeScope = 'deactivate' as const;
  * }
  * ```
  */
 export abstract class ProtectedResourceService<
   ResourceType extends Resource,
-  SoftDelete extends boolean,
+  RemoveScope extends Extract<Scope, 'delete' | 'deactivate'>,
+  Entity,
+  Input,
 > {
   protected abstract readonly resource: ResourceType;
-  protected abstract readonly softDelete: SoftDelete;
+  protected abstract readonly resourcePath: string;
+  protected abstract readonly removeScope: RemoveScope;
 
-  readonly permissions = {
-    read: this.permission('GET'),
-    create: this.permission('POST'),
-    update: this.permission('PUT'),
-    remove: this.permission('DELETE'),
-  } as const;
+  protected readonly http = inject(HttpClient);
+  private readonly apiBaseUrl = environment.api.baseUrl;
+  private readonly authorizationService = inject(AuthorizationService);
 
   /**
-   * Cria um descriptor de permissão a partir do método HTTP da operação.
+   * Lista registros do recurso com filtro, paginação e ordenação.
    *
-   * @param method método HTTP usado pela operação protegida
-   * @returns descriptor compatível com guards e diretivas do core
+   * @param params parâmetros opcionais de listagem
+   * @returns página do recurso
    */
-  protected permission<Method extends AuthorizedHttpMethod>(
-    method: Method,
-  ): PermissionDescriptor<ResourceType, ScopeFromHttpMethod<Method, SoftDelete>> {
-    return {
-      resource: this.resource,
-      scope: this.scopeFromHttpMethod(method),
-    };
+  findAll(params: FindAllParams = {}): Observable<PageResult<Entity>> {
+    this.ensureAllowed('read');
+    return this.http.get<PageResult<Entity>>(this.resourceUrl, {
+      params: buildFindAllParams(params),
+    });
   }
 
-  private scopeFromHttpMethod<Method extends AuthorizedHttpMethod>(
-    method: Method,
-  ): ScopeFromHttpMethod<Method, SoftDelete> {
-    switch (method) {
-      case 'GET':
-      case 'HEAD':
-      case 'OPTIONS':
-        return 'read' as ScopeFromHttpMethod<Method, SoftDelete>;
-      case 'POST':
-        return 'create' as ScopeFromHttpMethod<Method, SoftDelete>;
-      case 'PUT':
-      case 'PATCH':
-        return 'update' as ScopeFromHttpMethod<Method, SoftDelete>;
-      case 'DELETE':
-        return (this.softDelete ? 'deactivate' : 'delete') as ScopeFromHttpMethod<
-          Method,
-          SoftDelete
-        >;
-      default:
-        return assertNever(method);
-    }
+  /**
+   * Busca um registro pelo identificador.
+   *
+   * @param id identificador do recurso
+   * @returns registro encontrado
+   */
+  findById(id: string): Observable<Entity> {
+    this.ensureAllowed('read');
+    return this.http.get<Entity>(this.resourceItemUrl(id));
   }
-}
 
-function assertNever(value: never): never {
-  throw new Error(`Unsupported HTTP method: ${value}`);
+  /**
+   * Cria um novo registro.
+   *
+   * @param input payload de entrada
+   * @returns recurso persistido
+   */
+  create(input: Input): Observable<Entity> {
+    this.ensureAllowed('create');
+    return this.http.post<Entity>(this.resourceUrl, input);
+  }
+
+  /**
+   * Atualiza um registro existente.
+   *
+   * @param id identificador do recurso
+   * @param input payload de entrada
+   * @returns recurso atualizado
+   */
+  update(id: string, input: Input): Observable<Entity> {
+    this.ensureAllowed('update');
+    return this.http.put<Entity>(this.resourceItemUrl(id), input);
+  }
+
+  /**
+   * Remove um registro usando `DELETE`.
+   *
+   * Para recursos com soft delete, a inativação continua sendo resolvida pelo
+   * backend de forma transparente ao frontend.
+   *
+   * @param id identificador do recurso
+   * @returns conclusão da operação
+   */
+  remove(id: string): Observable<void> {
+    this.ensureAllowed(this.removeScope);
+    return this.http.delete<void>(this.resourceItemUrl(id));
+  }
+
+  protected get resourceUrl(): string {
+    return `${this.apiBaseUrl}/${this.resourcePath}`;
+  }
+
+  private ensureAllowed(scope: Scope): void {
+    this.authorizationService.ensureAllowed(this.permission(scope));
+  }
+
+  private resourceItemUrl(id: string): string {
+    return `${this.resourceUrl}/${id}`;
+  }
+
+  private permission<ScopeType extends Scope>(
+    scope: ScopeType,
+  ): PermissionTuple<ResourceType, ScopeType> {
+    return [this.resource, scope];
+  }
 }

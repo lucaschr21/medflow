@@ -13,7 +13,7 @@ import { ErrorNotifierService } from '../../handler/error-notifier.service';
 import { AUTHENTICATION_CONFIG } from '../authentication/authentication.config';
 import {
   type GrantedPermission,
-  type PermissionDescriptor,
+  type PermissionTuple,
   type Resource,
   type Scope,
   scopes,
@@ -44,6 +44,8 @@ export class AuthorizationStore {
   private readonly keycloakEvent = inject(KEYCLOAK_EVENT_SIGNAL);
   private readonly authenticationConfig = inject(AUTHENTICATION_CONFIG);
   private readonly errorNotifier = inject(ErrorNotifierService);
+  private readonly tokenEndpointUrl = this.buildTokenEndpointUrl();
+  private readonly permissionRequestBody = this.buildPermissionRequestBody();
 
   private readonly permissionResource = httpResource<ReadonlyMap<Resource, ReadonlySet<Scope>>>(
     () => this.permissionRequest(),
@@ -56,6 +58,12 @@ export class AuthorizationStore {
   readonly loading = this.permissionResource.isLoading;
   readonly error = computed(() => this.toErrorMessage(this.permissionResource.error()));
   readonly initialized = computed(() => this.hasAuthorizationContext());
+  readonly loaded = computed(
+    () =>
+      this.keycloak.authenticated === true &&
+      this.permissionResource.status() !== 'idle' &&
+      !this.loading(),
+  );
   readonly permissions = computed(() =>
     this.isForbidden(this.permissionResource.error())
       ? EMPTY_PERMISSION_MAP
@@ -76,24 +84,24 @@ export class AuthorizationStore {
   /**
    * Indica se uma permissão funcional específica está disponível.
    *
-   * @param permission descriptor no formato `recurso + escopo`
+   * @param permission permissão no formato tuple `recurso + escopo`
    * @returns `true` quando a permissão foi concedida ao usuário
    */
-  can(permission: PermissionDescriptor): boolean {
-    return this.permissions().get(permission.resource)?.has(permission.scope) ?? false;
+  can([resource, scope]: PermissionTuple): boolean {
+    return this.permissions().get(resource)?.has(scope) ?? false;
   }
 
   /**
    * Verifica se todas as permissões informadas estão concedidas.
    */
-  canAll(permissions: readonly PermissionDescriptor[]): boolean {
+  canAll(permissions: readonly PermissionTuple[]): boolean {
     return permissions.every((permission) => this.can(permission));
   }
 
   /**
    * Verifica se ao menos uma das permissões informadas está concedida.
    */
-  canAny(permissions: readonly PermissionDescriptor[]): boolean {
+  canAny(permissions: readonly PermissionTuple[]): boolean {
     return permissions.some((permission) => this.can(permission));
   }
 
@@ -114,9 +122,9 @@ export class AuthorizationStore {
     }
 
     return {
-      url: this.tokenEndpoint(),
+      url: this.tokenEndpointUrl,
       method: 'POST',
-      body: this.requestBody(),
+      body: this.permissionRequestBody,
       headers: new HttpHeaders({
         Authorization: `Bearer ${this.keycloak.token}`,
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -131,11 +139,11 @@ export class AuthorizationStore {
     );
   }
 
-  private tokenEndpoint(): string {
-    return `${this.authenticationConfig.url.replace(/\/$/, '')}/realms/${this.authenticationConfig.realm}/protocol/openid-connect/token`;
+  private buildTokenEndpointUrl(): string {
+    return `${this.authenticationConfig.url}/realms/${this.authenticationConfig.realm}/protocol/openid-connect/token`;
   }
 
-  private requestBody(): string {
+  private buildPermissionRequestBody(): string {
     return new HttpParams({
       fromObject: {
         grant_type: 'urn:ietf:params:oauth:grant-type:uma-ticket',
@@ -181,12 +189,7 @@ export class AuthorizationStore {
       groupedPermissions.set(permission.rsname, grantedScopes);
     }
 
-    return new Map(
-      Array.from(groupedPermissions.entries(), ([resource, scopes]) => [
-        resource,
-        new Set(scopes) as ReadonlySet<Scope>,
-      ]),
-    );
+    return groupedPermissions;
   }
 
   private isResource(value: string | undefined): value is Resource {

@@ -2,7 +2,10 @@ import { HttpErrorResponse, type HttpInterceptorFn } from '@angular/common/http'
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 
+import { environment } from '../../environments/environment';
 import { ErrorNotifierService } from './error-notifier.service';
+
+const API_BASE_URL = environment.api.baseUrl.replace(/\/$/, '');
 
 /**
  * Exibe mensagens globais para falhas devolvidas pela API da aplicação.
@@ -15,7 +18,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (request, next) => {
 
   return next(request).pipe(
     catchError((error: unknown) => {
-      if (request.url.startsWith('/api') && error instanceof HttpErrorResponse) {
+      if (request.url.startsWith(API_BASE_URL) && error instanceof HttpErrorResponse) {
         notifier.notifyHttpError(error);
       }
 

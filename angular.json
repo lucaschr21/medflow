@@ -71,7 +71,8 @@
               "buildTarget": "medflow:build:production"
             },
             "development": {
-              "buildTarget": "medflow:build:development"
+              "buildTarget": "medflow:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

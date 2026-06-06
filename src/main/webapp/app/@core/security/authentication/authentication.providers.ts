@@ -1,14 +1,14 @@
+import { provideHttpClient, withInterceptors, type HttpInterceptorFn } from '@angular/common/http';
 import { makeEnvironmentProviders, type EnvironmentProviders } from '@angular/core';
-import { provideHttpClient, type HttpInterceptorFn, withInterceptors } from '@angular/common/http';
 import {
   AutoRefreshTokenService,
-  createInterceptorCondition,
-  type IncludeBearerTokenCondition,
   INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
   UserActivityService,
+  createInterceptorCondition,
   includeBearerTokenInterceptor,
   provideKeycloak,
   withAutoRefreshToken,
+  type IncludeBearerTokenCondition,
 } from 'keycloak-angular';
 
 import { AUTHENTICATION_CONFIG, type AuthenticationConfig } from './authentication.config';
@@ -46,7 +46,7 @@ export function provideAuthentication(
     },
     provideKeycloak({
       config: {
-        url: new URL(config.url).toString().replace(/\/$/, ''),
+        url: config.url,
         realm: config.realm,
         clientId: config.clientId,
       },

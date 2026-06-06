@@ -2,11 +2,13 @@ import { Injectable, inject } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MessageService, type ToastMessageOptions } from 'primeng/api';
 
+import { AuthorizationError } from '../security/authorization/authorization.error';
 import type { ProblemDetail } from './problem-detail';
 
 const HANDLED_ERROR = Symbol('handled-error');
 const DEFAULT_ERROR_DETAIL = 'Ocorreu um erro inesperado ao processar a solicitação.';
 const DEFAULT_ERROR_SUMMARY = 'Erro inesperado';
+const ACCESS_DENIED_DETAIL = 'Você não possui permissão para executar esta ação.';
 const PERMISSION_ERROR_SUMMARY = 'Permissões indisponíveis';
 const PERMISSION_ERROR_DETAIL =
   'Não foi possível carregar suas permissões agora. Seu acesso pode aparecer limitado.';
@@ -46,11 +48,7 @@ export class ErrorNotifierService {
       return;
     }
 
-    this.messageService.add({
-      severity: 'error',
-      summary: DEFAULT_ERROR_SUMMARY,
-      detail: this.toUnexpectedDetail(error),
-    });
+    this.messageService.add(this.toUnexpectedToast(error));
 
     this.markHandled(error);
   }
@@ -128,11 +126,31 @@ export class ErrorNotifierService {
       return this.toHttpToast(error).detail || DEFAULT_ERROR_DETAIL;
     }
 
+    if (error instanceof AuthorizationError) {
+      return ACCESS_DENIED_DETAIL;
+    }
+
     if (error instanceof Error) {
       return error.message || DEFAULT_ERROR_DETAIL;
     }
 
     return DEFAULT_ERROR_DETAIL;
+  }
+
+  private toUnexpectedToast(error: unknown): ToastMessageOptions {
+    if (error instanceof AuthorizationError) {
+      return {
+        severity: 'warn',
+        summary: 'Acesso negado',
+        detail: ACCESS_DENIED_DETAIL,
+      };
+    }
+
+    return {
+      severity: 'error',
+      summary: DEFAULT_ERROR_SUMMARY,
+      detail: this.toUnexpectedDetail(error),
+    };
   }
 
   private toSeverity(status?: number): ToastMessageOptions['severity'] {
@@ -161,10 +179,14 @@ export class ErrorNotifierService {
   }
 
   private isProblemDetail(value: unknown): value is ProblemDetail {
+    if (typeof value !== 'object' || value === null) {
+      return false;
+    }
+
     return (
-      typeof value === 'object' &&
-      value !== null &&
-      ['type', 'title', 'status', 'detail', 'errors'].some((property) => property in value)
+      ('status' in value && typeof value.status === 'number') ||
+      ('detail' in value && typeof value.detail === 'string') ||
+      ('title' in value && typeof value.title === 'string')
     );
   }
 

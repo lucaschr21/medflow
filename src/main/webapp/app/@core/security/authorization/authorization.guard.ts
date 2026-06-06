@@ -7,7 +7,7 @@ import { type AuthenticationGuardOptions } from '../authentication/authenticatio
 import { AuthenticationService } from '../authentication/authentication.service';
 import { buildRedirectTree } from '../guard.utils';
 import { AuthorizationService } from './authorization.service';
-import type { PermissionDescriptor, PermissionInput } from './authorization.types';
+import type { PermissionTuple } from './authorization.types';
 
 /**
  * Opções de comportamento do guard de autorização.
@@ -27,12 +27,12 @@ export interface AuthorizationGuardOptions extends AuthenticationGuardOptions {
  * ```ts
  * {
  *   path: 'organizacoes',
- *   canActivate: [authorizationGuard('organizacao')],
+ *   canActivate: [authorizationGuard(['organizacao', 'read'])],
  * }
  * ```
  */
 export function authorizationGuard(
-  permissions: PermissionInput | readonly PermissionInput[],
+  permissions: PermissionTuple | readonly PermissionTuple[],
   options: AuthorizationGuardOptions = {},
 ): CanActivateFn {
   const normalizedPermissions = normalizePermissions(permissions);
@@ -44,7 +44,7 @@ export function authorizationGuard(
  * Variante de {@link authorizationGuard} para {@code canMatch}.
  */
 export function authorizationMatchGuard(
-  permissions: PermissionInput | readonly PermissionInput[],
+  permissions: PermissionTuple | readonly PermissionTuple[],
   options: AuthorizationGuardOptions = {},
 ): CanMatchFn {
   const normalizedPermissions = normalizePermissions(permissions);
@@ -53,7 +53,7 @@ export function authorizationMatchGuard(
 }
 
 async function resolveAuthorization(
-  permissions: readonly PermissionDescriptor[],
+  permissions: readonly PermissionTuple[],
   options: AuthorizationGuardOptions,
 ) {
   const authenticationService = inject(AuthenticationService);
@@ -87,7 +87,7 @@ async function resolveAuthorization(
 
 function isAuthorized(
   authorizationService: AuthorizationService,
-  permissions: readonly PermissionDescriptor[],
+  permissions: readonly PermissionTuple[],
   mode: AuthorizationGuardOptions['mode'],
 ): boolean {
   return mode === 'any'
@@ -96,19 +96,9 @@ function isAuthorized(
 }
 
 function normalizePermissions(
-  permissions: PermissionInput | readonly PermissionInput[],
-): readonly PermissionDescriptor[] {
-  return (Array.isArray(permissions) ? permissions : [permissions]).map((permission) =>
-    toPermissionDescriptor(permission),
-  );
-}
-
-function toPermissionDescriptor(permission: PermissionInput): PermissionDescriptor {
-  if (typeof permission === 'string') {
-    return { resource: permission, scope: 'read' };
-  }
-
-  return Array.isArray(permission)
-    ? { resource: permission[0], scope: permission[1] }
-    : (permission as PermissionDescriptor);
+  permissions: PermissionTuple | readonly PermissionTuple[],
+): readonly PermissionTuple[] {
+  return typeof permissions[0] === 'string'
+    ? [permissions as PermissionTuple]
+    : (permissions as readonly PermissionTuple[]);
 }

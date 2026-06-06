@@ -45,7 +45,10 @@ export class AuthenticationStore {
    *
    * Prioriza `name` e usa `username` como fallback.
    */
-  readonly displayName = computed(() => this.user()?.name ?? this.user()?.username ?? null);
+  readonly displayName = computed(() => {
+    const user = this.user();
+    return user?.name ?? user?.username ?? null;
+  });
 
   /**
    * Inicia o fluxo de login do Keycloak.
