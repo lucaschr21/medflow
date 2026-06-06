@@ -9,12 +9,10 @@ import java.util.UUID;
  * @param unidadeId identificador da unidade
  * @param nome nome do consultório
  * @param sala sala do consultório
- * @param ativo indicador de atividade
  */
 public record ConsultorioOutput(
     UUID id,
     UUID unidadeId,
     String nome,
-    String sala,
-    boolean ativo) {
+    String sala) {
 }

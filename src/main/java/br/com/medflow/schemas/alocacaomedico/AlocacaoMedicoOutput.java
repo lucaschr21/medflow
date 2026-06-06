@@ -11,13 +11,11 @@ import java.util.UUID;
  * @param consultorioId identificador do consultório
  * @param dataInicio data de início da alocação
  * @param dataFim data de fim da alocação
- * @param ativo indicador de atividade
  */
 public record AlocacaoMedicoOutput(
     UUID id,
     UUID medicoId,
     UUID consultorioId,
     LocalDate dataInicio,
-    LocalDate dataFim,
-    boolean ativo) {
+    LocalDate dataFim) {
 }

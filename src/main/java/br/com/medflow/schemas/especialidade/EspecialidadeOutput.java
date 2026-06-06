@@ -8,11 +8,9 @@ import java.util.UUID;
  * @param id identificador da especialidade
  * @param nome nome da especialidade
  * @param descricao descrição da especialidade
- * @param ativo indicador de atividade
  */
 public record EspecialidadeOutput(
     UUID id,
     String nome,
-    String descricao,
-    boolean ativo) {
+    String descricao) {
 }

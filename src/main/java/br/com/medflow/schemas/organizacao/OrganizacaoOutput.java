@@ -12,7 +12,6 @@ import java.util.UUID;
  * @param logotipo logotipo da organização
  * @param logotipoContentType content type do logotipo
  * @param corPrimaria cor primária da organização
- * @param ativo indicador de atividade
  */
 public record OrganizacaoOutput(
     UUID id,
@@ -21,6 +20,5 @@ public record OrganizacaoOutput(
     String telefone,
     byte[] logotipo,
     String logotipoContentType,
-    String corPrimaria,
-    boolean ativo) {
+    String corPrimaria) {
 }
