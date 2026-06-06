@@ -13,9 +13,8 @@
     "target": "ES2022",
     "moduleResolution": "bundler",
     "module": "preserve",
-    "baseUrl": "./",
     "paths": {
-      "@/*": ["src/main/webapp/*"]
+      "@/*": ["./src/main/webapp/*"]
     }
   },
   "angularCompilerOptions": {

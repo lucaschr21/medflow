@@ -28,8 +28,8 @@ services:
         condition: service_healthy
     environment:
       TZ: ${TZ:-America/Belem}
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN_NAME:-admin}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_NAME:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/${DB_NAME:-medflow}
       KC_DB_SCHEMA: ${KEYCLOAK_DB_SCHEMA:-keycloak}

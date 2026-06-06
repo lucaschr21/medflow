@@ -5,6 +5,8 @@ import { definePreset } from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 
+import { authenticationConfig } from './@core/security/authentication/authentication.config';
+import { provideAuthentication } from './@core/security/authentication/authentication.providers';
 import { routes } from './app.routes';
 
 const MedflowPreset = definePreset(Aura, {
@@ -28,6 +30,7 @@ const MedflowPreset = definePreset(Aura, {
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    provideAuthentication(authenticationConfig),
     providePrimeNG({
       ripple: true,
       theme: {
