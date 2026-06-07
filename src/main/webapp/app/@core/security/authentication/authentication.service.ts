@@ -8,9 +8,19 @@ export class AuthenticationService {
 
   readonly ready = this.store.ready;
   readonly authenticated = this.store.authenticated;
-  readonly user = this.store.user;
+
   readonly token = this.store.token;
-  readonly displayName = this.store.displayName;
+  readonly claims = this.store.claims;
+
+  readonly id = this.store.id;
+  readonly username = this.store.username;
+  readonly email = this.store.email;
+  readonly fullName = this.store.fullName;
+  readonly name = this.store.name;
+  readonly surname = this.store.surname;
+  readonly groups = this.store.groups;
+  readonly realmRoles = this.store.realmRoles;
+  readonly resourceRoles = this.store.resourceRoles;
 
   login(): Promise<void> {
     return this.store.login();

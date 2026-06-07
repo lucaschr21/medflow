@@ -30,11 +30,11 @@ import { SECURITY_CONFIG, type SecurityConfig } from '../security.config';
  * ```
  */
 export function provideAuthentication(
-  config: SecurityConfig,
+  security: SecurityConfig,
   ...interceptors: readonly HttpInterceptorFn[]
 ): EnvironmentProviders {
   return makeEnvironmentProviders([
-    { provide: SECURITY_CONFIG, useValue: config },
+    { provide: SECURITY_CONFIG, useValue: security },
     provideHttpClient(withInterceptors([...interceptors, includeBearerTokenInterceptor])),
     {
       provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
@@ -46,11 +46,11 @@ export function provideAuthentication(
     },
     provideKeycloak({
       config: {
-        url: config.config.url,
-        realm: config.realm,
-        clientId: config.clientId,
+        url: security.config.url,
+        realm: security.config.realm,
+        clientId: security.config.clientId,
       },
-      initOptions: config.initOptions,
+      initOptions: security.initOptions,
       features: [
         withAutoRefreshToken({
           onInactivityTimeout: 'logout',

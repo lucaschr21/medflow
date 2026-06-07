@@ -140,14 +140,14 @@ export class AuthorizationStore {
   }
 
   private buildTokenEndpointUrl(): string {
-    return `${this.securityConfig.url}/realms/${this.securityConfig.realm}/protocol/openid-connect/token`;
+    return `${this.securityConfig.config.url}/realms/${this.securityConfig.config.realm}/protocol/openid-connect/token`;
   }
 
   private buildPermissionRequestBody(): string {
     return new HttpParams({
       fromObject: {
         grant_type: 'urn:ietf:params:oauth:grant-type:uma-ticket',
-        audience: this.securityConfig.resourceId,
+        audience: this.securityConfig.config.resourceId,
         response_mode: 'permissions',
         response_include_resource_name: 'true',
       },
