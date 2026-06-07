@@ -3,10 +3,10 @@ export const environment = {
   api: {
     baseUrl: '/api',
   },
-  authentication: {
+  config: {
     url: 'http://localhost:8085',
     realm: 'medflow',
     clientId: 'medflow-frontend',
-    backendAudience: 'medflow-backend',
+    resourceId: 'medflow-backend',
   },
 } as const;

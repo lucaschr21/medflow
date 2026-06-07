@@ -1,21 +1,20 @@
 import type { ApplicationConfig } from '@angular/core';
-import { provideBrowserGlobalErrorListeners } from '@angular/core';
-import { inject } from '@angular/core';
+import { inject, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter, withNavigationErrorHandler } from '@angular/router';
-import { MedflowPreset } from './@shared/theme/medflow.preset';
 import { providePrimeNG } from 'primeng/config';
+import { MedflowPreset } from './@shared/theme/medflow.preset';
 
 import { ErrorNotifierService } from './@core/handler/error-notifier.service';
-import { httpErrorInterceptor } from './@core/handler/http-error.interceptor';
 import { provideHandler } from './@core/handler/handler.providers';
-import { authenticationConfig } from './@core/security/authentication/authentication.config';
+import { httpErrorInterceptor } from './@core/handler/http-error.interceptor';
 import { provideAuthentication } from './@core/security/authentication/authentication.providers';
+import { securityConfig } from './@core/security/security.config';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideAuthentication(authenticationConfig, httpErrorInterceptor),
+    provideAuthentication(securityConfig, httpErrorInterceptor),
     provideHandler(),
     providePrimeNG({
       ripple: true,

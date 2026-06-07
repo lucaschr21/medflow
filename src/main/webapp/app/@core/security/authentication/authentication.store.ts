@@ -1,6 +1,6 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType } from 'keycloak-angular';
-import Keycloak from 'keycloak-js';
+import Keycloak, { type KeycloakTokenParsed } from 'keycloak-js';
 
 /**
  * Representa os principais dados do usuário autenticado expostos para a UI.
@@ -12,7 +12,7 @@ export interface AuthenticationUser {
   readonly name: string | null;
 }
 
-const KEYCLOAK_PENDING_EVENTS = new Set<KeycloakEventType>([
+const PENDING_EVENTS = new Set<KeycloakEventType>([
   KeycloakEventType.KeycloakAngularNotInitialized,
   KeycloakEventType.KeycloakAngularInit,
 ]);
@@ -30,46 +30,40 @@ export class AuthenticationStore {
 
   private readonly eventType = computed(() => this.keycloakEvent().type);
 
-  readonly ready = computed(() => !KEYCLOAK_PENDING_EVENTS.has(this.eventType()));
+  readonly ready = computed(() => !PENDING_EVENTS.has(this.eventType()));
+
   readonly authenticated = computed(() => {
     this.eventType();
-    return this.keycloak.authenticated ?? false;
+    return this.keycloak.authenticated === true;
   });
   readonly user = computed(() => this.authenticationUser());
   readonly token = computed(() => {
     this.eventType();
     return this.keycloak.token ?? null;
   });
-  /**
-   * Nome preferencial para exibição na UI.
-   *
-   * Prioriza `name` e usa `username` como fallback.
-   */
+
   readonly displayName = computed(() => {
     const user = this.user();
     return user?.name ?? user?.username ?? null;
   });
 
-  /**
-   * Inicia o fluxo de login do Keycloak.
-   */
-  async login(): Promise<void> {
-    await this.keycloak.login({
+  login(): Promise<void> {
+    return this.keycloak.login({
       redirectUri: location.href,
     });
   }
 
-  async logout(): Promise<void> {
-    await this.keycloak.logout({
+  logout(): Promise<void> {
+    return this.keycloak.logout({
       redirectUri: location.origin,
     });
   }
 
-  async openAccount(): Promise<void> {
-    await this.keycloak.accountManagement();
+  openAccount(): Promise<void> {
+    return this.keycloak.accountManagement();
   }
 
-  async refreshToken(minValidity = 30): Promise<boolean> {
+  refreshToken(minValidity = 30): Promise<boolean> {
     return this.keycloak.updateToken(minValidity);
   }
 
@@ -80,19 +74,16 @@ export class AuthenticationStore {
       return null;
     }
 
-    const tokenParsed = this.keycloak.tokenParsed;
+    const token = this.keycloak.tokenParsed;
     return {
-      id: this.readClaim(tokenParsed, 'sub'),
-      username: this.readClaim(tokenParsed, 'preferred_username') ?? this.keycloak.subject ?? null,
-      email: this.readClaim(tokenParsed, 'email'),
-      name: this.readClaim(tokenParsed, 'name'),
+      id: this.readClaim(token, 'sub'),
+      username: this.readClaim(token, 'preferred_username') ?? this.keycloak.subject ?? null,
+      email: this.readClaim(token, 'email'),
+      name: this.readClaim(token, 'name'),
     };
   }
 
-  private readClaim(
-    tokenParsed: Keycloak.KeycloakTokenParsed | undefined,
-    claim: string,
-  ): string | null {
+  private readClaim(tokenParsed: KeycloakTokenParsed | undefined, claim: string): string | null {
     const value = tokenParsed?.[claim];
     return typeof value === 'string' && value.trim() ? value : null;
   }

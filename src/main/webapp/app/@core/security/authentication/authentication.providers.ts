@@ -11,7 +11,7 @@ import {
   type IncludeBearerTokenCondition,
 } from 'keycloak-angular';
 
-import { AUTHENTICATION_CONFIG, type AuthenticationConfig } from './authentication.config';
+import { SECURITY_CONFIG, type SecurityConfig } from '../security.config';
 
 /**
  * Registra a infraestrutura de autenticação do frontend.
@@ -26,15 +26,15 @@ import { AUTHENTICATION_CONFIG, type AuthenticationConfig } from './authenticati
  *
  * @example
  * ```ts
- * providers: [provideAuthentication(authenticationConfig)]
+ * providers: [provideAuthentication(securityConfig)]
  * ```
  */
 export function provideAuthentication(
-  config: AuthenticationConfig,
+  config: SecurityConfig,
   ...interceptors: readonly HttpInterceptorFn[]
 ): EnvironmentProviders {
   return makeEnvironmentProviders([
-    { provide: AUTHENTICATION_CONFIG, useValue: config },
+    { provide: SECURITY_CONFIG, useValue: config },
     provideHttpClient(withInterceptors([...interceptors, includeBearerTokenInterceptor])),
     {
       provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
@@ -46,7 +46,7 @@ export function provideAuthentication(
     },
     provideKeycloak({
       config: {
-        url: config.url,
+        url: config.config.url,
         realm: config.realm,
         clientId: config.clientId,
       },

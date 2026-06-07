@@ -10,7 +10,7 @@ import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType } from 'keycloak-angular';
 import Keycloak from 'keycloak-js';
 
 import { ErrorNotifierService } from '../../handler/error-notifier.service';
-import { AUTHENTICATION_CONFIG } from '../authentication/authentication.config';
+import { SECURITY_CONFIG } from '../security.config';
 import {
   type GrantedPermission,
   type PermissionTuple,
@@ -42,7 +42,7 @@ const SCOPE_SET = new Set<Scope>(scopes);
 export class AuthorizationStore {
   private readonly keycloak = inject(Keycloak);
   private readonly keycloakEvent = inject(KEYCLOAK_EVENT_SIGNAL);
-  private readonly authenticationConfig = inject(AUTHENTICATION_CONFIG);
+  private readonly securityConfig = inject(SECURITY_CONFIG);
   private readonly errorNotifier = inject(ErrorNotifierService);
   private readonly tokenEndpointUrl = this.buildTokenEndpointUrl();
   private readonly permissionRequestBody = this.buildPermissionRequestBody();
@@ -140,14 +140,14 @@ export class AuthorizationStore {
   }
 
   private buildTokenEndpointUrl(): string {
-    return `${this.authenticationConfig.url}/realms/${this.authenticationConfig.realm}/protocol/openid-connect/token`;
+    return `${this.securityConfig.url}/realms/${this.securityConfig.realm}/protocol/openid-connect/token`;
   }
 
   private buildPermissionRequestBody(): string {
     return new HttpParams({
       fromObject: {
         grant_type: 'urn:ietf:params:oauth:grant-type:uma-ticket',
-        audience: this.authenticationConfig.backendAudience,
+        audience: this.securityConfig.resourceId,
         response_mode: 'permissions',
         response_include_resource_name: 'true',
       },
