@@ -44,7 +44,6 @@ export abstract class ProtectedResourceService<
    * @returns página do recurso
    */
   findAll(params: FindAllParams = {}): Observable<PageResult<Entity>> {
-    this.ensureAllowed('read');
     return this.http.get<PageResult<Entity>>(this.resourceUrl, {
       params: buildFindAllParams(params),
     });
@@ -57,7 +56,6 @@ export abstract class ProtectedResourceService<
    * @returns registro encontrado
    */
   findById(id: string): Observable<Entity> {
-    this.ensureAllowed('read');
     return this.http.get<Entity>(this.resourceItemUrl(id));
   }
 
@@ -68,7 +66,6 @@ export abstract class ProtectedResourceService<
    * @returns recurso persistido
    */
   create(input: Input): Observable<Entity> {
-    this.ensureAllowed('create');
     return this.http.post<Entity>(this.resourceUrl, input);
   }
 
@@ -80,7 +77,6 @@ export abstract class ProtectedResourceService<
    * @returns recurso atualizado
    */
   update(id: string, input: Input): Observable<Entity> {
-    this.ensureAllowed('update');
     return this.http.put<Entity>(this.resourceItemUrl(id), input);
   }
 
@@ -94,16 +90,11 @@ export abstract class ProtectedResourceService<
    * @returns conclusão da operação
    */
   remove(id: string): Observable<void> {
-    this.ensureAllowed(this.removeScope);
     return this.http.delete<void>(this.resourceItemUrl(id));
   }
 
   protected get resourceUrl(): string {
     return `${this.apiBaseUrl}/${this.resourcePath}`;
-  }
-
-  private ensureAllowed(scope: Scope): void {
-    this.authorizationService.ensureAllowed(this.permission(scope));
   }
 
   private resourceItemUrl(id: string): string {

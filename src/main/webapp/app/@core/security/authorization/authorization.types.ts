@@ -1,8 +1,6 @@
 export type Resource = string;
 
-export const scopes = ['read', 'create', 'update', 'delete', 'deactivate'] as const;
-
-export type Scope = (typeof scopes)[number];
+export type Scope = string;
 
 /**
  * Forma padronizada de declarar uma permissão funcional.
@@ -18,6 +16,6 @@ export type PermissionTuple<
  */
 export interface GrantedPermission {
   readonly rsid: string;
-  readonly rsname?: string;
+  readonly rsname: string;
   readonly scopes?: string[];
 }

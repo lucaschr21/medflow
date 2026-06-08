@@ -1,4 +1,4 @@
-import { provideHttpClient, withInterceptors, type HttpInterceptorFn } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { makeEnvironmentProviders, type EnvironmentProviders } from '@angular/core';
 import {
   AutoRefreshTokenService,
@@ -11,52 +11,54 @@ import {
   type IncludeBearerTokenCondition,
 } from 'keycloak-angular';
 
-import { SECURITY_CONFIG, type SecurityConfig } from '../security.config';
+import type { SecurityFeature } from '../security.provider';
+import { AUTHENTICATION_CONFIG, authenticationConfig } from './authentication.config';
+import { AuthenticationService } from './authentication.service';
 
 /**
- * Registra a infraestrutura de autenticação do frontend.
+ * Habilita autenticação via Keycloak no módulo de segurança.
  *
- * Este provider agrupa:
- * - o bootstrap do Keycloak
- * - o interceptor bearer para chamadas `/api/**`
- * - o refresh automático de token por atividade do usuário
- *
- * @param config configuração de autenticação do ambiente atual
- * @returns providers de ambiente para o bootstrap da aplicação
- *
- * @example
- * ```ts
- * providers: [provideAuthentication(securityConfig)]
- * ```
+ * Registra:
+ * - configuração de autenticação
+ * - instância do Keycloak
+ * - interceptor bearer para `/api/**`
+ * - refresh automático de token
+ * - AuthenticationService público
  */
-export function provideAuthentication(
-  security: SecurityConfig,
-  ...interceptors: readonly HttpInterceptorFn[]
-): EnvironmentProviders {
+export function withAuthentication(): SecurityFeature {
+  return () => provideAuthentication();
+}
+
+function provideAuthentication(): EnvironmentProviders {
   return makeEnvironmentProviders([
-    { provide: SECURITY_CONFIG, useValue: security },
-    provideHttpClient(withInterceptors([...interceptors, includeBearerTokenInterceptor])),
+    {
+      provide: AUTHENTICATION_CONFIG,
+      useValue: authenticationConfig,
+    },
+
+    AuthenticationService,
+
+    provideHttpClient(withInterceptors([includeBearerTokenInterceptor])),
+
     {
       provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
       useValue: [
         createInterceptorCondition<IncludeBearerTokenCondition>({
-          urlPattern: /^\/api(?:\/.*)?$/i,
+          urlPattern: authenticationConfig.bearerTokenUrlPattern,
         }),
       ],
     },
+
     provideKeycloak({
-      config: {
-        url: security.config.url,
-        realm: security.config.realm,
-        clientId: security.config.clientId,
-      },
-      initOptions: security.initOptions,
+      ...authenticationConfig,
+
       features: [
         withAutoRefreshToken({
           onInactivityTimeout: 'logout',
           sessionTimeout: 5 * 60_000,
         }),
       ],
+
       providers: [AutoRefreshTokenService, UserActivityService],
     }),
   ]);
