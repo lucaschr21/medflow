@@ -12,10 +12,10 @@ export type PermissionTuple<
 
 /**
  * Estrutura simplificada retornada pelo Keycloak Authorization Services em
- * `response_mode=permissions`.
+ * `response_mode=permissions` com `response_include_resource_name=true`.
  */
 export interface GrantedPermission {
   readonly rsid: string;
-  readonly rsname: string;
-  readonly scopes?: string[];
+  readonly rsname: Resource;
+  readonly scopes?: readonly Scope[];
 }

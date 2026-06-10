@@ -1,6 +1,7 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType } from 'keycloak-angular';
-import Keycloak, { type KeycloakResourceAccess, type KeycloakTokenParsed } from 'keycloak-js';
+import Keycloak, { type KeycloakResourceAccess } from 'keycloak-js';
+import { type AuthenticationTokenParsed } from './authentication.types';
 
 const PENDING_EVENTS = new Set<KeycloakEventType>([
   KeycloakEventType.KeycloakAngularNotInitialized,
@@ -20,26 +21,25 @@ export class AuthenticationService {
 
   readonly token = computed(() => (this.keycloakEvent(), this.keycloak.token ?? null));
 
-  readonly claims = computed<KeycloakTokenParsed | null>(
-    () => (
-      this.keycloakEvent(),
-      this.keycloak.authenticated === true ? (this.keycloak.tokenParsed ?? null) : null
-    ),
+  readonly claims = computed<AuthenticationTokenParsed | null>(() =>
+    this.token() === null
+      ? null
+      : ((this.keycloak.tokenParsed as AuthenticationTokenParsed | undefined) ?? null),
   );
 
-  readonly id = computed(() => this.claims()?.sub ?? null);
+  readonly id = computed<string | null>(() => this.claims()?.sub ?? null);
 
-  readonly username = computed<string | null>(() => this.claims()?.['preferred_username'] ?? null);
+  readonly username = computed<string | null>(() => this.claims()?.preferred_username ?? null);
 
-  readonly email = computed<string | null>(() => this.claims()?.['email'] ?? null);
+  readonly email = computed<string | null>(() => this.claims()?.email ?? null);
 
-  readonly fullName = computed<string | null>(() => this.claims()?.['name'] ?? null);
+  readonly fullName = computed<string | null>(() => this.claims()?.name ?? null);
 
-  readonly name = computed<string | null>(() => this.claims()?.['given_name'] ?? null);
+  readonly name = computed<string | null>(() => this.claims()?.given_name ?? null);
 
-  readonly surname = computed<string | null>(() => this.claims()?.['family_name'] ?? null);
+  readonly surname = computed<string | null>(() => this.claims()?.family_name ?? null);
 
-  readonly groups = computed<readonly string[]>(() => this.claims()?.['groups'] ?? EMPTY_ARRAY);
+  readonly groups = computed<readonly string[]>(() => this.claims()?.groups ?? EMPTY_ARRAY);
 
   readonly realmRoles = computed<readonly string[]>(
     () => this.claims()?.realm_access?.roles ?? EMPTY_ARRAY,
