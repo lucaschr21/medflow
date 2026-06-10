@@ -14,6 +14,16 @@ export interface NavGroup {
 
 export const NAV_GROUPS: readonly NavGroup[] = [
   {
+    label: 'Geral',
+    items: [
+      {
+        label: 'Painel',
+        icon: 'pi pi-home',
+        href: '/dashboard',
+      },
+    ],
+  },
+  {
     label: 'Atendimento',
     items: [
       {

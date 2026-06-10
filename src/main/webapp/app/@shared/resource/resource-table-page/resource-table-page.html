@@ -1,6 +1,6 @@
 <app-page-header [title]="title()" [subtitle]="subtitle()">
-  @if (createLabel(); as createLabel) {
-    <button pButton type="button" [label]="createLabel"></button>
+  @if (createLabel(); as label) {
+    <button pButton type="button" [label]="label" icon="pi pi-plus" (click)="create.emit()"></button>
   }
 </app-page-header>
 
@@ -23,6 +23,7 @@
           @for (column of columns(); track column.field) {
             <th>{{ column.header }}</th>
           }
+          <th style="width: 100px"></th>
         </tr>
       </ng-template>
 
@@ -31,6 +32,32 @@
           @for (column of columns(); track column.field) {
             <td>{{ row.values[column.field] }}</td>
           }
+          <td>
+            <div class="resource-table-page__actions">
+              <button
+                pButton
+                type="button"
+                icon="pi pi-pencil"
+                severity="secondary"
+                size="small"
+                [text]="true"
+                (click)="rowEdit.emit(row.id)"
+                title="Editar"
+              ></button>
+              @if (deleteLabel()) {
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  size="small"
+                  [text]="true"
+                  (click)="rowDelete.emit(row.id)"
+                  title="Excluir"
+                ></button>
+              }
+            </div>
+          </td>
         </tr>
       </ng-template>
     </p-table>

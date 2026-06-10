@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { ButtonDirective } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Tag } from 'primeng/tag';
@@ -27,10 +27,15 @@ export class ResourceTablePage {
   readonly title = input.required<string>();
   readonly subtitle = input.required<string>();
   readonly createLabel = input<string | null>(null);
+  readonly deleteLabel = input<string | null>(null);
   readonly total = input(0);
   readonly loading = input(false);
   readonly emptyMessage = input('Nenhum registro encontrado.');
   readonly columns = input.required<readonly ResourceTableColumn[]>();
   readonly rows = input.required<readonly ResourceTableRow[]>();
   readonly tableRows = computed(() => [...this.rows()]);
+
+  readonly create = output();
+  readonly rowEdit = output<string>();
+  readonly rowDelete = output<string>();
 }

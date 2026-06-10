@@ -12,6 +12,11 @@ export const routes: Routes = [
           import('./pages/default-route/default-route-page').then((m) => m.DefaultRoutePage),
       },
       {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./pages/dashboard/dashboard-page').then((m) => m.DashboardPage),
+      },
+      {
         path: 'organizacoes',
         canActivate: [authorizationGuard(['organizacao', 'read'])],
         loadComponent: () =>
