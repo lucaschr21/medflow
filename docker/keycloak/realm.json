@@ -55,9 +55,15 @@
         "description": "${role_default-roles}",
         "composite": true,
         "composites": {
-          "realm": ["offline_access", "uma_authorization"],
+          "realm": [
+            "offline_access",
+            "uma_authorization"
+          ],
           "client": {
-            "account": ["manage-account", "view-profile"]
+            "account": [
+              "manage-account",
+              "view-profile"
+            ]
           }
         },
         "clientRole": false,
@@ -101,7 +107,9 @@
           "composite": true,
           "composites": {
             "client": {
-              "realm-management": ["query-clients"]
+              "realm-management": [
+                "query-clients"
+              ]
             }
           },
           "clientRole": true,
@@ -178,7 +186,10 @@
           "composite": true,
           "composites": {
             "client": {
-              "realm-management": ["query-groups", "query-users"]
+              "realm-management": [
+                "query-groups",
+                "query-users"
+              ]
             }
           },
           "clientRole": true,
@@ -387,7 +398,9 @@
           "composite": true,
           "composites": {
             "client": {
-              "account": ["manage-account-links"]
+              "account": [
+                "manage-account-links"
+              ]
             }
           },
           "clientRole": true,
@@ -428,7 +441,9 @@
           "composite": true,
           "composites": {
             "client": {
-              "account": ["view-consent"]
+              "account": [
+                "view-consent"
+              ]
             }
           },
           "clientRole": true,
@@ -448,7 +463,10 @@
       "attributes": {},
       "realmRoles": [],
       "clientRoles": {
-        "medflow-backend": ["ADMINISTRADOR", "USUARIO"]
+        "medflow-backend": [
+          "ADMINISTRADOR",
+          "USUARIO"
+        ]
       }
     },
     {
@@ -460,7 +478,10 @@
       "attributes": {},
       "realmRoles": [],
       "clientRoles": {
-        "medflow-backend": ["MEDICO", "USUARIO"]
+        "medflow-backend": [
+          "MEDICO",
+          "USUARIO"
+        ]
       }
     },
     {
@@ -472,7 +493,10 @@
       "attributes": {},
       "realmRoles": [],
       "clientRoles": {
-        "medflow-backend": ["USUARIO", "RECEPCIONISTA"]
+        "medflow-backend": [
+          "USUARIO",
+          "RECEPCIONISTA"
+        ]
       }
     },
     {
@@ -484,7 +508,9 @@
       "attributes": {},
       "realmRoles": [],
       "clientRoles": {
-        "medflow-backend": ["USUARIO"]
+        "medflow-backend": [
+          "USUARIO"
+        ]
       }
     }
   ],
@@ -496,7 +522,9 @@
     "clientRole": false,
     "containerId": "4a6b3788-32b2-4fd2-8283-2457493110cb"
   },
-  "requiredCredentials": ["password"],
+  "requiredCredentials": [
+    "password"
+  ],
   "otpPolicyType": "totp",
   "otpPolicyAlgorithm": "HmacSHA1",
   "otpPolicyInitialCounter": 0,
@@ -511,7 +539,10 @@
   ],
   "localizationTexts": {},
   "webAuthnPolicyRpEntityName": "keycloak",
-  "webAuthnPolicySignatureAlgorithms": ["ES256", "RS256"],
+  "webAuthnPolicySignatureAlgorithms": [
+    "ES256",
+    "RS256"
+  ],
   "webAuthnPolicyRpId": "",
   "webAuthnPolicyAttestationConveyancePreference": "not specified",
   "webAuthnPolicyAuthenticatorAttachment": "not specified",
@@ -522,7 +553,10 @@
   "webAuthnPolicyAcceptableAaguids": [],
   "webAuthnPolicyExtraOrigins": [],
   "webAuthnPolicyPasswordlessRpEntityName": "keycloak",
-  "webAuthnPolicyPasswordlessSignatureAlgorithms": ["ES256", "RS256"],
+  "webAuthnPolicyPasswordlessSignatureAlgorithms": [
+    "ES256",
+    "RS256"
+  ],
   "webAuthnPolicyPasswordlessRpId": "",
   "webAuthnPolicyPasswordlessAttestationConveyancePreference": "not specified",
   "webAuthnPolicyPasswordlessAuthenticatorAttachment": "not specified",
@@ -541,9 +575,15 @@
       "email": "medic@gmail.com",
       "emailVerified": true,
       "attributes": {
-        "cpf": ["65909567071"],
-        "dataNascimento": ["1977-02-02"],
-        "telefone": ["7427327175"]
+        "cpf": [
+          "65909567071"
+        ],
+        "dataNascimento": [
+          "1977-02-02"
+        ],
+        "telefone": [
+          "7427327175"
+        ]
       },
       "enabled": true,
       "createdTimestamp": 1780596567501,
@@ -556,9 +596,13 @@
       ],
       "disableableCredentialTypes": [],
       "requiredActions": [],
-      "realmRoles": ["default-roles-medflow"],
+      "realmRoles": [
+        "default-roles-medflow"
+      ],
       "notBefore": 0,
-      "groups": ["/MEDICOS"]
+      "groups": [
+        "/MEDICOS"
+      ]
     },
     {
       "id": "e8fb3e37-f185-48ef-9a28-7da3063f3a3c",
@@ -568,9 +612,15 @@
       "email": "recept@gmail.com",
       "emailVerified": true,
       "attributes": {
-        "cpf": ["12925136087"],
-        "dataNascimento": ["1987-03-03"],
-        "telefone": ["3223352566"]
+        "cpf": [
+          "12925136087"
+        ],
+        "dataNascimento": [
+          "1987-03-03"
+        ],
+        "telefone": [
+          "3223352566"
+        ]
       },
       "enabled": true,
       "createdTimestamp": 1780596616474,
@@ -583,9 +633,13 @@
       ],
       "disableableCredentialTypes": [],
       "requiredActions": [],
-      "realmRoles": ["default-roles-medflow"],
+      "realmRoles": [
+        "default-roles-medflow"
+      ],
       "notBefore": 0,
-      "groups": ["/RECEPCIONISTAS"]
+      "groups": [
+        "/RECEPCIONISTAS"
+      ]
     },
     {
       "id": "d5ed50a4-519a-4f49-ace7-3d1206e88811",
@@ -595,9 +649,15 @@
       "email": "root@gmail.com",
       "emailVerified": true,
       "attributes": {
-        "cpf": ["34797785004"],
-        "dataNascimento": ["1967-01-01"],
-        "telefone": ["9622026445"]
+        "cpf": [
+          "34797785004"
+        ],
+        "dataNascimento": [
+          "1967-01-01"
+        ],
+        "telefone": [
+          "9622026445"
+        ]
       },
       "enabled": true,
       "createdTimestamp": 1780596310078,
@@ -610,9 +670,13 @@
       ],
       "disableableCredentialTypes": [],
       "requiredActions": [],
-      "realmRoles": ["default-roles-medflow"],
+      "realmRoles": [
+        "default-roles-medflow"
+      ],
       "notBefore": 0,
-      "groups": ["/ADMINISTRADORES"]
+      "groups": [
+        "/ADMINISTRADORES"
+      ]
     },
     {
       "id": "1749bb52-88e6-49ca-91b3-efeff02b60ee",
@@ -625,10 +689,43 @@
       "credentials": [],
       "disableableCredentialTypes": [],
       "requiredActions": [],
-      "realmRoles": ["default-roles-medflow"],
+      "realmRoles": [
+        "default-roles-medflow"
+      ],
       "clientRoles": {
-        "realm-management": ["query-users", "manage-users", "view-users"],
-        "medflow-backend": ["uma_protection"]
+        "realm-management": [
+          "query-users",
+          "manage-users",
+          "view-users"
+        ],
+        "medflow-backend": [
+          "uma_protection"
+        ]
+      },
+      "notBefore": 0,
+      "groups": []
+    },
+    {
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "username": "service-account-medflow-admin-service",
+      "emailVerified": false,
+      "enabled": true,
+      "createdTimestamp": 1780581711807,
+      "totp": false,
+      "serviceAccountClientId": "medflow-admin-service",
+      "credentials": [],
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-medflow"
+      ],
+      "clientRoles": {
+        "realm-management": [
+          "manage-users",
+          "view-users",
+          "query-users",
+          "query-groups"
+        ]
       },
       "notBefore": 0,
       "groups": []
@@ -641,9 +738,15 @@
       "email": "user@gmail.com",
       "emailVerified": true,
       "attributes": {
-        "cpf": ["06722867005"],
-        "dataNascimento": ["1997-04-04"],
-        "telefone": ["2437853428"]
+        "cpf": [
+          "06722867005"
+        ],
+        "dataNascimento": [
+          "1997-04-04"
+        ],
+        "telefone": [
+          "2437853428"
+        ]
       },
       "enabled": true,
       "createdTimestamp": 1780596658443,
@@ -656,22 +759,253 @@
       ],
       "disableableCredentialTypes": [],
       "requiredActions": [],
-      "realmRoles": ["default-roles-medflow"],
+      "realmRoles": [
+        "default-roles-medflow"
+      ],
       "notBefore": 0,
-      "groups": ["/USUARIOS"]
+      "groups": [
+        "/USUARIOS"
+      ]
+    },
+    {
+      "id": "b72d51a3-93ca-5806-bc07-cf3d3d1e04d9",
+      "username": "medic2",
+      "firstName": "Ana",
+      "lastName": "Souza",
+      "email": "ana.souza@medflow.com",
+      "emailVerified": true,
+      "attributes": {
+        "cpf": [
+          "12345678901"
+        ],
+        "dataNascimento": [
+          "1985-06-15"
+        ],
+        "telefone": [
+          "11988887777"
+        ]
+      },
+      "enabled": true,
+      "createdTimestamp": 1780596310078,
+      "totp": false,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medic2"
+        }
+      ],
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-medflow"
+      ],
+      "notBefore": 0,
+      "groups": [
+        "/MEDICOS"
+      ]
+    },
+    {
+      "id": "c83e62b4-a4db-6917-cd18-df4e4e2f15e0",
+      "username": "medic3",
+      "firstName": "Ricardo",
+      "lastName": "Mendes",
+      "email": "ricardo.mendes@medflow.com",
+      "emailVerified": true,
+      "attributes": {
+        "cpf": [
+          "23456789012"
+        ],
+        "dataNascimento": [
+          "1978-03-22"
+        ],
+        "telefone": [
+          "11977776666"
+        ]
+      },
+      "enabled": true,
+      "createdTimestamp": 1780596310078,
+      "totp": false,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medic3"
+        }
+      ],
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-medflow"
+      ],
+      "notBefore": 0,
+      "groups": [
+        "/MEDICOS"
+      ]
+    },
+    {
+      "id": "d94f73c5-b5ec-7a28-de29-ef5f5f3a26f1",
+      "username": "medic4",
+      "firstName": "Juliana",
+      "lastName": "Costa",
+      "email": "juliana.costa@medflow.com",
+      "emailVerified": true,
+      "attributes": {
+        "cpf": [
+          "34567890123"
+        ],
+        "dataNascimento": [
+          "1982-09-10"
+        ],
+        "telefone": [
+          "11966665555"
+        ]
+      },
+      "enabled": true,
+      "createdTimestamp": 1780596310078,
+      "totp": false,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medic4"
+        }
+      ],
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-medflow"
+      ],
+      "notBefore": 0,
+      "groups": [
+        "/MEDICOS"
+      ]
+    },
+    {
+      "id": "e05a84d6-c6fd-8b39-ef30-fa6a6a4b37a2",
+      "username": "medic5",
+      "firstName": "Paulo",
+      "lastName": "Ribeiro",
+      "email": "paulo.ribeiro@medflow.com",
+      "emailVerified": true,
+      "attributes": {
+        "cpf": [
+          "45678901234"
+        ],
+        "dataNascimento": [
+          "1975-12-05"
+        ],
+        "telefone": [
+          "11955554444"
+        ]
+      },
+      "enabled": true,
+      "createdTimestamp": 1780596310078,
+      "totp": false,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "medic5"
+        }
+      ],
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-medflow"
+      ],
+      "notBefore": 0,
+      "groups": [
+        "/MEDICOS"
+      ]
+    },
+    {
+      "id": "519e25e2-dd01-556c-ce39-ce2832210e32",
+      "username": "user2",
+      "firstName": "João",
+      "lastName": "Silva",
+      "email": "joao.silva@email.com",
+      "emailVerified": true,
+      "attributes": {
+        "cpf": [
+          "56789012345"
+        ],
+        "dataNascimento": [
+          "1990-07-18"
+        ],
+        "telefone": [
+          "11944443333"
+        ]
+      },
+      "enabled": true,
+      "createdTimestamp": 1780596310078,
+      "totp": false,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user2"
+        }
+      ],
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-medflow"
+      ],
+      "notBefore": 0,
+      "groups": [
+        "/USUARIOS"
+      ]
+    },
+    {
+      "id": "62af36f3-ee12-667d-df40-df3943321f43",
+      "username": "user3",
+      "firstName": "Carla",
+      "lastName": "Oliveira",
+      "email": "carla.oliveira@email.com",
+      "emailVerified": true,
+      "attributes": {
+        "cpf": [
+          "67890123456"
+        ],
+        "dataNascimento": [
+          "1988-11-30"
+        ],
+        "telefone": [
+          "11933332222"
+        ]
+      },
+      "enabled": true,
+      "createdTimestamp": 1780596310078,
+      "totp": false,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "user3"
+        }
+      ],
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-medflow"
+      ],
+      "notBefore": 0,
+      "groups": [
+        "/USUARIOS"
+      ]
     }
   ],
   "scopeMappings": [
     {
       "clientScope": "offline_access",
-      "roles": ["offline_access"]
+      "roles": [
+        "offline_access"
+      ]
     }
   ],
   "clientScopeMappings": {
     "account": [
       {
         "client": "account-console",
-        "roles": ["manage-account", "view-groups"]
+        "roles": [
+          "manage-account",
+          "view-groups"
+        ]
       }
     ]
   },
@@ -686,7 +1020,9 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "redirectUris": ["/realms/medflow/account/*"],
+      "redirectUris": [
+        "/realms/medflow/account/*"
+      ],
       "webOrigins": [],
       "notBefore": 0,
       "bearerOnly": false,
@@ -705,7 +1041,14 @@
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
       "nodeReRegistrationTimeout": 0,
-      "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "basic", "email"],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
       "optionalClientScopes": [
         "address",
         "phone",
@@ -724,7 +1067,9 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "redirectUris": ["/realms/medflow/account/*"],
+      "redirectUris": [
+        "/realms/medflow/account/*"
+      ],
       "webOrigins": [],
       "notBefore": 0,
       "bearerOnly": false,
@@ -754,7 +1099,14 @@
           "config": {}
         }
       ],
-      "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "basic", "email"],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
       "optionalClientScopes": [
         "address",
         "phone",
@@ -791,7 +1143,14 @@
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
       "nodeReRegistrationTimeout": 0,
-      "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "basic", "email"],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
       "optionalClientScopes": [
         "address",
         "phone",
@@ -827,7 +1186,14 @@
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
       "nodeReRegistrationTimeout": 0,
-      "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "basic", "email"],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
       "optionalClientScopes": [
         "address",
         "phone",
@@ -849,8 +1215,12 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "jcgy9K9I1tpDSATxWbsJPESmBey6Ldn1",
-      "redirectUris": ["http://localhost:8080/*"],
-      "webOrigins": ["http://localhost:8080"],
+      "redirectUris": [
+        "http://localhost:8080/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8080"
+      ],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -904,7 +1274,10 @@
             "ownerManagedAccess": false,
             "displayName": "Organização",
             "attributes": {},
-            "uris": ["/api/organizacoes/*", "/api/organizacoes"],
+            "uris": [
+              "/api/organizacoes/*",
+              "/api/organizacoes"
+            ],
             "scopes": [
               {
                 "name": "read"
@@ -927,7 +1300,10 @@
             "ownerManagedAccess": false,
             "displayName": "Usuário",
             "attributes": {},
-            "uris": ["/api/usuarios/*", "/api/usuarios"],
+            "uris": [
+              "/api/usuarios/*",
+              "/api/usuarios"
+            ],
             "scopes": [
               {
                 "name": "read"
@@ -950,7 +1326,10 @@
             "ownerManagedAccess": false,
             "displayName": "Unidade",
             "attributes": {},
-            "uris": ["/api/unidades", "/api/unidades/*"],
+            "uris": [
+              "/api/unidades",
+              "/api/unidades/*"
+            ],
             "scopes": [
               {
                 "name": "read"
@@ -973,7 +1352,10 @@
             "ownerManagedAccess": false,
             "displayName": "Consultório",
             "attributes": {},
-            "uris": ["/api/consultorios", "/api/consultorios/*"],
+            "uris": [
+              "/api/consultorios",
+              "/api/consultorios/*"
+            ],
             "scopes": [
               {
                 "name": "read"
@@ -996,7 +1378,10 @@
             "ownerManagedAccess": false,
             "displayName": "Especialidade",
             "attributes": {},
-            "uris": ["/api/especialidades", "/api/especialidades/*"],
+            "uris": [
+              "/api/especialidades",
+              "/api/especialidades/*"
+            ],
             "scopes": [
               {
                 "name": "read"
@@ -1019,7 +1404,10 @@
             "ownerManagedAccess": false,
             "displayName": "Médico",
             "attributes": {},
-            "uris": ["/api/medicos", "/api/medicos/*"],
+            "uris": [
+              "/api/medicos",
+              "/api/medicos/*"
+            ],
             "scopes": [
               {
                 "name": "read"
@@ -1042,7 +1430,10 @@
             "ownerManagedAccess": false,
             "displayName": "Alocação de Médico",
             "attributes": {},
-            "uris": ["/api/alocacoes-medicos/*", "/api/alocacoes-medicos"],
+            "uris": [
+              "/api/alocacoes-medicos/*",
+              "/api/alocacoes-medicos"
+            ],
             "scopes": [
               {
                 "name": "read"
@@ -1065,7 +1456,10 @@
             "ownerManagedAccess": false,
             "displayName": "Agenda Médica",
             "attributes": {},
-            "uris": ["/api/agendas-medicas/*", "/api/agendas-medicas"],
+            "uris": [
+              "/api/agendas-medicas/*",
+              "/api/agendas-medicas"
+            ],
             "scopes": [
               {
                 "name": "read"
@@ -1088,7 +1482,10 @@
             "ownerManagedAccess": false,
             "displayName": "Bloqueio de Agenda",
             "attributes": {},
-            "uris": ["/api/bloqueios-agenda", "/api/bloqueios-agenda/*"],
+            "uris": [
+              "/api/bloqueios-agenda",
+              "/api/bloqueios-agenda/*"
+            ],
             "scopes": [
               {
                 "name": "read"
@@ -1111,7 +1508,10 @@
             "ownerManagedAccess": false,
             "displayName": "Consulta",
             "attributes": {},
-            "uris": ["/api/consultas", "/api/consultas/*"],
+            "uris": [
+              "/api/consultas",
+              "/api/consultas/*"
+            ],
             "scopes": [
               {
                 "name": "read"
@@ -1131,7 +1531,10 @@
             "ownerManagedAccess": false,
             "displayName": "Registro de Atendimento",
             "attributes": {},
-            "uris": ["/api/registros-atendimento/*", "/api/registros-atendimento"],
+            "uris": [
+              "/api/registros-atendimento/*",
+              "/api/registros-atendimento"
+            ],
             "scopes": [
               {
                 "name": "read"
@@ -1151,7 +1554,10 @@
             "ownerManagedAccess": false,
             "displayName": "Anexo de Consulta",
             "attributes": {},
-            "uris": ["/api/anexos-consulta", "/api/anexos-consulta/*"],
+            "uris": [
+              "/api/anexos-consulta",
+              "/api/anexos-consulta/*"
+            ],
             "scopes": [
               {
                 "name": "read"
@@ -1171,7 +1577,10 @@
             "ownerManagedAccess": false,
             "displayName": "Relatório",
             "attributes": {},
-            "uris": ["/api/relatorios", "/api/relatorios/*"],
+            "uris": [
+              "/api/relatorios",
+              "/api/relatorios/*"
+            ],
             "scopes": [
               {
                 "name": "read"
@@ -1503,13 +1912,13 @@
           },
           {
             "name": "perm-registro-atendimento-administrador",
-            "description": "Permite que administradores visualizem registros de atendimento.",
+            "description": "Permite que administradores criem, visualizem e atualizem registros de atendimento.",
             "type": "scope",
             "logic": "POSITIVE",
             "decisionStrategy": "AFFIRMATIVE",
             "config": {
               "resources": "[\"registro-atendimento\"]",
-              "scopes": "[\"read\"]",
+              "scopes": "[\"read\",\"update\",\"create\"]",
               "applyPolicies": "[\"policy-administrador\"]"
             }
           },
@@ -1617,6 +2026,61 @@
       }
     },
     {
+      "id": "e8a1c3d2-b5f6-4a7e-9c8d-1e2f3a4b5c6d",
+      "clientId": "medflow-admin-service",
+      "name": "Medflow Admin Service",
+      "description": "Client técnico com service account para operações administrativas via backend (criação de usuários, atribuição de grupos, etc.)",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "medflow-admin-service-secret-change-me",
+      "redirectUris": [],
+      "webOrigins": [],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": false,
+      "publicClient": false,
+      "frontchannelLogout": false,
+      "protocol": "openid-connect",
+      "attributes": {
+        "realm_client": "false",
+        "oidc.ciba.grant.enabled": "false",
+        "client.secret.creation.time": "1780581711",
+        "backchannel.logout.session.required": "true",
+        "post.logout.redirect.uris": "+",
+        "frontchannel.logout.session.required": "true",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "display.on.consent.screen": "false",
+        "backchannel.logout.revoke.offline.tokens": "false",
+        "dpop.bound.access.tokens": "false"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": false,
+      "nodeReRegistrationTimeout": -1,
+      "defaultClientScopes": [
+        "web-origins",
+        "service_account",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "organization",
+        "offline_access",
+        "microprofile-jwt"
+      ]
+    },
+    {
       "id": "27a1fb44-d16d-49c9-b77c-fbad8cd284b4",
       "clientId": "medflow-frontend",
       "name": "",
@@ -1628,8 +2092,12 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "redirectUris": ["http://localhost:4200/*"],
-      "webOrigins": ["http://localhost:4200"],
+      "redirectUris": [
+        "http://localhost:4200/*"
+      ],
+      "webOrigins": [
+        "http://localhost:4200"
+      ],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -1654,7 +2122,14 @@
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
       "nodeReRegistrationTimeout": -1,
-      "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "basic", "email"],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
       "optionalClientScopes": [
         "address",
         "phone",
@@ -1690,7 +2165,14 @@
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
       "nodeReRegistrationTimeout": 0,
-      "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "basic", "email"],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
       "optionalClientScopes": [
         "address",
         "phone",
@@ -1709,8 +2191,12 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "redirectUris": ["/admin/medflow/console/*"],
-      "webOrigins": ["+"],
+      "redirectUris": [
+        "/admin/medflow/console/*"
+      ],
+      "webOrigins": [
+        "+"
+      ],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -1748,7 +2234,14 @@
           }
         }
       ],
-      "defaultClientScopes": ["web-origins", "acr", "profile", "roles", "basic", "email"],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
       "optionalClientScopes": [
         "address",
         "phone",
@@ -2544,7 +3037,9 @@
   "adminTheme": "",
   "emailTheme": "",
   "eventsEnabled": false,
-  "eventsListeners": ["jboss-logging"],
+  "eventsListeners": [
+    "jboss-logging"
+  ],
   "enabledEventTypes": [],
   "adminEventsEnabled": false,
   "adminEventsDetailsEnabled": false,
@@ -2575,8 +3070,12 @@
         "subType": "anonymous",
         "subComponents": {},
         "config": {
-          "host-sending-registration-request-must-match": ["true"],
-          "client-uris-must-match": ["true"]
+          "host-sending-registration-request-must-match": [
+            "true"
+          ],
+          "client-uris-must-match": [
+            "true"
+          ]
         }
       },
       {
@@ -2586,7 +3085,9 @@
         "subType": "authenticated",
         "subComponents": {},
         "config": {
-          "allow-default-scopes": ["true"]
+          "allow-default-scopes": [
+            "true"
+          ]
         }
       },
       {
@@ -2596,7 +3097,9 @@
         "subType": "anonymous",
         "subComponents": {},
         "config": {
-          "max-clients": ["200"]
+          "max-clients": [
+            "200"
+          ]
         }
       },
       {
@@ -2606,7 +3109,9 @@
         "subType": "anonymous",
         "subComponents": {},
         "config": {
-          "allow-default-scopes": ["true"]
+          "allow-default-scopes": [
+            "true"
+          ]
         }
       },
       {
@@ -2667,12 +3172,18 @@
         "providerId": "hmac-generated",
         "subComponents": {},
         "config": {
-          "kid": ["8b8d45a4-acb4-42a4-8524-6da72c65a400"],
+          "kid": [
+            "8b8d45a4-acb4-42a4-8524-6da72c65a400"
+          ],
           "secret": [
             "OYcMPCsW3oK8eQy7l5XY992ven6aRn3IhVpFZPJlNtDygBGvjvZbHMFfzNFymJdBIHusRyX8S128QkXluG1n7QGObYReo6tO5ocgyH-7AAf3YMNnkOG7AZiLsT2w83y57UJGmUPLI5kwO6B7W7zRt1p6eMz3oHfDrwrK74Hdvgk"
           ],
-          "priority": ["100"],
-          "algorithm": ["HS512"]
+          "priority": [
+            "100"
+          ],
+          "algorithm": [
+            "HS512"
+          ]
         }
       },
       {
@@ -2687,8 +3198,12 @@
           "certificate": [
             "MIICnTCCAYUCBgGek8NQqjANBgkqhkiG9w0BAQsFADASMRAwDgYDVQQDDAdtZWRmbG93MB4XDTI2MDYwNDE3NTAxMVoXDTM2MDYwNDE3NTE1MVowEjEQMA4GA1UEAwwHbWVkZmxvdzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKWbracXvIMMc1Hs53Gaz6IcPudKDZPi1ZnHxlsKiogrqZUsptGYGNRhFg7v8uvVWvy708dvkaRrw9Ajr7cwuLEvXBWxBXoPEZbuYR83NnUNhvpLMKa50n4HWv8PZLquMi+Sk6QhzXllM2XgHn6ZO0BMw8aTSr53pgJLUQ9/9vLr3f6+DbIo6aqfx6j+lzwO2HefsCjtNRpFyMUD/LrFWJLXfI2oP8wTCtJG5kkNyi7a8+Ih5DB0eZaE0JiPaUXmgRWAj+wTn6UumIsiRWawN5hnQ1bnswvAdHxCLKydql2XG/luvI+lOOiper4wcJ+CXjtzvZnYV3g2Ao73qA2yaocCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAJ0u+LV7feX2zBrpiKOzsKix/AulZ3zsXC333f7A8FhLpSAfXR+uz9w++u8XNKci75uueiMuIAOkeEMQqsmYRbpHDsJE+vMcBROt/ruHXueFYNvPq8pCezX+zXag8PFZIBAdbCoTLLWrcoWioZKaBCFJqQOgCGFNwk7qgoMcr2UK7cuGrbTh7Mx77e0i6lUOJteQGQIxPTC5K36x+BPpw+bnhWwDn4zhbpe/dncU2JY2KAVClaQIadmaZLIow1wwyI+Was85e03PhxJGDttfdVeaJ8jV7/71xRhbBWKqRimxBPgsXVMW0mHy9c80UIbhBtcBrLV/8ZjEy8yWwZmsYEg=="
           ],
-          "priority": ["100"],
-          "algorithm": ["RSA-OAEP"]
+          "priority": [
+            "100"
+          ],
+          "algorithm": [
+            "RSA-OAEP"
+          ]
         }
       },
       {
@@ -2697,9 +3212,15 @@
         "providerId": "aes-generated",
         "subComponents": {},
         "config": {
-          "kid": ["1d72652f-1d9e-40f3-8027-96de691e321b"],
-          "secret": ["UCTIU6TVabzbDiye-d5BfQ"],
-          "priority": ["100"]
+          "kid": [
+            "1d72652f-1d9e-40f3-8027-96de691e321b"
+          ],
+          "secret": [
+            "UCTIU6TVabzbDiye-d5BfQ"
+          ],
+          "priority": [
+            "100"
+          ]
         }
       },
       {
@@ -2714,7 +3235,9 @@
           "certificate": [
             "MIICnTCCAYUCBgGek8NRGjANBgkqhkiG9w0BAQsFADASMRAwDgYDVQQDDAdtZWRmbG93MB4XDTI2MDYwNDE3NTAxMVoXDTM2MDYwNDE3NTE1MVowEjEQMA4GA1UEAwwHbWVkZmxvdzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMOEkAW6DhlrSdng7Q0hBQfpWb9h9QCAeLzAfFagkbHrAzgvJLp8odYuySNIaBHTvtpdGn7leFmfuXBivJHfTznXhyIS1liju/ba8O3BGcu41K+4gM2MWGbAzhpYy69fQGevR5xN/FPkUjxBX3glod/cmumMFDaXtdssvlz0iTVbzg76/HdZti8L15FKiPoThYemlwySHtJ83NkVdGyBT/dWLb0caB0ZBt1g/hvug9jWVU2OqMiazjBKN75IvLvUXPO/PxszCgMidpE8vK+QcxVyU50XLAhSn388uAWxdNvxLnIp/+ddYlpFdx65u7L0biP9/gFfTWH+RiX2GvD2FoECAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAhehijQTMgJfxs26dM6NiHHkDws4CHaoJnZJZi3ULyzgKgT2Jvj9xRqxWx8btTO3p4530jX8TJb104ckVor+TFx0oiUdq2DkWkaihYMmNqIylRveYpfW60J8o34096g7SH90NsvW76yQGDTOMc6l6ATfjuA1MYovGkh/BiZp5ZHeLSU/glZtnJLx85R5GiEG18ChZeuL9RQ8LMrAoaCRzSzALt5EyXi0DinHjK8tBSeBDPi9UESQCDYa7VVSKm5Vfv8bsXYoIT8m382gqC48aDws7MDpaXeyVwr23pfueWrg2bpsc7j1sszRGzQLiXPijLccxLoH32SP16oKsmpPjdA=="
           ],
-          "priority": ["100"]
+          "priority": [
+            "100"
+          ]
         }
       }
     ]

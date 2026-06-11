@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AuthorizationService } from '../../@core/security/authorization/authorization.service';
-import { ResourceListPageBase } from '../../@shared/resource/resource-list-page.base';
 import { formatDateTime } from '../../@shared/resource/resource-formatters';
+import { ResourceListPageBase } from '../../@shared/resource/resource-list-page.base';
 import {
   ResourceTablePage,
   type ResourceTableColumn,
@@ -24,12 +25,13 @@ import { ConsultaService } from '../../services/consulta.service';
       [loading]="loading()"
       [columns]="columns"
       [rows]="tableRows()"
-      emptyMessage="Nenhuma consulta encontrada."
+      (createClick)="router.navigate(['/agendar-consulta'])"
     />
   `,
 })
 export class ConsultasPage extends ResourceListPageBase<Consulta> {
   protected readonly service = inject(ConsultaService);
+  readonly router = inject(Router);
   private readonly authorizationService = inject(AuthorizationService);
 
   readonly columns: readonly ResourceTableColumn[] = [

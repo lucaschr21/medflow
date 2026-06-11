@@ -1,14 +1,18 @@
 package br.com.medflow.services;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.medflow.core.exceptions.BusinessRuleException;
 import br.com.medflow.core.exceptions.EntityNotFoundException;
+import br.com.medflow.core.exceptions.ErrorCode;
 import br.com.medflow.core.persistence.query.PageResult;
 import br.com.medflow.core.persistence.query.RsqlQuery;
+import br.com.medflow.core.security.identity.IdentityProviderAdminPort;
 import br.com.medflow.entities.Organizacao;
 import br.com.medflow.entities.Usuario;
 import br.com.medflow.repositories.UsuarioRepository;
@@ -23,65 +27,39 @@ import br.com.medflow.schemas.usuario.UsuarioOutput;
 @Transactional(readOnly = true)
 public class UsuarioService {
 
+  private static final Set<String> TIPOS_VALIDOS = Set.of("ADMINISTRADOR", "RECEPCIONISTA", "MEDICO", "USUARIO");
+
   private final UsuarioRepository usuarioRepository;
   private final OrganizacaoService organizacaoService;
   private final UsuarioMapper usuarioMapper;
+  private final IdentityProviderAdminPort identityProvider;
 
-  /**
-   * Cria o serviço com suas dependências.
-   *
-   * @param usuarioRepository repositório de usuários
-   * @param organizacaoService serviço de organizações
-   * @param usuarioMapper mapper de usuários
-   */
   public UsuarioService(
       UsuarioRepository usuarioRepository,
       OrganizacaoService organizacaoService,
-      UsuarioMapper usuarioMapper) {
+      UsuarioMapper usuarioMapper,
+      IdentityProviderAdminPort identityProvider) {
     this.usuarioRepository = usuarioRepository;
     this.organizacaoService = organizacaoService;
     this.usuarioMapper = usuarioMapper;
+    this.identityProvider = identityProvider;
   }
 
-  /**
-   * Obtém um usuário pelo identificador.
-   *
-   * @param usuarioId identificador do usuário
-   * @return usuário encontrado
-   */
+  // ---- Operações de leitura ----
+
   public Usuario findByIdOrThrow(UUID usuarioId) {
     return usuarioRepository.findById(usuarioId)
         .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado: " + usuarioId));
   }
 
-  /**
-   * Obtém um usuário pelo identificador já convertido para saída.
-   *
-   * @param usuarioId identificador do usuário
-   * @return usuário encontrado
-   */
   public UsuarioOutput findById(UUID usuarioId) {
     return usuarioMapper.toOutput(findByIdOrThrow(usuarioId));
   }
 
-  /**
-   * Lista usuários com filtros e paginação.
-   *
-   * @param query filtro RSQL
-   * @param pageable paginação e ordenação
-   * @return página de usuários
-   */
   public PageResult<UsuarioOutput> findAll(RsqlQuery query, Pageable pageable) {
     return usuarioRepository.findAll(query.toCriteria(pageable)).map(usuarioMapper::toOutput);
   }
 
-  /**
-   * Obtém um usuário pela organização e pelo identificador do Keycloak.
-   *
-   * @param organizacaoId identificador da organização
-   * @param keycloakId identificador do usuário no Keycloak
-   * @return usuário encontrado
-   */
   public Usuario findByOrganizacaoAndKeycloakIdOrThrow(UUID organizacaoId, UUID keycloakId) {
     return usuarioRepository.findByOrganizacaoIdAndKeycloakId(organizacaoId, keycloakId)
         .orElseThrow(
@@ -89,42 +67,53 @@ public class UsuarioService {
                 "Usuário não encontrado para a organização e identificador informados."));
   }
 
+  // ---- Criação de usuário com integração Keycloak ----
+
   /**
-   * Persiste um novo usuário associado a uma organização.
-   *
-   * @param input dados do usuário
-   * @return usuário persistido
+   * Cria um usuário no Keycloak e persiste o vínculo local.
    */
   @Transactional
   public UsuarioOutput create(UsuarioInput input) {
-    Usuario usuario = usuarioMapper.toEntity(input);
-    usuario.setOrganizacao(organizacaoService.findByIdOrThrow(input.organizacaoId()));
+    validarTipoAcesso(input.tipoAcesso());
+
+    Organizacao organizacao = organizacaoService.findByIdOrThrow(input.organizacaoId());
+
+    String keycloakId = identityProvider.criarUsuario(
+        input.username(), input.email(), input.firstName(), input.lastName(),
+        Set.of(input.tipoAcesso()));
+
+    Usuario usuario = new Usuario();
+    usuario.setOrganizacao(organizacao);
+    usuario.setKeycloakId(UUID.fromString(keycloakId));
+
     return usuarioMapper.toOutput(usuarioRepository.save(usuario));
   }
 
-  /**
-   * Atualiza os dados de um usuário existente.
-   *
-   * @param usuarioId identificador do usuário
-   * @param input novos dados
-   * @return usuário atualizado
-   */
+  // ---- Atualização e inativação ----
+
   @Transactional
   public UsuarioOutput update(UUID usuarioId, UsuarioInput input) {
     Usuario target = findByIdOrThrow(usuarioId);
-    Organizacao organizacao = organizacaoService.findByIdOrThrow(input.organizacaoId());
-    target.setOrganizacao(organizacao);
-    usuarioMapper.updateEntity(input, target);
+
+    identityProvider.atualizarUsuario(
+        target.getKeycloakId().toString(),
+        input.username(), input.email(), input.firstName(), input.lastName());
+
     return usuarioMapper.toOutput(target);
   }
 
-  /**
-   * Inativa um usuário existente.
-   *
-   * @param usuarioId identificador do usuário
-   */
   @Transactional
   public void deactivate(UUID usuarioId) {
-    usuarioRepository.delete(findByIdOrThrow(usuarioId));
+    Usuario usuario = findByIdOrThrow(usuarioId);
+    identityProvider.desabilitarUsuario(usuario.getKeycloakId().toString());
+    usuarioRepository.delete(usuario);
+  }
+
+  private void validarTipoAcesso(String tipoAcesso) {
+    if (!TIPOS_VALIDOS.contains(tipoAcesso)) {
+      throw new BusinessRuleException(
+          ErrorCode.VALIDATION_ERROR,
+          "Tipo de acesso inválido: " + tipoAcesso + ". Use: ADMINISTRADOR, RECEPCIONISTA, MEDICO ou USUARIO.");
+    }
   }
 }

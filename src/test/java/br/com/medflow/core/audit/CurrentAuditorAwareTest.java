@@ -19,8 +19,7 @@ import br.com.medflow.core.security.identity.MedflowAuthenticatedPrincipal;
 
 class CurrentAuditorAwareTest {
 
-  private final CurrentAuditorAware currentAuditorAware =
-      new CurrentAuditorAware(new CurrentAuthenticatedUser());
+  private final CurrentAuditorAware currentAuditorAware = new CurrentAuditorAware(new CurrentAuthenticatedUser());
 
   @AfterEach
   void tearDown() {
@@ -29,26 +28,22 @@ class CurrentAuditorAwareTest {
 
   @Test
   void shouldReturnAuthenticatedUsername() {
-    AuthenticatedUser user =
-        new AuthenticatedUser(
-            "user-id",
-            "jane.doe",
-            "jane@medflow.com",
-            "Jane Doe",
-            "12345678901",
-            "91999999999",
-            LocalDate.parse("1990-04-10"),
-            Set.of(),
-            Map.of(),
-            Set.of());
-    MedflowAuthenticatedPrincipal principal =
-        new MedflowAuthenticatedPrincipal(user, Map.of(), Set.of());
+    AuthenticatedUser user = new AuthenticatedUser(
+        "user-id",
+        "jane.doe",
+        "jane@medflow.com",
+        "Jane Doe",
+        "12345678901",
+        "91999999999",
+        LocalDate.parse("1990-04-10"),
+        Set.of(),
+        Map.of(),
+        Set.of());
+    MedflowAuthenticatedPrincipal principal = new MedflowAuthenticatedPrincipal(user, Map.of(), Set.of());
     SecurityContextHolder.getContext()
         .setAuthentication(
             new TestingAuthenticationToken(
-                principal,
-                "credentials",
-                List.of(new SimpleGrantedAuthority("usuario:read"))));
+                principal, "credentials", List.of(new SimpleGrantedAuthority("usuario:read"))));
 
     String auditor = currentAuditorAware.getCurrentAuditor().orElseThrow();
 

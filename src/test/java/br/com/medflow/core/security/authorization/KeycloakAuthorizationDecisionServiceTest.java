@@ -36,158 +36,177 @@ import br.com.medflow.core.security.identity.MedflowAuthenticatedPrincipal;
 
 class KeycloakAuthorizationDecisionServiceTest {
 
-  @AfterEach
-  void tearDown() {
-    RequestContextHolder.resetRequestAttributes();
-  }
+    @AfterEach
+    void tearDown() {
+        RequestContextHolder.resetRequestAttributes();
+    }
 
-  @Test
-  void shouldReturnGrantedWhenKeycloakApprovesPermission() {
-    RestClient.Builder restClientBuilder = RestClient.builder();
-    MockRestServiceServer server = MockRestServiceServer.bindTo(restClientBuilder).build();
-    KeycloakAuthorizationDecisionService service = new KeycloakAuthorizationDecisionService(
-        restClientBuilder,
-        new AuthorizationProperties(
-            "http://localhost:8085/realms/medflow/protocol/openid-connect/token",
-            "medflow-backend"),
-        new RequestAuthorizationDecisionCache());
+    @Test
+    void shouldReturnGrantedWhenKeycloakApprovesPermission() {
+        RestClient.Builder restClientBuilder = RestClient.builder();
+        MockRestServiceServer server = MockRestServiceServer.bindTo(restClientBuilder).build();
+        KeycloakAuthorizationDecisionService service = new KeycloakAuthorizationDecisionService(
+                restClientBuilder,
+                new AuthorizationProperties(
+                        "http://localhost:8085/realms/medflow/protocol/openid-connect/token",
+                        "medflow-backend"),
+                new RequestAuthorizationDecisionCache());
 
-    server.expect(once(), requestTo("http://localhost:8085/realms/medflow/protocol/openid-connect/token"))
-        .andExpect(method(HttpMethod.POST))
-        .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer access-token-value"))
-        .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_FORM_URLENCODED))
-        .andExpect(content().string(org.hamcrest.Matchers.allOf(
-            org.hamcrest.Matchers.containsString("grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Auma-ticket"),
-            org.hamcrest.Matchers.containsString("audience=medflow-backend"),
-            org.hamcrest.Matchers.containsString("permission=usuario%23read"),
-            org.hamcrest.Matchers.containsString("response_mode=decision"))))
-        .andRespond(withSuccess("{\"result\":true}", MediaType.APPLICATION_JSON));
+        server
+                .expect(
+                        once(), requestTo("http://localhost:8085/realms/medflow/protocol/openid-connect/token"))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer access-token-value"))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(
+                        content()
+                                .string(
+                                        org.hamcrest.Matchers.allOf(
+                                                org.hamcrest.Matchers.containsString(
+                                                        "grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Auma-ticket"),
+                                                org.hamcrest.Matchers.containsString("audience=medflow-backend"),
+                                                org.hamcrest.Matchers.containsString("permission=usuario%23read"),
+                                                org.hamcrest.Matchers.containsString("response_mode=decision"))))
+                .andRespond(withSuccess("{\"result\":true}", MediaType.APPLICATION_JSON));
 
-    boolean granted = service.isGranted(authentication(), FunctionalPermission.of("usuario", ResourceAction.READ));
+        boolean granted = service.isGranted(
+                authentication(), FunctionalPermission.of("usuario", ResourceAction.READ));
 
-    assertTrue(granted);
-    server.verify();
-  }
+        assertTrue(granted);
+        server.verify();
+    }
 
-  @Test
-  void shouldReturnDeniedWhenKeycloakRejectsPermission() {
-    RestClient.Builder restClientBuilder = RestClient.builder();
-    MockRestServiceServer server = MockRestServiceServer.bindTo(restClientBuilder).build();
-    KeycloakAuthorizationDecisionService service = new KeycloakAuthorizationDecisionService(
-        restClientBuilder,
-        new AuthorizationProperties(
-            "http://localhost:8085/realms/medflow/protocol/openid-connect/token",
-            "medflow-backend"),
-        new RequestAuthorizationDecisionCache());
+    @Test
+    void shouldReturnDeniedWhenKeycloakRejectsPermission() {
+        RestClient.Builder restClientBuilder = RestClient.builder();
+        MockRestServiceServer server = MockRestServiceServer.bindTo(restClientBuilder).build();
+        KeycloakAuthorizationDecisionService service = new KeycloakAuthorizationDecisionService(
+                restClientBuilder,
+                new AuthorizationProperties(
+                        "http://localhost:8085/realms/medflow/protocol/openid-connect/token",
+                        "medflow-backend"),
+                new RequestAuthorizationDecisionCache());
 
-    server.expect(once(), requestTo("http://localhost:8085/realms/medflow/protocol/openid-connect/token"))
-        .andRespond(withForbiddenRequest());
+        server
+                .expect(
+                        once(), requestTo("http://localhost:8085/realms/medflow/protocol/openid-connect/token"))
+                .andRespond(withForbiddenRequest());
 
-    boolean granted = service.isGranted(authentication(), FunctionalPermission.of("usuario", ResourceAction.DELETE));
+        boolean granted = service.isGranted(
+                authentication(), FunctionalPermission.of("usuario", ResourceAction.DELETE));
 
-    assertFalse(granted);
-    server.verify();
-  }
+        assertFalse(granted);
+        server.verify();
+    }
 
-  @Test
-  void shouldCacheDecisionDuringCurrentRequest() {
-    RestClient.Builder restClientBuilder = RestClient.builder();
-    MockRestServiceServer server = MockRestServiceServer.bindTo(restClientBuilder).build();
-    KeycloakAuthorizationDecisionService service = new KeycloakAuthorizationDecisionService(
-        restClientBuilder,
-        new AuthorizationProperties(
-            "http://localhost:8085/realms/medflow/protocol/openid-connect/token",
-            "medflow-backend"),
-        new RequestAuthorizationDecisionCache());
+    @Test
+    void shouldCacheDecisionDuringCurrentRequest() {
+        RestClient.Builder restClientBuilder = RestClient.builder();
+        MockRestServiceServer server = MockRestServiceServer.bindTo(restClientBuilder).build();
+        KeycloakAuthorizationDecisionService service = new KeycloakAuthorizationDecisionService(
+                restClientBuilder,
+                new AuthorizationProperties(
+                        "http://localhost:8085/realms/medflow/protocol/openid-connect/token",
+                        "medflow-backend"),
+                new RequestAuthorizationDecisionCache());
 
-    RequestContextHolder.setRequestAttributes(
-        new ServletRequestAttributes(new MockHttpServletRequest("GET", "/api/usuarios")));
+        RequestContextHolder.setRequestAttributes(
+                new ServletRequestAttributes(new MockHttpServletRequest("GET", "/api/usuarios")));
 
-    server.expect(once(), requestTo("http://localhost:8085/realms/medflow/protocol/openid-connect/token"))
-        .andRespond(withSuccess("{\"result\":true}", MediaType.APPLICATION_JSON));
+        server
+                .expect(
+                        once(), requestTo("http://localhost:8085/realms/medflow/protocol/openid-connect/token"))
+                .andRespond(withSuccess("{\"result\":true}", MediaType.APPLICATION_JSON));
 
-    FunctionalPermission permission = FunctionalPermission.of("usuario", ResourceAction.READ);
+        FunctionalPermission permission = FunctionalPermission.of("usuario", ResourceAction.READ);
 
-    assertTrue(service.isGranted(authentication(), permission));
-    assertTrue(service.isGranted(authentication(), permission));
-    server.verify();
-  }
+        assertTrue(service.isGranted(authentication(), permission));
+        assertTrue(service.isGranted(authentication(), permission));
+        server.verify();
+    }
 
-  @Test
-  void shouldNotReuseDecisionForDifferentBearerTokenInSameRequest() {
-    RestClient.Builder restClientBuilder = RestClient.builder();
-    MockRestServiceServer server = MockRestServiceServer.bindTo(restClientBuilder).build();
-    KeycloakAuthorizationDecisionService service = new KeycloakAuthorizationDecisionService(
-        restClientBuilder,
-        new AuthorizationProperties(
-            "http://localhost:8085/realms/medflow/protocol/openid-connect/token",
-            "medflow-backend"),
-        new RequestAuthorizationDecisionCache());
+    @Test
+    void shouldNotReuseDecisionForDifferentBearerTokenInSameRequest() {
+        RestClient.Builder restClientBuilder = RestClient.builder();
+        MockRestServiceServer server = MockRestServiceServer.bindTo(restClientBuilder).build();
+        KeycloakAuthorizationDecisionService service = new KeycloakAuthorizationDecisionService(
+                restClientBuilder,
+                new AuthorizationProperties(
+                        "http://localhost:8085/realms/medflow/protocol/openid-connect/token",
+                        "medflow-backend"),
+                new RequestAuthorizationDecisionCache());
 
-    RequestContextHolder.setRequestAttributes(
-        new ServletRequestAttributes(new MockHttpServletRequest("GET", "/api/usuarios")));
+        RequestContextHolder.setRequestAttributes(
+                new ServletRequestAttributes(new MockHttpServletRequest("GET", "/api/usuarios")));
 
-    server.expect(once(), requestTo("http://localhost:8085/realms/medflow/protocol/openid-connect/token"))
-        .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer access-token-value"))
-        .andRespond(withSuccess("{\"result\":true}", MediaType.APPLICATION_JSON));
+        server
+                .expect(
+                        once(), requestTo("http://localhost:8085/realms/medflow/protocol/openid-connect/token"))
+                .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer access-token-value"))
+                .andRespond(withSuccess("{\"result\":true}", MediaType.APPLICATION_JSON));
 
-    server.expect(once(), requestTo("http://localhost:8085/realms/medflow/protocol/openid-connect/token"))
-        .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer another-access-token"))
-        .andRespond(withSuccess("{\"result\":true}", MediaType.APPLICATION_JSON));
+        server
+                .expect(
+                        once(), requestTo("http://localhost:8085/realms/medflow/protocol/openid-connect/token"))
+                .andExpect(header(HttpHeaders.AUTHORIZATION, "Bearer another-access-token"))
+                .andRespond(withSuccess("{\"result\":true}", MediaType.APPLICATION_JSON));
 
-    FunctionalPermission permission = FunctionalPermission.of("usuario", ResourceAction.READ);
+        FunctionalPermission permission = FunctionalPermission.of("usuario", ResourceAction.READ);
 
-    assertTrue(service.isGranted(authentication("access-token-value"), permission));
-    assertTrue(service.isGranted(authentication("another-access-token"), permission));
-    server.verify();
-  }
+        assertTrue(service.isGranted(authentication("access-token-value"), permission));
+        assertTrue(service.isGranted(authentication("another-access-token"), permission));
+        server.verify();
+    }
 
-  @Test
-  void shouldFailClosedWhenDecisionPayloadDoesNotContainBooleanResult() {
-    RestClient.Builder restClientBuilder = RestClient.builder();
-    MockRestServiceServer server = MockRestServiceServer.bindTo(restClientBuilder).build();
-    KeycloakAuthorizationDecisionService service = new KeycloakAuthorizationDecisionService(
-        restClientBuilder,
-        new AuthorizationProperties(
-            "http://localhost:8085/realms/medflow/protocol/openid-connect/token",
-            "medflow-backend"),
-        new RequestAuthorizationDecisionCache());
+    @Test
+    void shouldFailClosedWhenDecisionPayloadDoesNotContainBooleanResult() {
+        RestClient.Builder restClientBuilder = RestClient.builder();
+        MockRestServiceServer server = MockRestServiceServer.bindTo(restClientBuilder).build();
+        KeycloakAuthorizationDecisionService service = new KeycloakAuthorizationDecisionService(
+                restClientBuilder,
+                new AuthorizationProperties(
+                        "http://localhost:8085/realms/medflow/protocol/openid-connect/token",
+                        "medflow-backend"),
+                new RequestAuthorizationDecisionCache());
 
-    server.expect(once(), requestTo("http://localhost:8085/realms/medflow/protocol/openid-connect/token"))
-        .andRespond(withSuccess("{\"result\":\"true\"}", MediaType.APPLICATION_JSON));
+        server
+                .expect(
+                        once(), requestTo("http://localhost:8085/realms/medflow/protocol/openid-connect/token"))
+                .andRespond(withSuccess("{\"result\":\"true\"}", MediaType.APPLICATION_JSON));
 
-    assertThrows(
-        AuthorizationServiceException.class,
-        () -> service.isGranted(authentication(), FunctionalPermission.of("usuario", ResourceAction.READ)));
-    server.verify();
-  }
+        assertThrows(
+                AuthorizationServiceException.class,
+                () -> service.isGranted(
+                        authentication(), FunctionalPermission.of("usuario", ResourceAction.READ)));
+        server.verify();
+    }
 
-  private static BearerTokenAuthentication authentication() {
-    return authentication("access-token-value");
-  }
+    private static BearerTokenAuthentication authentication() {
+        return authentication("access-token-value");
+    }
 
-  private static BearerTokenAuthentication authentication(String tokenValue) {
-    MedflowAuthenticatedPrincipal principal = new MedflowAuthenticatedPrincipal(
-        new AuthenticatedUser(
-            "keycloak-user-id",
-            "jane.doe",
-            "jane@medflow.com",
-            "Jane Doe",
-            "12345678901",
-            "91999999999",
-            LocalDate.parse("1990-04-10"),
-            java.util.Set.of("default-roles-medflow"),
-            Map.of("medflow-backend", java.util.Set.of("MEDICO")),
-            java.util.Set.of("MEDICOS")),
-        Map.of(),
-        List.of());
+    private static BearerTokenAuthentication authentication(String tokenValue) {
+        MedflowAuthenticatedPrincipal principal = new MedflowAuthenticatedPrincipal(
+                new AuthenticatedUser(
+                        "keycloak-user-id",
+                        "jane.doe",
+                        "jane@medflow.com",
+                        "Jane Doe",
+                        "12345678901",
+                        "91999999999",
+                        LocalDate.parse("1990-04-10"),
+                        java.util.Set.of("default-roles-medflow"),
+                        Map.of("medflow-backend", java.util.Set.of("MEDICO")),
+                        java.util.Set.of("MEDICOS")),
+                Map.of(),
+                List.of());
 
-    OAuth2AccessToken accessToken = new OAuth2AccessToken(
-        OAuth2AccessToken.TokenType.BEARER,
-        tokenValue,
-        Instant.now(),
-        Instant.now().plusSeconds(300));
+        OAuth2AccessToken accessToken = new OAuth2AccessToken(
+                OAuth2AccessToken.TokenType.BEARER,
+                tokenValue,
+                Instant.now(),
+                Instant.now().plusSeconds(300));
 
-    return new BearerTokenAuthentication(principal, accessToken, principal.getAuthorities());
-  }
+        return new BearerTokenAuthentication(principal, accessToken, principal.getAuthorities());
+    }
 }

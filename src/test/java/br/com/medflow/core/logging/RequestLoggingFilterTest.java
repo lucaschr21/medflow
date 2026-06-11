@@ -64,17 +64,18 @@ class RequestLoggingFilterTest {
           return java.util.Optional.empty();
         }
 
-        return java.util.Optional.of(new AuthenticatedUser(
-            "subject",
-            username,
-            "jane@example.com",
-            "Jane Doe",
-            "00000000000",
-            "91999999999",
-            java.time.LocalDate.of(1990, 1, 1),
-            java.util.Set.of(),
-            java.util.Map.of(),
-            java.util.Set.of()));
+        return java.util.Optional.of(
+            new AuthenticatedUser(
+                "subject",
+                username,
+                "jane@example.com",
+                "Jane Doe",
+                "00000000000",
+                "91999999999",
+                java.time.LocalDate.of(1990, 1, 1),
+                java.util.Set.of(),
+                java.util.Map.of(),
+                java.util.Set.of()));
       }
     };
   }

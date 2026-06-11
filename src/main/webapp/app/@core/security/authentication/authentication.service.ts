@@ -1,6 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 
+import type { UserRole } from './authentication.store';
 import { AuthenticationStore } from './authentication.store';
+
+export type { UserRole };
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {

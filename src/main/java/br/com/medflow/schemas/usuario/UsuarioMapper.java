@@ -17,6 +17,7 @@ import br.com.medflow.schemas.config.MedflowMapperConfig;
 public interface UsuarioMapper {
 
   @Mapping(target = "id", ignore = true)
+  @Mapping(target = "keycloakId", ignore = true)
   @Mapping(target = "createdBy", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "lastModifiedBy", ignore = true)
@@ -34,6 +35,7 @@ public interface UsuarioMapper {
 
   @BeanMapping(ignoreByDefault = false)
   @Mapping(target = "id", ignore = true)
+  @Mapping(target = "keycloakId", ignore = true)
   @Mapping(target = "createdBy", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "lastModifiedBy", ignore = true)

@@ -3,6 +3,20 @@ import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType } from 'keycloak-angular';
 import Keycloak from 'keycloak-js';
 
 /**
+ * Papéis de experiência do Medflow derivados dos grupos do Keycloak.
+ */
+export type UserRole = 'ADMINISTRADOR' | 'MEDICO' | 'RECEPCIONISTA' | 'USUARIO';
+
+const ROLE_PRIORITY: readonly UserRole[] = ['ADMINISTRADOR', 'MEDICO', 'RECEPCIONISTA', 'USUARIO'];
+
+const GROUP_TO_ROLE: Record<string, UserRole> = {
+  '/ADMINISTRADORES': 'ADMINISTRADOR',
+  '/MEDICOS': 'MEDICO',
+  '/RECEPCIONISTAS': 'RECEPCIONISTA',
+  '/USUARIOS': 'USUARIO',
+};
+
+/**
  * Representa os principais dados do usuário autenticado expostos para a UI.
  */
 export interface AuthenticationUser {
@@ -10,6 +24,8 @@ export interface AuthenticationUser {
   readonly username: string | null;
   readonly email: string | null;
   readonly name: string | null;
+  readonly role: UserRole | null;
+  readonly groups: readonly string[];
 }
 
 const KEYCLOAK_PENDING_EVENTS = new Set<KeycloakEventType>([
@@ -81,12 +97,33 @@ export class AuthenticationStore {
     }
 
     const tokenParsed = this.keycloak.tokenParsed;
+    const groups = this.readGroups(tokenParsed);
     return {
       id: this.readClaim(tokenParsed, 'sub'),
       username: this.readClaim(tokenParsed, 'preferred_username') ?? this.keycloak.subject ?? null,
       email: this.readClaim(tokenParsed, 'email'),
       name: this.readClaim(tokenParsed, 'name'),
+      role: this.resolveRole(groups),
+      groups,
     };
+  }
+
+  private resolveRole(groups: readonly string[]): UserRole | null {
+    for (const role of ROLE_PRIORITY) {
+      const groupPath = Object.entries(GROUP_TO_ROLE).find(([, r]) => r === role)?.[0];
+      if (groupPath && groups.includes(groupPath)) {
+        return role;
+      }
+    }
+    return null;
+  }
+
+  private readGroups(tokenParsed: Keycloak.KeycloakTokenParsed | undefined): readonly string[] {
+    const groups = tokenParsed?.['groups'];
+    if (Array.isArray(groups)) {
+      return groups.filter((g): g is string => typeof g === 'string');
+    }
+    return [];
   }
 
   private readClaim(

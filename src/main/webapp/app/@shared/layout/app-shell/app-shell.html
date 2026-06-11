@@ -1,43 +1,42 @@
 @if (!ready()) {
-  <section class="app-shell__boot">
-    <div class="app-shell__boot-panel">
-      <span class="app-shell__boot-mark">Medflow</span>
-      <strong class="app-shell__boot-title">Inicializando sessão...</strong>
-    </div>
-  </section>
-} @else {
-  <div class="app-shell">
-    <div class="app-shell__sidebar">
-      <app-sidebar [groups]="visibleNavGroups()" [collapsed]="sidebarCollapsed()" />
-    </div>
-
-    <p-drawer
-      [visible]="mobileMenuVisible()"
-      (visibleChange)="mobileMenuVisible.set($event)"
-      position="left"
-      [modal]="true"
-      [dismissible]="true"
-      [closable]="false"
-      styleClass="app-shell__mobile-drawer"
-    >
-      <app-sidebar [groups]="visibleNavGroups()" [collapsed]="false" />
-    </p-drawer>
-
-    <div class="app-shell__content">
-      <app-topbar
-        [sidebarCollapsed]="sidebarCollapsed()"
-        [currentOrganization]="currentOrganization()"
-        (mobileMenuOpen)="openMobileMenu()"
-        (sidebarCollapseToggle)="toggleSidebarCollapse()"
-      />
-
-      <main class="app-shell__main">
-        @if (loadingPermissions()) {
-          <div class="app-shell__loading">Carregando permissões...</div>
-        } @else {
-          <router-outlet />
-        }
-      </main>
-    </div>
+<section class="app-shell__boot">
+  <div class="app-shell__boot-panel">
+    <span class="app-shell__boot-mark">Medflow</span>
+    <strong class="app-shell__boot-title">Inicializando sessão...</strong>
   </div>
+</section>
+} @else {
+<div class="app-shell">
+  <!-- Desktop sidebar -->
+  <aside class="app-shell__sidebar" aria-label="Navegação principal">
+    <app-sidebar [groups]="visibleNavGroups()" [user]="user()" />
+  </aside>
+
+  <!-- Mobile sidebar drawer -->
+  <p-drawer
+    [visible]="mobileMenuVisible()"
+    (visibleChange)="closeMobileMenu()"
+    position="left"
+    [modal]="true"
+    [dismissible]="true"
+    styleClass="app-shell__mobile-drawer"
+  >
+    <app-sidebar [groups]="visibleNavGroups()" [user]="user()" />
+  </p-drawer>
+
+  <!-- Main content area -->
+  <div class="app-shell__content">
+    <app-topbar (mobileMenuOpen)="openMobileMenu()" />
+
+    <main class="app-shell__main">
+      @if (loadingPermissions()) {
+      <div class="flex items-center justify-center h-full p-8">
+        <p-skeleton width="20rem" height="2rem" />
+      </div>
+      } @else {
+      <router-outlet />
+      }
+    </main>
+  </div>
+</div>
 }

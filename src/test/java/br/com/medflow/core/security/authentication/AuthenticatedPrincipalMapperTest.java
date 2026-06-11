@@ -17,20 +17,20 @@ class AuthenticatedPrincipalMapperTest {
   @Test
   void shouldMapKnownClaimsFromPrincipal() {
     AuthenticatedUserMapper mapper = new AuthenticatedUserMapper();
-    DefaultOAuth2AuthenticatedPrincipal principal =
-        new DefaultOAuth2AuthenticatedPrincipal(
-            Map.of(
-                "sub", "keycloak-user-id",
-                "preferred_username", "jane.doe",
-                "email", "jane@medflow.com",
-                "name", "Jane Doe",
-                "cpf", "12345678901",
-                "telefone", "91999999999",
-                "dataNascimento", "1990-04-10",
-                "groups", List.of("/MEDICOS", "/UNIDADES/MATRIZ"),
-                "realm_access", Map.of("roles", List.of("default-roles-medflow")),
-                "resource_access", Map.of("medflow-backend", Map.of("roles", List.of("MEDICO", "USUARIO")))),
-            List.of(new SimpleGrantedAuthority("ROLE_MEDICO")));
+    DefaultOAuth2AuthenticatedPrincipal principal = new DefaultOAuth2AuthenticatedPrincipal(
+        Map.of(
+            "sub", "keycloak-user-id",
+            "preferred_username", "jane.doe",
+            "email", "jane@medflow.com",
+            "name", "Jane Doe",
+            "cpf", "12345678901",
+            "telefone", "91999999999",
+            "dataNascimento", "1990-04-10",
+            "groups", List.of("/MEDICOS", "/UNIDADES/MATRIZ"),
+            "realm_access", Map.of("roles", List.of("default-roles-medflow")),
+            "resource_access",
+            Map.of("medflow-backend", Map.of("roles", List.of("MEDICO", "USUARIO")))),
+        List.of(new SimpleGrantedAuthority("ROLE_MEDICO")));
 
     MedflowAuthenticatedPrincipal mapped = mapper.map(principal);
 

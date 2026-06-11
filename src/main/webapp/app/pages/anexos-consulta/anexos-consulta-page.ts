@@ -39,7 +39,7 @@ export class AnexosConsultaPage extends ResourceListPageBase<AnexoConsulta> {
     { field: 'consultaId', header: 'Consulta' },
   ];
   readonly createLabel = computed(() =>
-    this.authorizationService.can(['anexo-consulta', 'create']) ? 'Novo anexo' : null,
+    this.authorizationService.can(['anexo-consulta', 'create']) ? 'Novo registro' : null,
   );
   readonly tableRows = computed<readonly ResourceTableRow[]>(() =>
     this.entities().map((anexo) => ({

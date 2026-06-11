@@ -39,7 +39,7 @@ export class AlocacoesMedicasPage extends ResourceListPageBase<AlocacaoMedico> {
     { field: 'dataFim', header: 'Fim' },
   ];
   readonly createLabel = computed(() =>
-    this.authorizationService.can(['alocacao-medico', 'create']) ? 'Nova alocação' : null,
+    this.authorizationService.can(['alocacao-medico', 'create']) ? 'Novo registro' : null,
   );
   readonly tableRows = computed<readonly ResourceTableRow[]>(() =>
     this.entities().map((alocacao) => ({

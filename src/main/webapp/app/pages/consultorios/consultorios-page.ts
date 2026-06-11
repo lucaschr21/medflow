@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
 import { AuthorizationService } from '../../@core/security/authorization/authorization.service';
-import { ResourceListPageBase } from '../../@shared/resource/resource-list-page.base';
 import { shortId } from '../../@shared/resource/resource-formatters';
+import { ResourceListPageBase } from '../../@shared/resource/resource-list-page.base';
 import {
   ResourceTablePage,
   type ResourceTableColumn,

@@ -38,7 +38,7 @@ export class OrganizacoesPage extends ResourceListPageBase<Organizacao> {
     { field: 'corPrimaria', header: 'Cor primária' },
   ];
   readonly createLabel = computed(() =>
-    this.authorizationService.can(['organizacao', 'create']) ? 'Nova organização' : null,
+    this.authorizationService.can(['organizacao', 'create']) ? 'Novo registro' : null,
   );
   readonly tableRows = computed<readonly ResourceTableRow[]>(() =>
     this.entities().map((organizacao) => ({

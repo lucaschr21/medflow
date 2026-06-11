@@ -38,96 +38,77 @@ class AuthorizeResourceAuthorizationManagerTest {
 
   @Test
   void shouldAuthorizeMethodAnnotatedResource() throws NoSuchMethodException {
-    TestingAuthenticationToken authentication = new TestingAuthenticationToken(
-        "user",
-        "credentials",
-        "usuario:create");
+    TestingAuthenticationToken authentication = new TestingAuthenticationToken("user", "credentials", "usuario:create");
     RequestContextHolder.setRequestAttributes(
         new ServletRequestAttributes(new MockHttpServletRequest("POST", "/api/usuarios")));
 
     AuthorizationDecision decision = authorizationManager.authorize(
-        () -> authentication,
-        invocation(new ResourceController(), "create"));
+        () -> authentication, invocation(new ResourceController(), "create"));
 
     assertTrue(decision.isGranted());
   }
 
   @Test
   void shouldAuthorizeTypeAnnotatedResource() throws NoSuchMethodException {
-    TestingAuthenticationToken authentication = new TestingAuthenticationToken(
-        "user",
-        "credentials",
-        "consulta:read");
+    TestingAuthenticationToken authentication = new TestingAuthenticationToken("user", "credentials", "consulta:read");
     RequestContextHolder.setRequestAttributes(
         new ServletRequestAttributes(new MockHttpServletRequest("GET", "/api/consultas/1")));
 
     AuthorizationDecision decision = authorizationManager.authorize(
-        () -> authentication,
-        invocation(new ConsultaController(), "findById"));
+        () -> authentication, invocation(new ConsultaController(), "findById"));
 
     assertTrue(decision.isGranted());
   }
 
   @Test
   void shouldDenyWhenAuthorityIsMissing() throws NoSuchMethodException {
-    TestingAuthenticationToken authentication = new TestingAuthenticationToken(
-        "user",
-        "credentials",
-        "usuario:read");
+    TestingAuthenticationToken authentication = new TestingAuthenticationToken("user", "credentials", "usuario:read");
     RequestContextHolder.setRequestAttributes(
         new ServletRequestAttributes(new MockHttpServletRequest("DELETE", "/api/usuarios/1")));
 
     AuthorizationDecision decision = authorizationManager.authorize(
-        () -> authentication,
-        invocation(new ResourceController(), "delete"));
+        () -> authentication, invocation(new ResourceController(), "delete"));
 
     assertFalse(decision.isGranted());
   }
 
   @Test
   void shouldInferDeactivateForSoftDeletedResourceOnDelete() throws NoSuchMethodException {
-    TestingAuthenticationToken authentication = new TestingAuthenticationToken(
-        "user",
-        "credentials",
+    TestingAuthenticationToken authentication = new TestingAuthenticationToken("user", "credentials",
         "usuario:deactivate");
     RequestContextHolder.setRequestAttributes(
         new ServletRequestAttributes(new MockHttpServletRequest("DELETE", "/api/usuarios/1")));
 
     AuthorizationDecision decision = authorizationManager.authorize(
-        () -> authentication,
-        invocation(new ResourceController(), "delete"));
+        () -> authentication, invocation(new ResourceController(), "delete"));
 
     assertTrue(decision.isGranted());
   }
 
   @Test
   void shouldPrioritizeExplicitPermissionOverHttpMethodInference() throws NoSuchMethodException {
-    TestingAuthenticationToken authentication = new TestingAuthenticationToken(
-        "user",
-        "credentials",
+    TestingAuthenticationToken authentication = new TestingAuthenticationToken("user", "credentials",
         "consulta:update");
     RequestContextHolder.setRequestAttributes(
-        new ServletRequestAttributes(new MockHttpServletRequest("POST", "/api/consultas/1/cancelamento")));
+        new ServletRequestAttributes(
+            new MockHttpServletRequest("POST", "/api/consultas/1/cancelamento")));
 
     AuthorizationDecision decision = authorizationManager.authorize(
-        () -> authentication,
-        invocation(new WorkflowController(), "cancel"));
+        () -> authentication, invocation(new WorkflowController(), "cancel"));
 
     assertTrue(decision.isGranted());
   }
 
   @Test
   void shouldUseExplicitPermissionDeclaredAtTypeLevel() throws NoSuchMethodException {
-    TestingAuthenticationToken authentication = new TestingAuthenticationToken(
-        "user",
-        "credentials",
+    TestingAuthenticationToken authentication = new TestingAuthenticationToken("user", "credentials",
         "consulta:update");
     RequestContextHolder.setRequestAttributes(
-        new ServletRequestAttributes(new MockHttpServletRequest("POST", "/api/consultas/1/check-in")));
+        new ServletRequestAttributes(
+            new MockHttpServletRequest("POST", "/api/consultas/1/check-in")));
 
     AuthorizationDecision decision = authorizationManager.authorize(
-        () -> authentication,
-        invocation(new CheckInController(), "checkIn"));
+        () -> authentication, invocation(new CheckInController(), "checkIn"));
 
     assertTrue(decision.isGranted());
   }

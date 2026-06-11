@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AuthorizationService } from '../../@core/security/authorization/authorization.service';
-import { ResourceListPageBase } from '../../@shared/resource/resource-list-page.base';
 import { joinValues, shortId } from '../../@shared/resource/resource-formatters';
+import { ResourceListPageBase } from '../../@shared/resource/resource-list-page.base';
 import {
   ResourceTablePage,
   type ResourceTableColumn,
@@ -18,18 +19,20 @@ import { MedicoService } from '../../services/medico.service';
   template: `
     <app-resource-table-page
       title="Médicos"
-      subtitle="Cadastro e vínculo dos médicos com usuários e especialidades."
+      subtitle="Médicos cadastrados. Crie um usuário com papel Médico para adicionar."
       [createLabel]="createLabel()"
       [total]="total()"
       [loading]="loading()"
       [columns]="columns"
       [rows]="tableRows()"
       emptyMessage="Nenhum médico encontrado."
+      (createClick)="router.navigate(['/usuarios/novo'])"
     />
   `,
 })
 export class MedicosPage extends ResourceListPageBase<Medico> {
   protected readonly service = inject(MedicoService);
+  readonly router = inject(Router);
   private readonly authorizationService = inject(AuthorizationService);
 
   readonly columns: readonly ResourceTableColumn[] = [
@@ -37,7 +40,7 @@ export class MedicosPage extends ResourceListPageBase<Medico> {
     { field: 'especialidadeIds', header: 'Especialidades' },
   ];
   readonly createLabel = computed(() =>
-    this.authorizationService.can(['medico', 'create']) ? 'Novo médico' : null,
+    this.authorizationService.can(['usuario', 'create']) ? 'Novo médico (criar usuário)' : null,
   );
   readonly tableRows = computed<readonly ResourceTableRow[]>(() =>
     this.entities().map((medico) => ({

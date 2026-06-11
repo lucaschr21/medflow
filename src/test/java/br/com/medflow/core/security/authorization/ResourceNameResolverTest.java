@@ -22,9 +22,12 @@ class ResourceNameResolverTest {
   }
 
   @ProtectedResource("usuario")
-  private static final class UsuarioEntity {}
+  private static final class UsuarioEntity {
+  }
 
-  private static final class RegistroAtendimento {}
+  private static final class RegistroAtendimento {
+  }
 
-  private static final class AnexoConsulta {}
+  private static final class AnexoConsulta {
+  }
 }

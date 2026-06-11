@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AuthorizationService } from '../../@core/security/authorization/authorization.service';
+import { orDash } from '../../@shared/resource/resource-formatters';
 import { ResourceListPageBase } from '../../@shared/resource/resource-list-page.base';
-import { orDash, shortId } from '../../@shared/resource/resource-formatters';
 import {
   ResourceTablePage,
   type ResourceTableColumn,
@@ -18,35 +19,37 @@ import { UsuarioService } from '../../services/usuario.service';
   template: `
     <app-resource-table-page
       title="Usuários"
-      subtitle="Gestão de usuários vinculados ao Keycloak e à organização."
+      subtitle="Gestão de usuários do sistema."
       [createLabel]="createLabel()"
       [total]="total()"
       [loading]="loading()"
       [columns]="columns"
       [rows]="tableRows()"
       emptyMessage="Nenhum usuário encontrado."
+      (createClick)="router.navigate(['/usuarios/novo'])"
     />
   `,
 })
 export class UsuariosPage extends ResourceListPageBase<Usuario> {
   protected readonly service = inject(UsuarioService);
+  readonly router = inject(Router);
   private readonly authorizationService = inject(AuthorizationService);
 
   readonly columns: readonly ResourceTableColumn[] = [
-    { field: 'keycloakId', header: 'Keycloak ID' },
+    { field: 'keycloakId', header: 'ID Keycloak' },
     { field: 'organizacaoId', header: 'Organização' },
-    { field: 'medicoId', header: 'Médico vinculado' },
+    { field: 'medicoId', header: 'Médico' },
   ];
   readonly createLabel = computed(() =>
     this.authorizationService.can(['usuario', 'create']) ? 'Novo usuário' : null,
   );
   readonly tableRows = computed<readonly ResourceTableRow[]>(() =>
-    this.entities().map((usuario) => ({
-      id: usuario.id,
+    this.entities().map((u) => ({
+      id: u.id,
       values: {
-        keycloakId: shortId(usuario.keycloakId),
-        organizacaoId: shortId(usuario.organizacaoId),
-        medicoId: orDash(shortId(usuario.medicoId)),
+        keycloakId: u.keycloakId.substring(0, 8) + '...',
+        organizacaoId: u.organizacaoId.substring(0, 8) + '...',
+        medicoId: orDash(u.medicoId?.substring(0, 8) + '...'),
       },
     })),
   );

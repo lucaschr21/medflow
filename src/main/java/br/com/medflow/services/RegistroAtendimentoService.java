@@ -6,12 +6,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.medflow.core.exceptions.BusinessRuleException;
 import br.com.medflow.core.exceptions.EntityNotFoundException;
+import br.com.medflow.core.exceptions.ErrorCode;
 import br.com.medflow.core.persistence.query.PageResult;
 import br.com.medflow.core.persistence.query.RsqlQuery;
 import br.com.medflow.entities.Consulta;
 import br.com.medflow.entities.Medico;
 import br.com.medflow.entities.RegistroAtendimento;
+import br.com.medflow.entities.enums.StatusConsulta;
 import br.com.medflow.repositories.RegistroAtendimentoRepository;
 import br.com.medflow.schemas.registroatendimento.RegistroAtendimentoInput;
 import br.com.medflow.schemas.registroatendimento.RegistroAtendimentoMapper;
@@ -30,67 +33,93 @@ public class RegistroAtendimentoService {
   private final MedicoService medicoService;
   private final RegistroAtendimentoMapper registroAtendimentoMapper;
   private final RegistroAtendimentoRules registroAtendimentoRules;
+  private final UsuarioContextService usuarioContextService;
 
-  /**
-   * Cria o serviço com suas dependências.
-   *
-   * @param registroAtendimentoRepository repositório de registros de atendimento
-   * @param consultaService serviço de consultas
-   * @param medicoService serviço de médicos
-   * @param registroAtendimentoMapper mapper de registros de atendimento
-   * @param registroAtendimentoRules regras de registros de atendimento
-   */
   public RegistroAtendimentoService(
       RegistroAtendimentoRepository registroAtendimentoRepository,
       ConsultaService consultaService,
       MedicoService medicoService,
       RegistroAtendimentoMapper registroAtendimentoMapper,
-      RegistroAtendimentoRules registroAtendimentoRules) {
+      RegistroAtendimentoRules registroAtendimentoRules,
+      UsuarioContextService usuarioContextService) {
     this.registroAtendimentoRepository = registroAtendimentoRepository;
     this.consultaService = consultaService;
     this.medicoService = medicoService;
     this.registroAtendimentoMapper = registroAtendimentoMapper;
     this.registroAtendimentoRules = registroAtendimentoRules;
+    this.usuarioContextService = usuarioContextService;
   }
 
-  /**
-   * Obtém um registro de atendimento pelo identificador.
-   *
-   * @param registroAtendimentoId identificador do registro
-   * @return registro encontrado
-   */
+  // ---- Operações de leitura ----
+
   public RegistroAtendimento findByIdOrThrow(UUID registroAtendimentoId) {
     return registroAtendimentoRepository.findById(registroAtendimentoId).orElseThrow(
         () -> new EntityNotFoundException("Registro de atendimento não encontrado: " + registroAtendimentoId));
   }
 
-  /**
-   * Obtém um registro de atendimento pelo identificador já convertido para saída.
-   *
-   * @param registroAtendimentoId identificador do registro
-   * @return registro encontrado
-   */
   public RegistroAtendimentoOutput findById(UUID registroAtendimentoId) {
     return registroAtendimentoMapper.toOutput(findByIdOrThrow(registroAtendimentoId));
   }
 
-  /**
-   * Lista registros de atendimento com filtros e paginação.
-   *
-   * @param query filtro RSQL
-   * @param pageable paginação e ordenação
-   * @return página de registros de atendimento
-   */
   public PageResult<RegistroAtendimentoOutput> findAll(RsqlQuery query, Pageable pageable) {
-    return registroAtendimentoRepository.findAll(query.toCriteria(pageable)).map(registroAtendimentoMapper::toOutput);
+    return registroAtendimentoRepository.findAll(query.toCriteria(pageable))
+        .map(registroAtendimentoMapper::toOutput);
+  }
+
+  // ---- Operações operacionais ----
+
+  /**
+   * Cria registro de atendimento para uma consulta.
+   * Apenas o médico da consulta autenticado pode registrar.
+   */
+  @Transactional
+  public RegistroAtendimentoOutput criarRegistro(UUID consultaId, RegistroAtendimentoInput input) {
+    Consulta consulta = consultaService.findByIdOrThrow(consultaId);
+    Medico medicoAutenticado = usuarioContextService.getMedicoOuFalha();
+
+    if (!consulta.getMedico().getId().equals(medicoAutenticado.getId())) {
+      throw new BusinessRuleException(
+          ErrorCode.REGISTRO_MEDICO_INVALIDO,
+          "Apenas o médico responsável pela consulta pode registrar o atendimento.");
+    }
+    if (consulta.getStatus() != StatusConsulta.EM_ATENDIMENTO) {
+      throw new BusinessRuleException(
+          ErrorCode.REGISTRO_CONSULTA_NAO_EM_ATENDIMENTO,
+          "O registro de atendimento requer que a consulta esteja em atendimento.");
+    }
+
+    RegistroAtendimento registro = registroAtendimentoMapper.toEntity(input);
+    registro.setConsulta(consulta);
+    registro.setMedico(medicoAutenticado);
+    return registroAtendimentoMapper.toOutput(registroAtendimentoRepository.save(registro));
   }
 
   /**
-   * Persiste um novo registro de atendimento.
-   *
-   * @param input dados do registro
-   * @return registro persistido
+   * Atualiza registro de atendimento existente.
+   * Apenas o médico da consulta autenticado pode atualizar.
    */
+  @Transactional
+  public RegistroAtendimentoOutput atualizarRegistro(UUID consultaId, UUID registroId, RegistroAtendimentoInput input) {
+    RegistroAtendimento target = findByIdOrThrow(registroId);
+    Medico medicoAutenticado = usuarioContextService.getMedicoOuFalha();
+
+    if (!target.getConsulta().getId().equals(consultaId)) {
+      throw new BusinessRuleException(
+          ErrorCode.VALIDATION_ERROR,
+          "O registro de atendimento não pertence à consulta informada.");
+    }
+    if (!target.getMedico().getId().equals(medicoAutenticado.getId())) {
+      throw new BusinessRuleException(
+          ErrorCode.REGISTRO_MEDICO_INVALIDO,
+          "Apenas o médico responsável pode alterar o registro de atendimento.");
+    }
+
+    registroAtendimentoMapper.updateEntity(input, target);
+    return registroAtendimentoMapper.toOutput(target);
+  }
+
+  // ---- CRUD básico ----
+
   @Transactional
   public RegistroAtendimentoOutput create(RegistroAtendimentoInput input) {
     RegistroAtendimento registroAtendimento = registroAtendimentoMapper.toEntity(input);
@@ -102,13 +131,6 @@ public class RegistroAtendimentoService {
     return registroAtendimentoMapper.toOutput(registroAtendimentoRepository.save(registroAtendimento));
   }
 
-  /**
-   * Atualiza os dados de um registro de atendimento existente.
-   *
-   * @param registroAtendimentoId identificador do registro
-   * @param input novos dados
-   * @return registro atualizado
-   */
   @Transactional
   public RegistroAtendimentoOutput update(UUID registroAtendimentoId, RegistroAtendimentoInput input) {
     RegistroAtendimento target = findByIdOrThrow(registroAtendimentoId);
@@ -121,11 +143,6 @@ public class RegistroAtendimentoService {
     return registroAtendimentoMapper.toOutput(target);
   }
 
-  /**
-   * Remove um registro de atendimento existente.
-   *
-   * @param registroAtendimentoId identificador do registro
-   */
   @Transactional
   public void delete(UUID registroAtendimentoId) {
     registroAtendimentoRepository.delete(findByIdOrThrow(registroAtendimentoId));

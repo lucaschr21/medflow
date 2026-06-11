@@ -6,11 +6,30 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./@shared/layout/app-shell/app-shell').then((m) => m.AppShell),
     children: [
+      // Home inteligente — renderiza conteúdo conforme role
       {
         path: '',
-        loadComponent: () =>
-          import('./pages/default-route/default-route-page').then((m) => m.DefaultRoutePage),
+        loadComponent: () => import('./pages/role-home/home-page').then((m) => m.HomePage),
       },
+
+      // ---- Fluxos operacionais ----
+      {
+        path: 'agendar-consulta',
+        loadComponent: () =>
+          import('./pages/consultas/agendar-consulta-page').then((m) => m.AgendarConsultaPage),
+      },
+      {
+        path: 'minhas-consultas',
+        loadComponent: () =>
+          import('./pages/consultas/minhas-consultas-page').then((m) => m.MinhasConsultasPage),
+      },
+      {
+        path: 'fila',
+        loadComponent: () =>
+          import('./pages/consultas/fila-atendimento-page').then((m) => m.FilaAtendimentoPage),
+      },
+
+      // ---- CRUD administrativo ----
       {
         path: 'organizacoes',
         canActivate: [authorizationGuard(['organizacao', 'read'])],
@@ -32,6 +51,12 @@ export const routes: Routes = [
         path: 'usuarios',
         canActivate: [authorizationGuard(['usuario', 'read'])],
         loadComponent: () => import('./pages/usuarios/usuarios-page').then((m) => m.UsuariosPage),
+      },
+      {
+        path: 'usuarios/novo',
+        canActivate: [authorizationGuard(['usuario', 'create'])],
+        loadComponent: () =>
+          import('./pages/usuarios/usuarios-novo-page').then((m) => m.UsuariosNovoPage),
       },
       {
         path: 'medicos',

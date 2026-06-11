@@ -3,9 +3,9 @@ package br.com.medflow.core.exceptions.handler;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -52,8 +52,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
    */
   @ExceptionHandler(BusinessRuleException.class)
   ResponseEntity<Object> handleBusinessRule(BusinessRuleException exception, WebRequest request) {
+    ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, exception.getMessage());
+    problemDetail.setType(BUSINESS_RULE_TYPE);
+    problemDetail.setTitle("Regra de negócio violada");
+    problemDetail.setProperty("code", exception.getCode().name());
     return handleErrorResponseException(
-        errorResponseException(HttpStatus.CONFLICT, BUSINESS_RULE_TYPE, "Regra de negócio violada", exception),
+        new ErrorResponseException(HttpStatus.CONFLICT, problemDetail, exception),
         HttpHeaders.EMPTY,
         HttpStatus.CONFLICT,
         request);
@@ -113,7 +117,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         "Requisição inválida",
         "Um ou mais campos da requisição são inválidos.",
         request);
-    problemDetail.setProperty("errors", exception.getBindingResult().getAllErrors().stream().map(this::toError).toList());
+    problemDetail.setProperty("errors",
+        exception.getBindingResult().getAllErrors().stream().map(this::toError).toList());
     return createResponseEntity(problemDetail, headers, VALIDATION_STATUS, request);
   }
 
@@ -266,8 +271,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
    * Erro individual de validação exposto no Problem Details.
    *
    * @param pointer ponteiro do campo ou parâmetro inválido
-   * @param detail mensagem da validação
-   * @param code código da validação
+   * @param detail  mensagem da validação
+   * @param code    código da validação
    */
   private record ValidationError(String pointer, String detail, String code) {
   }

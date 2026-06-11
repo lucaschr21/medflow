@@ -10,6 +10,6 @@ export class AlocacaoMedicoService extends ProtectedResourceService<
   AlocacaoMedicoInput
 > {
   protected readonly resource = 'alocacao-medico' as const;
-  protected readonly resourcePath = 'alocacoes-medicos';
+  protected readonly resourcePath = 'alocacoes-medicas';
   protected readonly removeScope = 'deactivate' as const;
 }
