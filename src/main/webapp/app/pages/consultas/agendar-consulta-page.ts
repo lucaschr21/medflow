@@ -1,18 +1,15 @@
 import { DatePipe } from '@angular/common';
-import { HttpClient, httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonDirective } from 'primeng/button';
 import { DatePicker } from 'primeng/datepicker';
 import { Skeleton } from 'primeng/skeleton';
 import { Textarea } from 'primeng/textarea';
 import { Toast } from 'primeng/toast';
-import { firstValueFrom } from 'rxjs';
-
-import type { PageResult } from '../../@core/persistence/page-result';
-import { environment } from '../../environments/environment';
+import { DemoMedflowDataService } from '../../@core/mock/demo-medflow-data.service';
+import { AuthenticationService } from '../../@core/security/authentication/authentication.service';
 import type { Consulta, ConsultaInput } from '../../schemas/consulta.schema';
 import type { Especialidade } from '../../schemas/especialidade.schema';
 import type { Medico } from '../../schemas/medico.schema';
@@ -25,7 +22,6 @@ type Step = 0 | 1 | 2 | 3 | 4;
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    RouterLink,
     DatePipe,
     ButtonDirective,
     DatePicker,
@@ -47,8 +43,9 @@ export class AgendarConsultaPage {
   readonly today = new Date();
 
   private readonly router = inject(Router);
-  private readonly http = inject(HttpClient);
   private readonly messageService = inject(MessageService);
+  private readonly auth = inject(AuthenticationService);
+  private readonly demoData = inject(DemoMedflowDataService);
 
   readonly step = signal<Step>(0);
   readonly confirmed = signal(false);
@@ -61,15 +58,27 @@ export class AgendarConsultaPage {
   readonly selectedHora = signal<string | null>(null);
   readonly motivo = signal('');
 
-  readonly especialidadesResource = httpResource<PageResult<Especialidade>>(
-    () => `${environment.api.baseUrl}/especialidades?page=0&size=50`,
-  );
-  readonly unidadesResource = httpResource<PageResult<Unidade>>(
-    () => `${environment.api.baseUrl}/unidades?page=0&size=50`,
-  );
-  readonly medicosResource = httpResource<PageResult<Medico>>(
-    () => `${environment.api.baseUrl}/medicos?page=0&size=50`,
-  );
+  readonly especialidadesResource = this.demoData.createResource(() => ({
+    content: this.demoData.list('especialidade').content as readonly Especialidade[],
+    page: 0,
+    size: 50,
+    totalElements: this.demoData.list('especialidade').totalElements,
+    totalPages: 1,
+  }));
+  readonly unidadesResource = this.demoData.createResource(() => ({
+    content: this.demoData.list('unidade').content as readonly Unidade[],
+    page: 0,
+    size: 50,
+    totalElements: this.demoData.list('unidade').totalElements,
+    totalPages: 1,
+  }));
+  readonly medicosResource = this.demoData.createResource(() => ({
+    content: this.demoData.list('medico').content as readonly Medico[],
+    page: 0,
+    size: 50,
+    totalElements: this.demoData.list('medico').totalElements,
+    totalPages: 1,
+  }));
 
   readonly hours = Array.from({ length: 17 }, (_, i) => {
     const h = i + 7;
@@ -122,26 +131,30 @@ export class AgendarConsultaPage {
 
       const inicio = new Date(data.getFullYear(), data.getMonth(), data.getDate(), hora, minuto);
       const fim = new Date(inicio.getTime() + 30 * 60000);
+      const medicoId = this.selectedMedicoId()!;
+      const consultorioId = this.demoData.findAlocacaoByMedicoId(medicoId)?.consultorioId ?? '';
+      const usuarioId = this.demoData.findUsuarioByKeycloakId(this.auth.user()?.id ?? null)?.id ?? '';
 
       const input: ConsultaInput = {
-        usuarioId: '', // será preenchido pelo backend via usuário autenticado
-        medicoId: this.selectedMedicoId()!,
-        consultorioId: '', // backend pode inferir da alocação
-        alocacaoMedicoId: '', // backend pode inferir
+        usuarioId,
+        medicoId,
+        consultorioId,
+        alocacaoMedicoId: this.demoData.findAlocacaoByMedicoId(medicoId)?.id ?? '',
         dataHoraInicio: inicio.toISOString(),
         dataHoraFim: fim.toISOString(),
-        status: 'AGENDADA' as const,
+        status: 'AGENDADA',
         tipoConsulta: this.getEspecialidadeNome(),
         motivo: this.motivo(),
       };
 
-      const result = await firstValueFrom(
-        this.http.post<Consulta>(`${environment.api.baseUrl}/consultas/agendar`, input),
+      const entity: Consulta = this.demoData.agendarConsulta(
+        input,
+        usuarioId,
+        consultorioId,
+        input.alocacaoMedicoId,
       );
-
-      if (result) {
-        this.confirmed.set(true);
-      }
+      this.confirmed.set(!!entity.id);
+      this.medicosResource.reload();
     } catch {
       this.messageService.add({
         severity: 'error',

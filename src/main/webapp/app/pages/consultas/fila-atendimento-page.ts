@@ -1,14 +1,11 @@
 import { DatePipe } from '@angular/common';
-import { HttpClient, httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ButtonDirective } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
-import { firstValueFrom } from 'rxjs';
 
-import type { PageResult } from '../../@core/persistence/page-result';
 import { AuthenticationService } from '../../@core/security/authentication/authentication.service';
-import { environment } from '../../environments/environment';
+import { DemoMedflowDataService } from '../../@core/mock/demo-medflow-data.service';
 import type { Consulta } from '../../schemas/consulta.schema';
 
 interface StatusGroup {
@@ -44,13 +41,23 @@ const STATUS_GROUPS: StatusGroup[] = [
 })
 export class FilaAtendimentoPage {
   readonly today = new Date();
-  private readonly http = inject(HttpClient);
-  readonly role = computed(() => inject(AuthenticationService).user()?.role);
-  private readonly base = environment.api.baseUrl;
-
-  readonly consultasResource = httpResource<PageResult<Consulta>>(
-    () => `${this.base}/consultas?page=0&size=100`,
-  );
+  private readonly demoData = inject(DemoMedflowDataService);
+  private readonly auth = inject(AuthenticationService);
+  readonly role = computed(() => this.auth.user()?.role);
+  readonly medicoAtual = computed(() => this.demoData.findMedicoByKeycloakId(this.auth.user()?.id ?? null));
+  readonly consultasResource = this.demoData.createResource(() => ({
+    content:
+      this.role() === 'MEDICO' && this.medicoAtual()
+        ? this.demoData.consultasDoMedicoHoje(this.medicoAtual()!.id)
+        : this.demoData.consultasHoje(),
+    page: 0,
+    size: 100,
+    totalElements:
+      this.role() === 'MEDICO' && this.medicoAtual()
+        ? this.demoData.consultasDoMedicoHoje(this.medicoAtual()!.id).length
+        : this.demoData.consultasHoje().length,
+    totalPages: 1,
+  }));
 
   readonly grouped = computed(() => {
     const consultas = this.consultasResource.value()?.content ?? [];
@@ -99,12 +106,15 @@ export class FilaAtendimentoPage {
   }
 
   async acao(url: string): Promise<void> {
-    try {
-      await firstValueFrom(this.http.post(`${this.base}${url}`, {}));
-      this.consultasResource.reload();
-    } catch {
-      /* erro silencioso */
-    }
+    const id = url.split('/').filter(Boolean).at(-2);
+    if (!id) return;
+
+    if (url.endsWith('/check-in')) this.demoData.markCheckIn(id);
+    if (url.endsWith('/iniciar-atendimento')) this.demoData.markIniciarAtendimento(id);
+    if (url.endsWith('/finalizar')) this.demoData.markFinalizar(id);
+    if (url.endsWith('/em-espera')) this.demoData.markEmEspera(id);
+    if (url.endsWith('/nao-compareceu')) this.demoData.markNaoCompareceu(id);
+    this.consultasResource.reload();
   }
 
   checkin(id: string): void {

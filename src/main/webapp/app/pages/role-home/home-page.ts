@@ -5,6 +5,7 @@ import {
   AuthenticationService,
   type UserRole,
 } from '../../@core/security/authentication/authentication.service';
+import { DemoMedflowDataService } from '../../@core/mock/demo-medflow-data.service';
 
 interface AdminCard {
   label: string;
@@ -33,6 +34,7 @@ export class HomePage {
   readonly today = new Date();
 
   private readonly authService = inject(AuthenticationService);
+  private readonly demoData = inject(DemoMedflowDataService);
 
   readonly role = computed<UserRole | null>(() => this.authService.user()?.role ?? null);
   readonly userName = computed(() => {
@@ -40,6 +42,11 @@ export class HomePage {
     if (!name) return '';
     return name.split(' ')[0];
   });
+  readonly medicoAtual = computed(() => this.demoData.findMedicoByKeycloakId(this.authService.user()?.id ?? null));
+  readonly recepcionistaResumo = computed(() => this.demoData.consultaResumoHoje());
+  readonly medicoResumo = computed(() =>
+    this.demoData.consultaResumoHoje(this.medicoAtual()?.id ?? null),
+  );
 
   readonly setupSteps: SetupStep[] = [
     { icon: '🏥', label: 'Organização', desc: 'Dados da clínica', href: '/organizacoes' },

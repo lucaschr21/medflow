@@ -40,8 +40,12 @@ services:
     command:
       - start-dev
       - '--import-realm'
+      - '--spi-theme--static-max-age=-1'
+      - '--spi-theme--cache-themes=false'
+      - '--spi-theme--cache-templates=false'
     volumes:
       - ./docker/keycloak:/opt/keycloak/data/import
+      - ./docker/keycloak/themes:/opt/keycloak/themes
     ports:
       - '8085:8080'
 

@@ -1,5 +1,4 @@
 import { DatePipe } from '@angular/common';
-import { HttpClient, httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonDirective } from 'primeng/button';
@@ -8,11 +7,8 @@ import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
-import { firstValueFrom } from 'rxjs';
-
-import type { PageResult } from '../../@core/persistence/page-result';
+import { DemoMedflowDataService } from '../../@core/mock/demo-medflow-data.service';
 import { AuthenticationService } from '../../@core/security/authentication/authentication.service';
-import { environment } from '../../environments/environment';
 import type { BloqueioAgenda } from '../../schemas/bloqueio-agenda.schema';
 import type { Consultorio } from '../../schemas/consultorio.schema';
 import type { Medico } from '../../schemas/medico.schema';
@@ -200,9 +196,8 @@ const TIPOS: TipoOption[] = [
   `,
 })
 export class BloqueiosAgendaPage {
-  private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthenticationService);
-  private readonly base = environment.api.baseUrl;
+  private readonly demoData = inject(DemoMedflowDataService);
 
   readonly isMedico = computed(() => this.auth.user()?.role === 'MEDICO');
   readonly isAdmin = computed(() => this.auth.user()?.role === 'ADMINISTRADOR');
@@ -217,15 +212,27 @@ export class BloqueiosAgendaPage {
   novoTipo = 'PAUSA';
   novoMotivo = '';
 
-  readonly bloqueiosResource = httpResource<PageResult<BloqueioAgenda>>(
-    () => `${this.base}/bloqueios-agenda?page=0&size=100`,
-  );
-  readonly medicosResource = httpResource<PageResult<Medico>>(
-    () => `${this.base}/medicos?page=0&size=100`,
-  );
-  readonly consultoriosResource = httpResource<PageResult<Consultorio>>(
-    () => `${this.base}/consultorios?page=0&size=100`,
-  );
+  readonly bloqueiosResource = this.demoData.createResource(() => ({
+    content: this.demoData.list('bloqueio-agenda').content as readonly BloqueioAgenda[],
+    page: 0,
+    size: 100,
+    totalElements: this.demoData.list('bloqueio-agenda').totalElements,
+    totalPages: 1,
+  }));
+  readonly medicosResource = this.demoData.createResource(() => ({
+    content: this.demoData.list('medico').content as readonly Medico[],
+    page: 0,
+    size: 100,
+    totalElements: this.demoData.list('medico').totalElements,
+    totalPages: 1,
+  }));
+  readonly consultoriosResource = this.demoData.createResource(() => ({
+    content: this.demoData.list('consultorio').content as readonly Consultorio[],
+    page: 0,
+    size: 100,
+    totalElements: this.demoData.list('consultorio').totalElements,
+    totalPages: 1,
+  }));
 
   readonly bloqueios = computed(() => this.bloqueiosResource.value()?.content ?? []);
   readonly medicoOptions = computed(() =>
@@ -244,8 +251,7 @@ export class BloqueiosAgendaPage {
   // Para MEDICO: auto-seleciona o próprio médico
   readonly meuMedicoId = computed(() => {
     if (!this.isMedico()) return null;
-    const medicos = this.medicosResource.value()?.content ?? [];
-    return medicos.length > 0 ? medicos[0].id : null;
+    return this.demoData.findMedicoByKeycloakId(this.auth.user()?.id ?? null)?.id ?? null;
   });
 
   tipoLabel(t: string): string {
@@ -282,16 +288,14 @@ export class BloqueiosAgendaPage {
     if (!this.novoInicio || !this.novoFim) return;
     this.saving.set(true);
     try {
-      await firstValueFrom(
-        this.http.post(`${this.base}/bloqueios-agenda`, {
-          medicoId: this.novoMedicoId || this.meuMedicoId() || '',
-          consultorioId: this.novoConsultorioId || '',
-          inicio: this.novoInicio!.toISOString(),
-          fim: this.novoFim!.toISOString(),
-          motivo: this.novoMotivo,
-          tipo: this.novoTipo,
-        }),
-      );
+      this.demoData.create('bloqueio-agenda', {
+        medicoId: this.novoMedicoId || this.meuMedicoId() || '',
+        consultorioId: this.novoConsultorioId || '',
+        inicio: this.novoInicio!.toISOString(),
+        fim: this.novoFim!.toISOString(),
+        motivo: this.novoMotivo,
+        tipo: this.novoTipo,
+      });
       this.showForm.set(false);
       this.bloqueiosResource.reload();
     } finally {
@@ -300,11 +304,7 @@ export class BloqueiosAgendaPage {
   }
 
   async excluir(id: string): Promise<void> {
-    try {
-      await firstValueFrom(this.http.delete(`${this.base}/bloqueios-agenda/${id}`));
-      this.bloqueiosResource.reload();
-    } catch {
-      /* ok */
-    }
+    this.demoData.remove('bloqueio-agenda', id);
+    this.bloqueiosResource.reload();
   }
 }

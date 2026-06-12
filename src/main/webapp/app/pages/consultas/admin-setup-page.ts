@@ -1,10 +1,9 @@
-import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
+import { inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ButtonDirective } from 'primeng/button';
 
-import type { PageResult } from '../../@core/persistence/page-result';
-import { environment } from '../../environments/environment';
+import { DemoMedflowDataService } from '../../@core/mock/demo-medflow-data.service';
 
 interface SetupStep {
   id: string;
@@ -21,6 +20,8 @@ interface SetupStep {
   templateUrl: './admin-setup-page.html',
 })
 export class AdminSetupPage {
+  private readonly demoData = inject(DemoMedflowDataService);
+
   readonly steps: SetupStep[] = [
     {
       id: 'org',
@@ -66,20 +67,14 @@ export class AdminSetupPage {
     },
   ];
 
-  private base = environment.api.baseUrl;
-
   readonly counts = {
-    org: httpResource<PageResult<unknown>>(() => `${this.base}/organizacoes?page=0&size=1`),
-    unidades: httpResource<PageResult<unknown>>(() => `${this.base}/unidades?page=0&size=1`),
-    consultorios: httpResource<PageResult<unknown>>(
-      () => `${this.base}/consultorios?page=0&size=1`,
-    ),
-    especialidades: httpResource<PageResult<unknown>>(
-      () => `${this.base}/especialidades?page=0&size=1`,
-    ),
-    usuarios: httpResource<PageResult<unknown>>(() => `${this.base}/usuarios?page=0&size=1`),
-    medicos: httpResource<PageResult<unknown>>(() => `${this.base}/medicos?page=0&size=1`),
-    agenda: httpResource<PageResult<unknown>>(() => `${this.base}/alocacoes-medicas?page=0&size=1`),
+    org: this.demoData.createResource(() => this.demoData.list('organizacao')),
+    unidades: this.demoData.createResource(() => this.demoData.list('unidade')),
+    consultorios: this.demoData.createResource(() => this.demoData.list('consultorio')),
+    especialidades: this.demoData.createResource(() => this.demoData.list('especialidade')),
+    usuarios: this.demoData.createResource(() => this.demoData.list('usuario')),
+    medicos: this.demoData.createResource(() => this.demoData.list('medico')),
+    agenda: this.demoData.createResource(() => this.demoData.list('alocacao-medico')),
   };
 
   getStatus(id: string): 'concluido' | 'pendente' {

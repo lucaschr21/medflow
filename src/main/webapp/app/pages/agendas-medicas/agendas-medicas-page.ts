@@ -1,14 +1,10 @@
-import { DatePipe } from '@angular/common';
-import { HttpClient, httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonDirective } from 'primeng/button';
 import { Select } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
-import { firstValueFrom } from 'rxjs';
 
-import type { PageResult } from '../../@core/persistence/page-result';
-import { environment } from '../../environments/environment';
+import { DemoMedflowDataService } from '../../@core/mock/demo-medflow-data.service';
 import type { AgendaMedica } from '../../schemas/agenda-medica.schema';
 
 const DIAS = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
@@ -35,7 +31,7 @@ interface GroupedAgenda {
   selector: 'app-agendas-medicas-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, FormsModule, ButtonDirective, Select, Skeleton],
+  imports: [FormsModule, ButtonDirective, Select, Skeleton],
   template: `
     <div class="max-w-5xl mx-auto space-y-6">
       <div class="flex items-center justify-between">
@@ -160,8 +156,7 @@ interface GroupedAgenda {
   `,
 })
 export class AgendasMedicasPage {
-  private readonly http = inject(HttpClient);
-  private readonly base = environment.api.baseUrl;
+  private readonly demoData = inject(DemoMedflowDataService);
 
   readonly DIAS = DIAS;
   readonly DIA_LABELS = DIA_LABELS;
@@ -174,9 +169,13 @@ export class AgendasMedicasPage {
   novoInicio = '08:00';
   novoFim = '17:00';
 
-  readonly agendasResource = httpResource<PageResult<AgendaMedica>>(
-    () => `${this.base}/agendas-medicas?page=0&size=200`,
-  );
+  readonly agendasResource = this.demoData.createResource(() => ({
+    content: this.demoData.list('agenda-medica').content as readonly AgendaMedica[],
+    page: 0,
+    size: 200,
+    totalElements: this.demoData.list('agenda-medica').totalElements,
+    totalPages: 1,
+  }));
   readonly agrupado = computed(() => {
     const list = this.agendasResource.value()?.content ?? [];
     const map = new Map<string, Record<string, AgendaMedica[]>>();
@@ -193,14 +192,14 @@ export class AgendasMedicasPage {
   async salvar(): Promise<void> {
     this.saving.set(true);
     try {
-      await firstValueFrom(
-        this.http.post(`${this.base}/agendas-medicas`, {
-          alocacaoMedicoId: '',
-          diaSemana: this.novoDia,
-          horaInicio: this.novoInicio,
-          horaFim: this.novoFim,
-        }),
-      );
+      const alocacaoMedicoId =
+        (this.demoData.list('alocacao-medico').content as readonly { id: string }[])[0]?.id ?? '';
+      this.demoData.create('agenda-medica', {
+        alocacaoMedicoId,
+        diaSemana: this.novoDia,
+        horaInicio: this.novoInicio,
+        horaFim: this.novoFim,
+      });
       this.showForm.set(false);
       this.agendasResource.reload();
     } finally {
@@ -209,11 +208,7 @@ export class AgendasMedicasPage {
   }
 
   async excluir(id: string): Promise<void> {
-    try {
-      await firstValueFrom(this.http.delete(`${this.base}/agendas-medicas/${id}`));
-      this.agendasResource.reload();
-    } catch {
-      /* ok */
-    }
+    this.demoData.remove('agenda-medica', id);
+    this.agendasResource.reload();
   }
 }

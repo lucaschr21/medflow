@@ -1,10 +1,10 @@
-import { HttpClient } from '@angular/common/http';
 import { inject } from '@angular/core';
 import type { Observable } from 'rxjs';
+import { of } from 'rxjs';
 
-import { buildFindAllParams, type FindAllParams } from '../../persistence/find-all.params';
+import type { FindAllParams } from '../../persistence/find-all.params';
 import type { PageResult } from '../../persistence/page-result';
-import { environment } from '../../../environments/environment';
+import { DemoMedflowDataService } from '../../mock/demo-medflow-data.service';
 import { AuthorizationService } from './authorization.service';
 import type { PermissionTuple, Resource, Scope } from './authorization.types';
 
@@ -33,9 +33,8 @@ export abstract class ProtectedResourceService<
   protected abstract readonly resourcePath: string;
   protected abstract readonly removeScope: RemoveScope;
 
-  protected readonly http = inject(HttpClient);
-  private readonly apiBaseUrl = environment.api.baseUrl;
   private readonly authorizationService = inject(AuthorizationService);
+  private readonly demoData = inject(DemoMedflowDataService);
 
   /**
    * Lista registros do recurso com filtro, paginação e ordenação.
@@ -45,9 +44,7 @@ export abstract class ProtectedResourceService<
    */
   findAll(params: FindAllParams = {}): Observable<PageResult<Entity>> {
     this.ensureAllowed('read');
-    return this.http.get<PageResult<Entity>>(this.resourceUrl, {
-      params: buildFindAllParams(params),
-    });
+    return of(this.demoData.list(this.resource, params) as PageResult<Entity>);
   }
 
   /**
@@ -58,7 +55,7 @@ export abstract class ProtectedResourceService<
    */
   findById(id: string): Observable<Entity> {
     this.ensureAllowed('read');
-    return this.http.get<Entity>(this.resourceItemUrl(id));
+    return of(this.demoData.findById(this.resource, id) as Entity);
   }
 
   /**
@@ -69,7 +66,7 @@ export abstract class ProtectedResourceService<
    */
   create(input: Input): Observable<Entity> {
     this.ensureAllowed('create');
-    return this.http.post<Entity>(this.resourceUrl, input);
+    return of(this.demoData.create(this.resource, input) as Entity);
   }
 
   /**
@@ -81,7 +78,7 @@ export abstract class ProtectedResourceService<
    */
   update(id: string, input: Input): Observable<Entity> {
     this.ensureAllowed('update');
-    return this.http.put<Entity>(this.resourceItemUrl(id), input);
+    return of(this.demoData.update(this.resource, id, input) as Entity);
   }
 
   /**
@@ -95,24 +92,17 @@ export abstract class ProtectedResourceService<
    */
   remove(id: string): Observable<void> {
     this.ensureAllowed(this.removeScope);
-    return this.http.delete<void>(this.resourceItemUrl(id));
-  }
-
-  protected get resourceUrl(): string {
-    return `${this.apiBaseUrl}/${this.resourcePath}`;
-  }
-
-  private ensureAllowed(scope: Scope): void {
-    this.authorizationService.ensureAllowed(this.permission(scope));
-  }
-
-  private resourceItemUrl(id: string): string {
-    return `${this.resourceUrl}/${id}`;
+    this.demoData.remove(this.resource, id);
+    return of(void 0);
   }
 
   private permission<ScopeType extends Scope>(
     scope: ScopeType,
   ): PermissionTuple<ResourceType, ScopeType> {
     return [this.resource, scope];
+  }
+
+  private ensureAllowed(scope: Scope): void {
+    this.authorizationService.ensureAllowed(this.permission(scope));
   }
 }

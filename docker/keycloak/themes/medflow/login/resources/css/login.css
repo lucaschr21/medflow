@@ -1,0 +1,259 @@
+@import 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap';
+
+:root {
+  --medflow-primary-50: #f0fdfa;
+  --medflow-primary-100: #ccfbf1;
+  --medflow-primary-200: #99f6e4;
+  --medflow-primary-500: #14b8a6;
+  --medflow-primary-600: #0d9488;
+  --medflow-primary-700: #0f766e;
+  --medflow-surface-0: #fff;
+  --medflow-surface-50: #f8fafc;
+  --medflow-surface-100: #f1f5f9;
+  --medflow-surface-200: #e2e8f0;
+  --medflow-surface-500: #64748b;
+  --medflow-surface-700: #334155;
+  --medflow-surface-900: #0f172a;
+  --medflow-shadow-lg: 0 32px 80px rgb(15 23 42 / 14%);
+  --medflow-shadow-md: 0 16px 40px rgb(15 23 42 / 8%);
+  --medflow-radius-xl: 28px;
+  --medflow-radius-lg: 18px;
+  --medflow-radius-md: 14px;
+}
+
+html,
+body,
+.login-pf body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  color: var(--medflow-surface-900);
+  background:
+    radial-gradient(circle at top left, rgb(20 184 166 / 18%), transparent 30%),
+    radial-gradient(circle at right 20%, rgb(245 158 11 / 16%), transparent 22%),
+    linear-gradient(180deg, #f8fffe 0%, #eff6ff 100%);
+  text-rendering: optimizelegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#keycloak-bg::before,
+#keycloak-bg::after {
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+  content: '';
+  border-radius: 999px;
+  filter: blur(8px);
+}
+
+#keycloak-bg::before {
+  top: -5rem;
+  left: -4rem;
+  width: 16rem;
+  height: 16rem;
+  background: rgb(20 184 166 / 12%);
+}
+
+#keycloak-bg::after {
+  right: -4rem;
+  bottom: -5rem;
+  width: 18rem;
+  height: 18rem;
+  background: rgb(59 130 246 / 10%);
+}
+
+#kc-header {
+  margin-bottom: 1.5rem;
+}
+
+#kc-header-wrapper {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  color: var(--medflow-surface-900);
+  text-transform: none;
+  letter-spacing: -0.04em;
+}
+
+#kc-header-wrapper::before {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--medflow-primary-700);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  content: 'Plataforma clinica';
+}
+
+.pf-v5-c-login {
+  min-height: 100vh;
+}
+
+.pf-v5-c-login__container {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 29rem);
+  padding: 2rem 1.25rem;
+}
+
+.pf-v5-c-login__main {
+  overflow: hidden;
+  background: rgb(255 255 255 / 92%);
+  border: 1px solid rgb(226 232 240 / 92%);
+  border-radius: var(--medflow-radius-xl);
+  box-shadow: var(--medflow-shadow-lg);
+  backdrop-filter: blur(18px);
+}
+
+.pf-v5-c-login__main-header {
+  padding: 2rem 2rem 1rem;
+}
+
+.pf-v5-c-login__main-body,
+.pf-v5-c-login__main-footer {
+  padding-right: 2rem;
+  padding-left: 2rem;
+}
+
+.pf-v5-c-login__main-body {
+  padding-bottom: 1rem;
+}
+
+.pf-v5-c-login__main-footer {
+  padding-bottom: 2rem;
+}
+
+#kc-page-title {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--medflow-surface-900);
+  letter-spacing: -0.03em;
+}
+
+#kc-page-title::after {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.98rem;
+  font-weight: 400;
+  color: var(--medflow-surface-500);
+  letter-spacing: 0;
+  content: 'Acesse sua conta para gerenciar atendimentos, agenda e operacao da clinica.';
+}
+
+.pf-v5-c-form-control,
+.pf-v5-c-form-control:not(textarea) {
+  min-height: 3.25rem;
+  padding: 0.8rem 0.95rem;
+  color: var(--medflow-surface-900);
+  background: var(--medflow-surface-0);
+  border: 1px solid var(--medflow-surface-200);
+  border-radius: var(--medflow-radius-md);
+  box-shadow: none;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.pf-v5-c-form-control:hover {
+  border-color: #cbd5e1;
+}
+
+.pf-v5-c-form-control:focus,
+.pf-v5-c-form-control.pf-m-focus {
+  border-color: var(--medflow-primary-500);
+  box-shadow: 0 0 0 4px rgb(20 184 166 / 14%);
+}
+
+.pf-v5-c-form__label-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--medflow-surface-700);
+}
+
+.pf-v5-c-button.pf-m-primary {
+  min-height: 3.25rem;
+  padding: 0.9rem 1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--medflow-primary-600), var(--medflow-primary-500));
+  border: none;
+  border-radius: var(--medflow-radius-md);
+  box-shadow: 0 14px 28px rgb(13 148 136 / 28%);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    filter 160ms ease;
+}
+
+.pf-v5-c-button.pf-m-primary:hover,
+.pf-v5-c-button.pf-m-primary:focus {
+  box-shadow: 0 18px 32px rgb(13 148 136 / 32%);
+  filter: saturate(1.05);
+  transform: translateY(-1px);
+}
+
+.pf-v5-c-button.pf-m-control,
+.pf-v5-c-button.pf-m-secondary {
+  border-radius: var(--medflow-radius-md);
+}
+
+.pf-v5-c-check__label,
+#kc-registration,
+#kc-info-wrapper,
+.kc-feedback-text {
+  color: var(--medflow-surface-500);
+}
+
+a {
+  color: var(--medflow-primary-700);
+}
+
+a:hover {
+  color: var(--medflow-primary-600);
+  text-decoration: none;
+}
+
+.pf-v5-c-alert {
+  border-radius: var(--medflow-radius-md);
+}
+
+#kc-form-login .pf-v5-c-form__group:last-of-type {
+  margin-bottom: 1.25rem;
+}
+
+.pf-v5-c-login__main-footer-band {
+  padding: 1rem 1.25rem;
+  background: linear-gradient(180deg, var(--medflow-primary-50), rgb(255 255 255 / 85%));
+  border: 1px solid rgb(153 246 228 / 80%);
+  border-radius: var(--medflow-radius-lg);
+}
+
+@media (width <= 640px) {
+  #kc-header-wrapper {
+    font-size: 2rem;
+  }
+
+  .pf-v5-c-login__container {
+    padding: 1.25rem 1rem;
+  }
+
+  .pf-v5-c-login__main-header,
+  .pf-v5-c-login__main-body,
+  .pf-v5-c-login__main-footer {
+    padding-right: 1.25rem;
+    padding-left: 1.25rem;
+  }
+
+  .pf-v5-c-login__main {
+    border-radius: 1.5rem;
+  }
+}

@@ -1,8 +1,8 @@
 {
   "id": "4a6b3788-32b2-4fd2-8283-2457493110cb",
   "realm": "medflow",
-  "displayName": "",
-  "displayNameHtml": "",
+  "displayName": "Medflow",
+  "displayNameHtml": "Medflow",
   "notBefore": 0,
   "defaultSignatureAlgorithm": "RS256",
   "revokeRefreshToken": false,
@@ -3032,7 +3032,7 @@
     "strictTransportSecurity": "max-age=31536000; includeSubDomains"
   },
   "smtpServer": {},
-  "loginTheme": "",
+  "loginTheme": "medflow",
   "accountTheme": "",
   "adminTheme": "",
   "emailTheme": "",

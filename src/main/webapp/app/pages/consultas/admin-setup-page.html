@@ -17,12 +17,12 @@
       </div>
       <span class="text-lg font-semibold text-primary">{{ progresso() }}%</span>
     </div>
-    <div class="h-3 bg-surface-100 rounded-full overflow-hidden">
+      <div class="h-3 bg-surface-100 rounded-full overflow-hidden">
       <div
         class="h-full bg-primary rounded-full transition-all duration-500"
-        [style.width.%]="progresso"
+        [style.width.%]="progresso()"
         role="progressbar"
-        [attr.aria-valuenow]="progresso"
+        [attr.aria-valuenow]="progresso()"
         aria-valuemin="0"
         aria-valuemax="100"
       ></div>
